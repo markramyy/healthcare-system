@@ -31,6 +31,9 @@ class MedicalRecord(DBBase):
         verbose_name_plural = _('Medical Records')
         ordering = ['-visit_date']
 
+    def __str__(self):
+        return f"{self.patient.get_full_name()} - {self.visit_date}"
+
 
 class Diagnosis(DBBase):
     medical_record = models.ForeignKey(
@@ -56,6 +59,9 @@ class Diagnosis(DBBase):
     class Meta:
         verbose_name = _('Diagnosis')
         verbose_name_plural = _('Diagnoses')
+
+    def __str__(self):
+        return f"{self.diagnosis_code} - {self.severity}"
 
 
 class Treatment(DBBase):
@@ -85,6 +91,9 @@ class Treatment(DBBase):
         verbose_name = _('Treatment')
         verbose_name_plural = _('Treatments')
 
+    def __str__(self):
+        return f"{self.name} - {self.status}"
+
 
 class Prescription(DBBase):
     medical_record = models.ForeignKey(
@@ -103,3 +112,6 @@ class Prescription(DBBase):
     class Meta:
         verbose_name = _('Prescription')
         verbose_name_plural = _('Prescriptions')
+
+    def __str__(self):
+        return f"{self.medication_name} - {self.dosage}"

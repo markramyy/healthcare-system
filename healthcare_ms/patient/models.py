@@ -59,6 +59,9 @@ class PatientProfile(DBBase):
         verbose_name = _('Patient Profile')
         verbose_name_plural = _('Patient Profiles')
 
+    def __str__(self):
+        return f"{self.user.get_full_name()} - {self.blood_type}"
+
 
 class Insurance(DBBase):
     patient = models.ForeignKey(
@@ -79,6 +82,9 @@ class Insurance(DBBase):
         verbose_name = _('Insurance')
         verbose_name_plural = _('Insurance Policies')
 
+    def __str__(self):
+        return f"{self.provider} - {self.policy_number}"
+
 
 class EmergencyContact(DBBase):
     patient = models.ForeignKey(
@@ -98,3 +104,6 @@ class EmergencyContact(DBBase):
     class Meta:
         verbose_name = _('Emergency Contact')
         verbose_name_plural = _('Emergency Contacts')
+
+    def __str__(self):
+        return f"{self.name} - {self.relationship}"
