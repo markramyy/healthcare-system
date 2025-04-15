@@ -1,0 +1,93 @@
+{% extends 'users/base.html' %}
+
+{% block title %}{{ user.get_full_name }}{% endblock %}
+
+{% block actions %}
+<div class="flex space-x-4">
+    {% if not is_me %}
+    <a href="{% url 'users:user-list' %}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
+        <i class="fas fa-arrow-left mr-2"></i>Back to Users
+    </a>
+    {% endif %}
+    <a href="{% url 'users:user-update' guid=user.guid %}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+        <i class="fas fa-edit mr-2"></i>Edit Profile
+    </a>
+    <a href="{% url 'users:change-password' %}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+        <i class="fas fa-key mr-2"></i>Change Password
+    </a>
+</div>
+{% endblock %}
+
+{% block user_content %}
+<div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="px-4 py-5 sm:px-6">
+        <div class="flex items-center">
+            {% if user.profile_picture %}
+            <img class="h-20 w-20 rounded-full" src="{{ user.profile_picture.url }}" alt="{{ user.username }}">
+            {% else %}
+            <div class="h-20 w-20 rounded-full bg-gray-200 flex items-center justify-center">
+                <i class="fas fa-user text-gray-500 text-3xl"></i>
+            </div>
+            {% endif %}
+            <div class="ml-4">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                    {{ user.get_full_name }}
+                </h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                    {{ user.email }}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="border-t border-gray-200">
+        <dl>
+            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt class="text-sm font-medium text-gray-500">Username</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ user.username }}</dd>
+            </div>
+            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt class="text-sm font-medium text-gray-500">User Type</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                        {% if user.user_type == 'admin' %}bg-purple-100 text-purple-800
+                        {% elif user.user_type == 'doctor' %}bg-blue-100 text-blue-800
+                        {% elif user.user_type == 'nurse' %}bg-green-100 text-green-800
+                        {% elif user.user_type == 'patient' %}bg-yellow-100 text-yellow-800
+                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {{ user.get_user_type_display }}
+                    </span>
+                </dd>
+            </div>
+            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt class="text-sm font-medium text-gray-500">Verification Status</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                        {% if user.is_verified %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                        {% if user.is_verified %}Verified{% else %}Not Verified{% endif %}
+                    </span>
+                </dd>
+            </div>
+            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt class="text-sm font-medium text-gray-500">Phone Number</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ user.phone_number|default:"Not provided" }}</dd>
+            </div>
+            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt class="text-sm font-medium text-gray-500">Date of Birth</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ user.date_of_birth|default:"Not provided" }}</dd>
+            </div>
+            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt class="text-sm font-medium text-gray-500">Address</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ user.address|default:"Not provided"|linebreaks }}</dd>
+            </div>
+            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt class="text-sm font-medium text-gray-500">Account Created</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ user.created|date:"F j, Y, g:i a" }}</dd>
+            </div>
+            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt class="text-sm font-medium text-gray-500">Last Updated</dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ user.modified|date:"F j, Y, g:i a" }}</dd>
+            </div>
+        </dl>
+    </div>
+</div>
+{% endblock %}
