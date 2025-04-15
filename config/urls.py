@@ -23,6 +23,7 @@ from healthcare_ms.core.views import landing_page
 api_patterns = [
     path('users/', include('healthcare_ms.users.api_router')),
     path('patient/', include('healthcare_ms.patient.api_router')),
+    path('ehr/', include('healthcare_ms.ehr.api_router')),
 ]
 
 urlpatterns = [
@@ -33,6 +34,7 @@ urlpatterns = [
     path('dashboard/', include('healthcare_ms.core.urls')),
     path('users/', include('healthcare_ms.users.urls')),
     path('patient/', include('healthcare_ms.patient.urls')),
+    path('ehr/', include('healthcare_ms.ehr.urls')),
 
     path('api/', include(api_patterns)),
 
