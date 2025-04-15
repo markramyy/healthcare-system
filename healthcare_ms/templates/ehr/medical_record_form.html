@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if form.instance.pk %}Edit Medical Record{% else %}Create New Medical Record{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">
+            {% if form.instance.pk %}
+                Edit Medical Record
+            {% else %}
+                Create New Medical Record
+            {% endif %}
+        </h1>
+        <a href="{% url 'ehr:medical-record-list' %}"
+           class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+            Back to List
+        </a>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <form method="post" class="p-6">
+            {% csrf_token %}
+
+            <!-- Basic Information -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Patient Information</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="{{ form.patient.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Patient *
+                            </label>
+                            {{ form.patient }}
+                            {% if form.patient.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.patient.errors }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Visit Information</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="{{ form.doctor.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Doctor *
+                            </label>
+                            {{ form.doctor }}
+                            {% if form.doctor.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.doctor.errors }}</p>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="{{ form.visit_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Visit Date *
+                            </label>
+                            {{ form.visit_date }}
+                            {% if form.visit_date.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.visit_date.errors }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Symptoms and Notes -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <label for="{{ form.symptoms.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        Symptoms *
+                    </label>
+                    {{ form.symptoms }}
+                    {% if form.symptoms.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.symptoms.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.notes.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        Notes
+                    </label>
+                    {{ form.notes }}
+                    {% if form.notes.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.notes.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.follow_up_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        Follow-up Date
+                    </label>
+                    {{ form.follow_up_date }}
+                    {% if form.follow_up_date.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.follow_up_date.errors }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex justify-end space-x-4">
+                <a href="{% url 'ehr:medical-record-list' %}"
+                   class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    {% if form.instance.pk %}Update{% else %}Create{% endif %} Record
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

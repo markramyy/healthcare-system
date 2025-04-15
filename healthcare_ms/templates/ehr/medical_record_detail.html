@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Medical Record - {{ record.patient.get_full_name }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Medical Record</h1>
+            <p class="text-gray-600">Patient: {{ record.patient.get_full_name }}</p>
+        </div>
+        <div class="flex space-x-2">
+            <a href="{% url 'ehr:medical-record-update' record.guid %}"
+               class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Edit Record
+            </a>
+            <a href="{% url 'ehr:medical-record-list' %}"
+               class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                Back to List
+            </a>
+        </div>
+    </div>
+
+    <!-- Record Information -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-6">
+            <!-- Basic Information -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Patient Information</h2>
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600">
+                            <span class="font-medium">Name:</span>
+                            {{ record.patient.get_full_name }}
+                        </p>
+                        <p class="text-sm text-gray-600">
+                            <span class="font-medium">Email:</span>
+                            {{ record.patient.email }}
+                        </p>
+                        <p class="text-sm text-gray-600">
+                            <span class="font-medium">Phone:</span>
+                            {{ record.patient.phone_number }}
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Visit Information</h2>
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600">
+                            <span class="font-medium">Doctor:</span>
+                            {{ record.doctor.get_full_name }}
+                        </p>
+                        <p class="text-sm text-gray-600">
+                            <span class="font-medium">Visit Date:</span>
+                            {{ record.visit_date|date:"F d, Y H:i" }}
+                        </p>
+                        {% if record.follow_up_date %}
+                        <p class="text-sm text-gray-600">
+                            <span class="font-medium">Follow-up Date:</span>
+                            {{ record.follow_up_date|date:"F d, Y H:i" }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Symptoms and Notes -->
+            <div class="space-y-6">
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Symptoms</h2>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="text-gray-700">{{ record.symptoms }}</p>
+                    </div>
+                </div>
+
+                {% if record.notes %}
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Notes</h2>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="text-gray-700">{{ record.notes }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Related Records -->
+            <div class="mt-8">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Related Records</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Diagnoses -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-gray-800 mb-2">Diagnoses</h3>
+                        {% if record.diagnoses.exists %}
+                        <ul class="space-y-2">
+                            {% for diagnosis in record.diagnoses.all %}
+                            <li class="text-sm text-gray-600">
+                                <span class="font-medium">{{ diagnosis.diagnosis_code }}</span> -
+                                {{ diagnosis.description }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p class="text-sm text-gray-500">No diagnoses recorded</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Treatments -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-gray-800 mb-2">Treatments</h3>
+                        {% if record.treatments.exists %}
+                        <ul class="space-y-2">
+                            {% for treatment in record.treatments.all %}
+                            <li class="text-sm text-gray-600">
+                                <span class="font-medium">{{ treatment.name }}</span> -
+                                {{ treatment.status }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p class="text-sm text-gray-500">No treatments recorded</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Prescriptions -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-gray-800 mb-2">Prescriptions</h3>
+                        {% if record.prescriptions.exists %}
+                        <ul class="space-y-2">
+                            {% for prescription in record.prescriptions.all %}
+                            <li class="text-sm text-gray-600">
+                                <span class="font-medium">{{ prescription.medication_name }}</span> -
+                                {{ prescription.dosage }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p class="text-sm text-gray-500">No prescriptions recorded</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

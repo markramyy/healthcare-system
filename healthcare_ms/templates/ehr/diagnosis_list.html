@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Diagnoses{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Diagnoses</h1>
+        <a href="{% url 'ehr:diagnosis-create' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+            Add New Diagnosis
+        </a>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+        <form method="get" class="flex flex-wrap gap-4">
+            <div class="flex-1">
+                <input type="text" name="search" placeholder="Search by code or description..."
+                       class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       value="{{ request.GET.search }}">
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Search
+            </button>
+        </form>
+    </div>
+
+    <!-- Diagnoses Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for diagnosis in diagnoses %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">
+                            {{ diagnosis.diagnosis_code }}
+                        </h2>
+                        <p class="text-sm text-gray-600">Patient: {{ diagnosis.medical_record.patient.get_full_name }}</p>
+                    </div>
+                    <span class="px-3 py-1 text-sm rounded-full
+                        {% if diagnosis.severity == 'critical' %}bg-red-100 text-red-800
+                        {% elif diagnosis.severity == 'high' %}bg-orange-100 text-orange-800
+                        {% elif diagnosis.severity == 'medium' %}bg-yellow-100 text-yellow-800
+                        {% else %}bg-green-100 text-green-800{% endif %}">
+                        {{ diagnosis.get_severity_display }}
+                    </span>
+                </div>
+
+                <div class="space-y-2">
+                    <p class="text-sm text-gray-600">
+                        <span class="font-medium">Description:</span>
+                        {{ diagnosis.description|truncatechars:100 }}
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        <span class="font-medium">Record Date:</span>
+                        {{ diagnosis.medical_record.visit_date|date:"F d, Y" }}
+                    </p>
+                </div>
+
+                <div class="mt-4 flex justify-end space-x-2">
+                    <a href="{% url 'ehr:diagnosis-detail' diagnosis.guid %}"
+                       class="text-blue-600 hover:text-blue-800 transition-colors">
+                        View Details
+                    </a>
+                    <a href="{% url 'ehr:diagnosis-update' diagnosis.guid %}"
+                       class="text-green-600 hover:text-green-800 transition-colors">
+                        Edit
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No diagnoses found</h3>
+            <p class="mt-1 text-sm text-gray-500">Get started by creating a new diagnosis.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="mt-8 flex justify-center">
+        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                Previous
+            </a>
+            {% endif %}
+
+            <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                Next
+            </a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
