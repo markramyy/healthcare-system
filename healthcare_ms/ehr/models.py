@@ -32,7 +32,7 @@ class MedicalRecord(DBBase):
         ordering = ['-visit_date']
 
     def __str__(self):
-        return f"{self.patient.get_full_name()} - {self.visit_date}"
+        return f"{self.patient.get_full_name()} - {self.visit_date.strftime('%B %d, %Y %I:%M %p')}"
 
 
 class Diagnosis(DBBase):
