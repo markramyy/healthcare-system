@@ -18,8 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from rest_framework.permissions import AllowAny
+from healthcare_ms.core.views import landing_page
 
 urlpatterns = [
+    path('', landing_page, name='landing'),
     path('admin/', admin.site.urls),
     path('auth/', include('config.auth_router')),
     path('users/', include('healthcare_ms.users.api_router')),

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+        }
+        .btn-hover {
+            transition: all 0.3s ease;
+        }
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .feature-card {
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white bg-opacity-10 backdrop-blur-md fixed w-full z-10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-white text-2xl font-bold">
+                    <i class="fas fa-hospital text-blue-400 mr-2"></i>
+                    HealthcareMS
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#features" class="text-white hover:text-blue-200 transition">Features</a>
+                    <a href="#about" class="text-white hover:text-blue-200 transition">About</a>
+                    <a href="/api/docs/" class="text-white hover:text-blue-200 transition">API Docs</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="container mx-auto px-4 py-32">
+        <div class="max-w-4xl mx-auto text-center fade-in">
+            <h1 class="text-5xl md:text-7xl font-bold text-white mb-6">
+                Transforming Healthcare Management
+            </h1>
+            <p class="text-xl text-gray-200 mb-8">
+                A comprehensive solution for managing patient care, medical records, appointments, and billing processes.
+                Secure, scalable, and reliable for handling sensitive healthcare data.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="/api/docs/"
+                   class="btn-hover bg-white text-blue-900 font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-100">
+                    <i class="fas fa-book mr-2"></i>API Documentation
+                </a>
+                <a href="/admin/"
+                   class="btn-hover bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-700">
+                    <i class="fas fa-user-shield mr-2"></i>Admin Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div id="features" class="container mx-auto px-4 py-16">
+        <h2 class="text-3xl font-bold text-white text-center mb-12">Key Features</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="feature-card bg-white bg-opacity-10 p-6 rounded-lg">
+                <div class="text-blue-400 text-4xl mb-4">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-white mb-3">Patient Management</h3>
+                <p class="text-gray-200">Comprehensive patient records, medical history tracking, and secure data management.</p>
+            </div>
+            <div class="feature-card bg-white bg-opacity-10 p-6 rounded-lg">
+                <div class="text-blue-400 text-4xl mb-4">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-white mb-3">Appointment Scheduling</h3>
+                <p class="text-gray-200">Efficient appointment booking, reminders, and calendar management for healthcare providers.</p>
+            </div>
+            <div class="feature-card bg-white bg-opacity-10 p-6 rounded-lg">
+                <div class="text-blue-400 text-4xl mb-4">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-white mb-3">Billing System</h3>
+                <p class="text-gray-200">Integrated billing, insurance claims processing, and financial management.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div id="about" class="container mx-auto px-4 py-16">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-white mb-8">About Our System</h2>
+            <div class="bg-white bg-opacity-10 p-8 rounded-lg backdrop-blur-sm">
+                <p class="text-gray-200 text-lg mb-6">
+                    Our Healthcare Management System is designed to streamline healthcare operations while maintaining the highest standards of security and reliability.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <i class="fas fa-shield-alt text-blue-400 text-3xl mb-4"></i>
+                        <h4 class="text-white font-semibold mb-2">Secure</h4>
+                        <p class="text-gray-200 text-sm">HIPAA-compliant data protection</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-expand-arrows-alt text-blue-400 text-3xl mb-4"></i>
+                        <h4 class="text-white font-semibold mb-2">Scalable</h4>
+                        <p class="text-gray-200 text-sm">Grows with your organization</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-clock text-blue-400 text-3xl mb-4"></i>
+                        <h4 class="text-white font-semibold mb-2">Reliable</h4>
+                        <p class="text-gray-200 text-sm">24/7 system availability</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white bg-opacity-10 backdrop-blur-md py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-white mb-4 md:mb-0">
+                    <i class="fas fa-hospital text-blue-400 mr-2"></i>
+                    Healthcare Management System
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="/api/docs/" class="text-white hover:text-blue-200 transition">
+                        <i class="fas fa-book"></i>
+                    </a>
+                    <a href="/admin/" class="text-white hover:text-blue-200 transition">
+                        <i class="fas fa-user-shield"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/markramyy/"
+                       target="_blank"
+                       class="text-white hover:text-blue-200 transition flex items-center">
+                        <span class="mr-2">Created by Mark Ramy</span>
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
