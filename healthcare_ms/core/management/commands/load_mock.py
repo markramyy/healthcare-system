@@ -22,6 +22,8 @@ class Command(BaseCommand):
 
         # Create users
         doctors = self._create_doctors()
+        self._create_nurses()
+        self._create_staff()
         patients = self._create_patients()
 
         # Create patient profiles and related data
@@ -48,7 +50,11 @@ class Command(BaseCommand):
                 username='admin',
                 email='admin@admin.com',
                 password='1',
-                user_type='admin'
+                user_type='admin',
+                is_verified=True,
+                phone_number='+1234567890',
+                date_of_birth='1980-01-01',
+                address='123 Admin Street'
             )
             self.stdout.write(self.style.SUCCESS('Successfully created superuser'))
         else:
@@ -57,9 +63,33 @@ class Command(BaseCommand):
     def _create_doctors(self):
         doctors = []
         doctor_data = [
-            {'username': 'dr_smith', 'first_name': 'John', 'last_name': 'Smith', 'email': 'dr.smith@hospital.com'},
-            {'username': 'dr_johnson', 'first_name': 'Sarah', 'last_name': 'Johnson', 'email': 'dr.johnson@hospital.com'},
-            {'username': 'dr_williams', 'first_name': 'Michael', 'last_name': 'Williams', 'email': 'dr.williams@hospital.com'},
+            {
+                'username': 'dr_smith',
+                'first_name': 'John',
+                'last_name': 'Smith',
+                'email': 'dr.smith@hospital.com',
+                'phone_number': '+1234567891',
+                'date_of_birth': '1975-05-15',
+                'address': '456 Doctor Lane'
+            },
+            {
+                'username': 'dr_johnson',
+                'first_name': 'Sarah',
+                'last_name': 'Johnson',
+                'email': 'dr.johnson@hospital.com',
+                'phone_number': '+1234567892',
+                'date_of_birth': '1980-08-20',
+                'address': '789 Medical Avenue'
+            },
+            {
+                'username': 'dr_williams',
+                'first_name': 'Michael',
+                'last_name': 'Williams',
+                'email': 'dr.williams@hospital.com',
+                'phone_number': '+1234567893',
+                'date_of_birth': '1978-03-10',
+                'address': '321 Health Street'
+            },
         ]
 
         for data in doctor_data:
@@ -71,19 +101,130 @@ class Command(BaseCommand):
                     first_name=data['first_name'],
                     last_name=data['last_name'],
                     user_type='doctor',
-                    is_verified=True
+                    is_verified=True,
+                    phone_number=data['phone_number'],
+                    date_of_birth=data['date_of_birth'],
+                    address=data['address']
                 )
                 doctors.append(doctor)
                 self.stdout.write(self.style.SUCCESS(f'Created doctor: {doctor.get_full_name()}'))
 
         return doctors
 
+    def _create_nurses(self):
+        nurses = []
+        nurse_data = [
+            {
+                'username': 'nurse_brown',
+                'first_name': 'Emily',
+                'last_name': 'Brown',
+                'email': 'nurse.brown@hospital.com',
+                'phone_number': '+1234567894',
+                'date_of_birth': '1985-06-25',
+                'address': '654 Nurse Street'
+            },
+            {
+                'username': 'nurse_taylor',
+                'first_name': 'David',
+                'last_name': 'Taylor',
+                'email': 'nurse.taylor@hospital.com',
+                'phone_number': '+1234567895',
+                'date_of_birth': '1988-11-15',
+                'address': '987 Care Lane'
+            },
+        ]
+
+        for data in nurse_data:
+            if not User.objects.filter(username=data['username']).exists():
+                nurse = User.objects.create_user(
+                    username=data['username'],
+                    email=data['email'],
+                    password='1',
+                    first_name=data['first_name'],
+                    last_name=data['last_name'],
+                    user_type='nurse',
+                    is_verified=True,
+                    phone_number=data['phone_number'],
+                    date_of_birth=data['date_of_birth'],
+                    address=data['address']
+                )
+                nurses.append(nurse)
+                self.stdout.write(self.style.SUCCESS(f'Created nurse: {nurse.get_full_name()}'))
+
+        return nurses
+
+    def _create_staff(self):
+        staff = []
+        staff_data = [
+            {
+                'username': 'staff_miller',
+                'first_name': 'Robert',
+                'last_name': 'Miller',
+                'email': 'staff.miller@hospital.com',
+                'phone_number': '+1234567896',
+                'date_of_birth': '1990-04-05',
+                'address': '741 Staff Avenue'
+            },
+            {
+                'username': 'staff_anderson',
+                'first_name': 'Jennifer',
+                'last_name': 'Anderson',
+                'email': 'staff.anderson@hospital.com',
+                'phone_number': '+1234567897',
+                'date_of_birth': '1992-09-30',
+                'address': '852 Office Street'
+            },
+        ]
+
+        for data in staff_data:
+            if not User.objects.filter(username=data['username']).exists():
+                staff_member = User.objects.create_user(
+                    username=data['username'],
+                    email=data['email'],
+                    password='1',
+                    first_name=data['first_name'],
+                    last_name=data['last_name'],
+                    user_type='staff',
+                    is_verified=True,
+                    phone_number=data['phone_number'],
+                    date_of_birth=data['date_of_birth'],
+                    address=data['address']
+                )
+                staff.append(staff_member)
+                self.stdout.write(self.style.SUCCESS(f'Created staff: {staff_member.get_full_name()}'))
+
+        return staff
+
     def _create_patients(self):
         patients = []
         patient_data = [
-            {'username': 'patient1', 'first_name': 'Emma', 'last_name': 'Wilson', 'email': 'emma.wilson@example.com'},
-            {'username': 'patient2', 'first_name': 'James', 'last_name': 'Brown', 'email': 'james.brown@example.com'},
-            {'username': 'patient3', 'first_name': 'Olivia', 'last_name': 'Davis', 'email': 'olivia.davis@example.com'},
+            {
+                'username': 'patient1',
+                'first_name': 'Emma',
+                'last_name': 'Wilson',
+                'email': 'emma.wilson@example.com',
+                'phone_number': '+1234567898',
+                'date_of_birth': '1995-02-15',
+                'address': '159 Patient Street'
+            },
+            {
+                'username': 'patient2',
+                'first_name': 'James',
+                'last_name': 'Brown',
+                'email': 'james.brown@example.com',
+                'phone_number': '+1234567899',
+                'date_of_birth': '1988-07-20',
+                'address': '357 Health Lane'
+            },
+            {
+                'username': 'patient3',
+                'first_name': 'Olivia',
+                'last_name': 'Davis',
+                'email': 'olivia.davis@example.com',
+                'phone_number': '+1234567800',
+                'date_of_birth': '1992-11-05',
+                'address': '456 Wellness Avenue'
+            },
         ]
 
         for data in patient_data:
@@ -95,7 +236,10 @@ class Command(BaseCommand):
                     first_name=data['first_name'],
                     last_name=data['last_name'],
                     user_type='patient',
-                    is_verified=True
+                    is_verified=True,
+                    phone_number=data['phone_number'],
+                    date_of_birth=data['date_of_birth'],
+                    address=data['address']
                 )
                 patients.append(patient)
                 self.stdout.write(self.style.SUCCESS(f'Created patient: {patient.get_full_name()}'))
@@ -104,6 +248,21 @@ class Command(BaseCommand):
 
     def _create_patient_profiles(self, patients, doctors):
         blood_types = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+        allergies = [
+            'Pollen, Dust',
+            'Penicillin, Shellfish',
+            'Latex, Peanuts',
+            'No known allergies',
+            'Aspirin, Iodine'
+        ]
+        chronic_conditions = [
+            'None',
+            'Hypertension',
+            'Diabetes Type 2',
+            'Asthma',
+            'Arthritis',
+            'High Cholesterol'
+        ]
 
         for patient in patients:
             if not hasattr(patient, 'patient_profile'):
@@ -112,41 +271,77 @@ class Command(BaseCommand):
                     blood_type=random.choice(blood_types),
                     height=Decimal(random.uniform(150, 190)),
                     weight=Decimal(random.uniform(50, 100)),
-                    allergies='Pollen, Dust',
-                    chronic_conditions='None',
+                    allergies=random.choice(allergies),
+                    chronic_conditions=random.choice(chronic_conditions),
                     primary_doctor=random.choice(doctors)
                 )
 
                 # Create insurance
+                insurance_providers = [
+                    'Blue Cross Blue Shield',
+                    'Aetna',
+                    'UnitedHealthcare',
+                    'Cigna',
+                    'Humana'
+                ]
                 Insurance.objects.create(
                     patient=patient,
-                    provider='Blue Cross Blue Shield',
-                    policy_number=f'BCBS{random.randint(100000, 999999)}',
+                    provider=random.choice(insurance_providers),
+                    policy_number=f'POL{random.randint(100000, 999999)}',
                     group_number=f'GRP{random.randint(1000, 9999)}',
-                    coverage_start_date=timezone.now().date() - timedelta(days=365),
-                    coverage_end_date=timezone.now().date() + timedelta(days=365),
-                    is_active=True
+                    coverage_start_date=timezone.now().date() - timedelta(days=random.randint(30, 365)),
+                    coverage_end_date=timezone.now().date() + timedelta(days=random.randint(180, 365)),
+                    is_active=random.choice([True, False])
                 )
 
-                # Create emergency contact
-                EmergencyContact.objects.create(
-                    patient=patient,
-                    name=f'Emergency Contact for {patient.get_full_name()}',
-                    relationship='Spouse',
-                    phone_number=f'+1{random.randint(1000000000, 9999999999)}',
-                    email=f'emergency.{patient.username}@example.com',
-                    address='123 Emergency St, City, State',
-                    is_primary=True
-                )
+                # Create emergency contacts
+                relationships = ['Spouse', 'Parent', 'Sibling', 'Child', 'Friend']
+                for i in range(random.randint(1, 3)):  # 1-3 emergency contacts per patient
+                    EmergencyContact.objects.create(
+                        patient=patient,
+                        name=f'Emergency Contact {i + 1} for {patient.get_full_name()}',
+                        relationship=random.choice(relationships),
+                        phone_number=f'+1{random.randint(1000000000, 9999999999)}',
+                        email=f'emergency{i + 1}.{patient.username}@example.com',
+                        address=f'{random.randint(1, 999)} Emergency St, City, State',
+                        is_primary=(i == 0)  # First contact is primary
+                    )
 
                 self.stdout.write(self.style.SUCCESS(f'Created patient profile for: {patient.get_full_name()}'))
 
     def _create_appointment_types(self):
         types = []
         type_data = [
-            {'name': 'General Checkup', 'duration': 30, 'description': 'Routine health checkup'},
-            {'name': 'Specialist Consultation', 'duration': 45, 'description': 'Consultation with a specialist'},
-            {'name': 'Follow-up Visit', 'duration': 20, 'description': 'Follow-up appointment'},
+            {
+                'name': 'General Checkup',
+                'duration': 30,
+                'description': 'Routine health checkup'
+            },
+            {
+                'name': 'Specialist Consultation',
+                'duration': 45,
+                'description': 'Consultation with a specialist'
+            },
+            {
+                'name': 'Follow-up Visit',
+                'duration': 20,
+                'description': 'Follow-up appointment'
+            },
+            {
+                'name': 'Emergency Visit',
+                'duration': 60,
+                'description': 'Emergency medical attention'
+            },
+            {
+                'name': 'Vaccination',
+                'duration': 15,
+                'description': 'Vaccination appointment'
+            },
+            {
+                'name': 'Physical Therapy',
+                'duration': 45,
+                'description': 'Physical therapy session'
+            }
         ]
 
         for data in type_data:
@@ -162,7 +357,7 @@ class Command(BaseCommand):
 
     def _create_appointment_slots(self, doctors):
         today = timezone.now().date()
-        for i in range(7):  # Create slots for next 7 days
+        for i in range(14):  # Create slots for next 14 days
             date = today + timedelta(days=i)
             for doctor in doctors:
                 for hour in range(9, 17):  # 9 AM to 5 PM
@@ -176,13 +371,23 @@ class Command(BaseCommand):
                             date=date,
                             start_time=f'{hour}:00',
                             end_time=f'{hour + 1}:00',
-                            is_available=True
+                            is_available=random.choice([True, False])  # Random availability
                         )
 
     def _create_appointments(self, patients, doctors, appointment_types):
         slots = AppointmentSlot.objects.filter(is_available=True)
+        appointment_statuses = ['scheduled', 'confirmed', 'in_progress', 'completed', 'cancelled', 'no_show']
+        reasons = [
+            'Regular checkup',
+            'Follow-up for previous condition',
+            'New symptoms',
+            'Medication review',
+            'Test results discussion',
+            'Emergency consultation'
+        ]
+
         for patient in patients:
-            for _ in range(2):  # Create 2 appointments per patient
+            for _ in range(random.randint(1, 3)):  # 1-3 appointments per patient
                 if slots.exists():
                     slot = random.choice(slots)
                     Appointment.objects.create(
@@ -190,51 +395,86 @@ class Command(BaseCommand):
                         doctor=slot.doctor,
                         appointment_type=random.choice(appointment_types),
                         slot=slot,
-                        status='scheduled',
-                        reason='Regular checkup'
+                        status=random.choice(appointment_statuses),
+                        reason=random.choice(reasons),
+                        notes=f'Patient notes for {patient.get_full_name()}'
                     )
                     slot.is_available = False
                     slot.save()
 
     def _create_medical_records(self, patients, doctors):
+        symptoms_list = [
+            'Fever, headache, fatigue',
+            'Cough, shortness of breath',
+            'Abdominal pain, nausea',
+            'Joint pain, swelling',
+            'Chest pain, dizziness',
+            'Rash, itching',
+            'Back pain, limited mobility'
+        ]
+        diagnosis_codes = [
+            'J06.9',  # Upper respiratory infection
+            'E11.9',  # Type 2 diabetes
+            'I10',    # Essential hypertension
+            'M54.5',  # Low back pain
+            'J45.909'  # Asthma
+        ]
+        diagnosis_descriptions = [
+            'Upper respiratory infection',
+            'Type 2 diabetes mellitus',
+            'Essential hypertension',
+            'Chronic low back pain',
+            'Asthma, unspecified'
+        ]
+        medications = [
+            {'name': 'Acetaminophen', 'dosage': '500mg', 'frequency': 'Every 6 hours'},
+            {'name': 'Ibuprofen', 'dosage': '400mg', 'frequency': 'Every 8 hours'},
+            {'name': 'Amoxicillin', 'dosage': '500mg', 'frequency': 'Every 12 hours'},
+            {'name': 'Lisinopril', 'dosage': '10mg', 'frequency': 'Once daily'},
+            {'name': 'Metformin', 'dosage': '1000mg', 'frequency': 'Twice daily'}
+        ]
+
         for patient in patients:
-            for _ in range(2):  # Create 2 medical records per patient
+            for _ in range(random.randint(1, 3)):  # 1-3 medical records per patient
+                visit_date = timezone.now() - timedelta(days=random.randint(1, 90))
                 record = MedicalRecord.objects.create(
                     patient=patient,
                     doctor=random.choice(doctors),
-                    visit_date=timezone.now() - timedelta(days=random.randint(1, 30)),
-                    symptoms='Fever, headache',
-                    notes='Patient reported symptoms',
-                    follow_up_date=timezone.now() + timedelta(days=30)
+                    visit_date=visit_date,
+                    symptoms=random.choice(symptoms_list),
+                    notes=f'Detailed notes for {patient.get_full_name()}\'s visit',
+                    follow_up_date=visit_date + timedelta(days=random.randint(7, 30))
                 )
 
                 # Create diagnosis
                 Diagnosis.objects.create(
                     medical_record=record,
-                    diagnosis_code=f'ICD-{random.randint(1000, 9999)}',
-                    description='Common cold',
-                    severity=random.choice(['low', 'medium', 'high'])
+                    diagnosis_code=random.choice(diagnosis_codes),
+                    description=random.choice(diagnosis_descriptions),
+                    severity=random.choice(['low', 'medium', 'high', 'critical'])
                 )
 
                 # Create treatment
+                treatment_statuses = ['planned', 'in_progress', 'completed', 'cancelled']
                 Treatment.objects.create(
                     medical_record=record,
-                    name='Rest and medication',
-                    description='Take prescribed medication and rest',
+                    name=f'Treatment for {record.symptoms.split(",")[0]}',
+                    description='Follow prescribed medication and lifestyle changes',
                     start_date=record.visit_date,
-                    end_date=record.visit_date + timedelta(days=7),
-                    status='completed'
+                    end_date=record.visit_date + timedelta(days=random.randint(7, 30)),
+                    status=random.choice(treatment_statuses)
                 )
 
                 # Create prescription
+                medication = random.choice(medications)
                 Prescription.objects.create(
                     medical_record=record,
-                    medication_name='Acetaminophen',
-                    dosage='500mg',
-                    frequency='Every 6 hours',
-                    duration='7 days',
-                    instructions='Take with food',
-                    is_active=True
+                    medication_name=medication['name'],
+                    dosage=medication['dosage'],
+                    frequency=medication['frequency'],
+                    duration=f'{random.randint(7, 30)} days',
+                    instructions='Take with food and plenty of water',
+                    is_active=random.choice([True, False])
                 )
 
     def _create_billing_data(self, patients, doctors):
@@ -244,6 +484,9 @@ class Command(BaseCommand):
             {'code': 'CONSULT', 'name': 'Consultation', 'price': Decimal('100.00')},
             {'code': 'LABTEST', 'name': 'Laboratory Test', 'price': Decimal('150.00')},
             {'code': 'XRAY', 'name': 'X-Ray', 'price': Decimal('200.00')},
+            {'code': 'MRI', 'name': 'MRI Scan', 'price': Decimal('500.00')},
+            {'code': 'PHYSIO', 'name': 'Physical Therapy', 'price': Decimal('120.00')},
+            {'code': 'VACCINE', 'name': 'Vaccination', 'price': Decimal('80.00')}
         ]
 
         for data in service_data:
@@ -256,18 +499,20 @@ class Command(BaseCommand):
 
         # Create invoices and related data
         for patient in patients:
-            for _ in range(2):  # Create 2 invoices per patient
+            for _ in range(random.randint(1, 3)):  # 1-3 invoices per patient
+                invoice_statuses = ['draft', 'sent', 'paid', 'overdue', 'cancelled']
                 invoice = Invoice.objects.create(
                     patient=patient,
                     invoice_number=f'INV{random.randint(100000, 999999)}',
                     issue_date=timezone.now().date() - timedelta(days=random.randint(1, 30)),
-                    due_date=timezone.now().date() + timedelta(days=30),
+                    due_date=timezone.now().date() + timedelta(days=random.randint(7, 30)),
                     total_amount=Decimal('0.00'),
-                    status='sent'
+                    status=random.choice(invoice_statuses),
+                    notes=f'Invoice notes for {patient.get_full_name()}'
                 )
 
                 # Add invoice items
-                for service in random.sample(services, 2):
+                for service in random.sample(services, random.randint(1, 3)):
                     quantity = random.randint(1, 3)
                     unit_price = service.price
                     total_price = unit_price * quantity
@@ -278,7 +523,7 @@ class Command(BaseCommand):
                         quantity=quantity,
                         unit_price=unit_price,
                         total_price=total_price,
-                        description=f'{service.name} service'
+                        description=f'{service.name} service for {patient.get_full_name()}'
                     )
 
                     invoice.total_amount += total_price
@@ -286,19 +531,21 @@ class Command(BaseCommand):
                 invoice.save()
 
                 # Create payment
-                if random.choice([True, False]):
+                payment_methods = ['cash', 'credit_card', 'debit_card', 'bank_transfer', 'insurance']
+                if invoice.status == 'paid':
                     Payment.objects.create(
                         invoice=invoice,
                         amount=invoice.total_amount,
                         payment_date=invoice.issue_date + timedelta(days=random.randint(1, 10)),
-                        payment_method=random.choice(['cash', 'credit_card', 'insurance']),
-                        transaction_id=f'TXN{random.randint(100000, 999999)}'
+                        payment_method=random.choice(payment_methods),
+                        transaction_id=f'TXN{random.randint(100000, 999999)}',
+                        notes=f'Payment notes for invoice {invoice.invoice_number}'
                     )
                     invoice.paid_amount = invoice.total_amount
-                    invoice.status = 'paid'
                     invoice.save()
 
                 # Create insurance claim
+                claim_statuses = ['submitted', 'processing', 'approved', 'rejected', 'paid']
                 if random.choice([True, False]):
                     InsuranceClaim.objects.create(
                         invoice=invoice,
@@ -306,5 +553,7 @@ class Command(BaseCommand):
                         claim_number=f'CLM{random.randint(100000, 999999)}',
                         claim_date=invoice.issue_date,
                         amount_claimed=invoice.total_amount,
-                        status=random.choice(['submitted', 'processing', 'approved'])
+                        amount_approved=invoice.total_amount * Decimal('0.8'),  # 80% coverage
+                        status=random.choice(claim_statuses),
+                        notes=f'Insurance claim notes for {patient.get_full_name()}'
                     )
