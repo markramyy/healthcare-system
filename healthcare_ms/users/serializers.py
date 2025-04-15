@@ -9,7 +9,7 @@ from healthcare_ms.users.models import User
 class ListUserAdminSerializer(BaseSerializer):
     class Meta:
         model = User
-        fields = ('guid', 'username', 'email', 'user_type', 'created', 'modified')
+        fields = ('guid', 'username', 'email', 'user_type')
 
 
 class DetailUserAdminSerializer(BaseSerializer):
@@ -18,7 +18,7 @@ class DetailUserAdminSerializer(BaseSerializer):
         fields = (
             'guid', 'username', 'email', 'first_name', 'last_name',
             'user_type', 'phone_number', 'date_of_birth', 'address',
-            'profile_picture', 'is_verified', 'created', 'modified'
+            'profile_picture', 'is_verified'
         )
 
 
@@ -37,7 +37,7 @@ class MeUserAdminSerializer(BaseSerializer):
         fields = (
             'guid', 'username', 'email', 'first_name', 'last_name',
             'user_type', 'phone_number', 'date_of_birth', 'address',
-            'profile_picture', 'is_verified', 'created', 'modified'
+            'profile_picture', 'is_verified'
         )
 
 
