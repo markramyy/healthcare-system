@@ -1,3 +1,262 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 
-# Create your views here.
+from healthcare_ms.appointment.models import AppointmentType, AppointmentSlot, Appointment
+from healthcare_ms.appointment.serializers import (
+    AppointmentTypeCreateUpdateSerializer,
+    AppointmentSlotCreateUpdateSerializer,
+    AppointmentCreateUpdateSerializer
+)
+
+
+@login_required
+def appointment_type_list(request):
+    """View for listing appointment types."""
+    search_query = request.GET.get('search', '')
+    page_number = request.GET.get('page', 1)
+
+    appointment_types = AppointmentType.objects.all()
+
+    if search_query:
+        appointment_types = appointment_types.filter(
+            Q(name__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
+
+    paginator = Paginator(appointment_types, 10)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'appointment_types': page_obj,
+        'search_query': search_query,
+    }
+    return render(request, 'appointment/appointment_type_list.html', context)
+
+
+@login_required
+def appointment_type_detail(request, pk):
+    """View for displaying appointment type details."""
+    appointment_type = get_object_or_404(AppointmentType, pk=pk)
+    context = {
+        'appointment_type': appointment_type,
+    }
+    return render(request, 'appointment/appointment_type_detail.html', context)
+
+
+@login_required
+def appointment_type_create(request):
+    """View for creating a new appointment type."""
+    if request.method == 'POST':
+        serializer = AppointmentTypeCreateUpdateSerializer(data=request.POST)
+        if serializer.is_valid():
+            serializer.save()
+            messages.success(request, _('Appointment type created successfully.'))
+            return redirect('appointment:appointment-type-list')
+        else:
+            messages.error(request, _('Failed to create appointment type.'))
+    else:
+        serializer = AppointmentTypeCreateUpdateSerializer()
+
+    context = {
+        'form': serializer,
+    }
+    return render(request, 'appointment/appointment_type_form.html', context)
+
+
+@login_required
+def appointment_type_update(request, pk):
+    """View for updating an appointment type."""
+    appointment_type = get_object_or_404(AppointmentType, pk=pk)
+
+    if request.method == 'POST':
+        serializer = AppointmentTypeCreateUpdateSerializer(instance=appointment_type, data=request.POST)
+        if serializer.is_valid():
+            serializer.save()
+            messages.success(request, _('Appointment type updated successfully.'))
+            return redirect('appointment:appointment-type-list')
+        else:
+            messages.error(request, _('Failed to update appointment type.'))
+    else:
+        serializer = AppointmentTypeCreateUpdateSerializer(instance=appointment_type)
+
+    context = {
+        'form': serializer,
+        'appointment_type': appointment_type,
+    }
+    return render(request, 'appointment/appointment_type_form.html', context)
+
+
+@login_required
+def appointment_slot_list(request):
+    """View for listing appointment slots."""
+    search_query = request.GET.get('search', '')
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    page_number = request.GET.get('page', 1)
+
+    appointment_slots = AppointmentSlot.objects.all()
+
+    if search_query:
+        appointment_slots = appointment_slots.filter(
+            Q(doctor__first_name__icontains=search_query) |
+            Q(doctor__last_name__icontains=search_query)
+        )
+
+    if start_date and end_date:
+        appointment_slots = appointment_slots.filter(date__range=[start_date, end_date])
+
+    paginator = Paginator(appointment_slots, 10)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'appointment_slots': page_obj,
+        'search_query': search_query,
+        'start_date': start_date,
+        'end_date': end_date,
+    }
+    return render(request, 'appointment/appointment_slot_list.html', context)
+
+
+@login_required
+def appointment_slot_detail(request, pk):
+    """View for displaying appointment slot details."""
+    appointment_slot = get_object_or_404(AppointmentSlot, pk=pk)
+    context = {
+        'appointment_slot': appointment_slot,
+    }
+    return render(request, 'appointment/appointment_slot_detail.html', context)
+
+
+@login_required
+def appointment_slot_create(request):
+    """View for creating a new appointment slot."""
+    if request.method == 'POST':
+        serializer = AppointmentSlotCreateUpdateSerializer(data=request.POST)
+        if serializer.is_valid():
+            serializer.save()
+            messages.success(request, _('Appointment slot created successfully.'))
+            return redirect('appointment:appointment-slot-list')
+        else:
+            messages.error(request, _('Failed to create appointment slot.'))
+    else:
+        serializer = AppointmentSlotCreateUpdateSerializer()
+
+    context = {
+        'form': serializer,
+    }
+    return render(request, 'appointment/appointment_slot_form.html', context)
+
+
+@login_required
+def appointment_slot_update(request, pk):
+    """View for updating an appointment slot."""
+    appointment_slot = get_object_or_404(AppointmentSlot, pk=pk)
+
+    if request.method == 'POST':
+        serializer = AppointmentSlotCreateUpdateSerializer(instance=appointment_slot, data=request.POST)
+        if serializer.is_valid():
+            serializer.save()
+            messages.success(request, _('Appointment slot updated successfully.'))
+            return redirect('appointment:appointment-slot-list')
+        else:
+            messages.error(request, _('Failed to update appointment slot.'))
+    else:
+        serializer = AppointmentSlotCreateUpdateSerializer(instance=appointment_slot)
+
+    context = {
+        'form': serializer,
+        'appointment_slot': appointment_slot,
+    }
+    return render(request, 'appointment/appointment_slot_form.html', context)
+
+
+@login_required
+def appointment_list(request):
+    """View for listing appointments."""
+    search_query = request.GET.get('search', '')
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    page_number = request.GET.get('page', 1)
+
+    appointments = Appointment.objects.all()
+
+    if search_query:
+        appointments = appointments.filter(
+            Q(patient__first_name__icontains=search_query) |
+            Q(patient__last_name__icontains=search_query) |
+            Q(doctor__first_name__icontains=search_query) |
+            Q(doctor__last_name__icontains=search_query) |
+            Q(reason__icontains=search_query) |
+            Q(notes__icontains=search_query)
+        )
+
+    if start_date and end_date:
+        appointments = appointments.filter(slot__date__range=[start_date, end_date])
+
+    paginator = Paginator(appointments, 10)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'appointments': page_obj,
+        'search_query': search_query,
+        'start_date': start_date,
+        'end_date': end_date,
+    }
+    return render(request, 'appointment/appointment_list.html', context)
+
+
+@login_required
+def appointment_detail(request, pk):
+    """View for displaying appointment details."""
+    appointment = get_object_or_404(Appointment, pk=pk)
+    context = {
+        'appointment': appointment,
+    }
+    return render(request, 'appointment/appointment_detail.html', context)
+
+
+@login_required
+def appointment_create(request):
+    """View for creating a new appointment."""
+    if request.method == 'POST':
+        serializer = AppointmentCreateUpdateSerializer(data=request.POST)
+        if serializer.is_valid():
+            serializer.save()
+            messages.success(request, _('Appointment created successfully.'))
+            return redirect('appointment:appointment-list')
+        else:
+            messages.error(request, _('Failed to create appointment.'))
+    else:
+        serializer = AppointmentCreateUpdateSerializer()
+
+    context = {
+        'form': serializer,
+    }
+    return render(request, 'appointment/appointment_form.html', context)
+
+
+@login_required
+def appointment_update(request, pk):
+    """View for updating an appointment."""
+    appointment = get_object_or_404(Appointment, pk=pk)
+
+    if request.method == 'POST':
+        serializer = AppointmentCreateUpdateSerializer(instance=appointment, data=request.POST)
+        if serializer.is_valid():
+            serializer.save()
+            messages.success(request, _('Appointment updated successfully.'))
+            return redirect('appointment:appointment-list')
+        else:
+            messages.error(request, _('Failed to update appointment.'))
+    else:
+        serializer = AppointmentCreateUpdateSerializer(instance=appointment)
+
+    context = {
+        'form': serializer,
+        'appointment': appointment,
+    }
+    return render(request, 'appointment/appointment_form.html', context)
