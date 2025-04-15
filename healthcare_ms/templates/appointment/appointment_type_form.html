@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% if appointment_type %}Edit{% else %}Create{% endif %} Appointment Type - Healthcare Management System
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">
+            {% if appointment_type %}Edit{% else %}Create{% endif %} Appointment Type
+        </h1>
+        <a href="{% url 'appointment:appointment-type-list' %}"
+           class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+            <i class="fas fa-arrow-left mr-2"></i>Back
+        </a>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="p-6">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- Name -->
+                <div>
+                    <label for="id_name" class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                    <input type="text" name="name" id="id_name" value="{{ form.name.value|default:'' }}"
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           required>
+                    {% if form.name.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="id_description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea name="description" id="id_description" rows="4"
+                              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">{{ form.description.value|default:'' }}</textarea>
+                    {% if form.description.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.description.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Duration -->
+                <div>
+                    <label for="id_duration" class="block text-sm font-medium text-gray-700 mb-1">Duration (minutes) *</label>
+                    <input type="number" name="duration" id="id_duration" value="{{ form.duration.value|default:'' }}"
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           required min="1">
+                    {% if form.duration.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.duration.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Is Active -->
+                <div class="flex items-center">
+                    <input type="checkbox" name="is_active" id="id_is_active"
+                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                           {% if form.is_active.value %}checked{% endif %}>
+                    <label for="id_is_active" class="ml-2 block text-sm text-gray-700">
+                        Active
+                    </label>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-end space-x-4">
+                    <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">
+                        {% if appointment_type %}Update{% else %}Create{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

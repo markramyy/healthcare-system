@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ appointment_slot.doctor.get_full_name }} - {{ appointment_slot.date }} - Healthcare Management System{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Appointment Slot Details</h1>
+        <div class="flex space-x-2">
+            <a href="{% url 'appointment:appointment-slot-update' appointment_slot.pk %}"
+               class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-edit mr-2"></i>Edit
+            </a>
+            <a href="{% url 'appointment:appointment-slot-list' %}"
+               class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-arrow-left mr-2"></i>Back
+            </a>
+        </div>
+    </div>
+
+    <!-- Details Card -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="p-6">
+            <!-- Status Badge -->
+            <div class="mb-6">
+                <span class="px-3 py-1 text-sm rounded-full {% if appointment_slot.is_available %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                    {{ appointment_slot.is_available|yesno:"Available,Booked" }}
+                </span>
+            </div>
+
+            <!-- Basic Information -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Doctor Information -->
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-700 mb-2">Doctor Information</h2>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-user-md text-4xl text-gray-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-lg font-medium text-gray-900">{{ appointment_slot.doctor.get_full_name }}</p>
+                            <p class="text-sm text-gray-500">{{ appointment_slot.doctor.email }}</p>
+                            <p class="text-sm text-gray-500">{{ appointment_slot.doctor.phone }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slot Information -->
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-700 mb-2">Slot Information</h2>
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar-alt w-6 text-gray-500"></i>
+                            <span class="ml-2 text-gray-600">{{ appointment_slot.date|date:"F j, Y" }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-clock w-6 text-gray-500"></i>
+                            <span class="ml-2 text-gray-600">{{ appointment_slot.start_time|time:"g:i A" }} - {{ appointment_slot.end_time|time:"g:i A" }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar-check w-6 text-gray-500"></i>
+                            <span class="ml-2 text-gray-600">Created: {{ appointment_slot.created|date:"F j, Y" }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-edit w-6 text-gray-500"></i>
+                            <span class="ml-2 text-gray-600">Last Updated: {{ appointment_slot.modified|date:"F j, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Appointments -->
+            <div class="mt-8">
+                <h2 class="text-lg font-semibold text-gray-700 mb-4">Related Appointments</h2>
+                {% if appointment_slot.appointments.exists %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for appointment in appointment_slot.appointments.all %}
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <i class="fas fa-user-injured text-2xl text-gray-400"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">{{ appointment.patient.get_full_name }}</div>
+                                            <div class="text-sm text-gray-500">{{ appointment.patient.email }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ appointment.appointment_type.name }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                        {% if appointment.status == 'completed' %}bg-green-100 text-green-800
+                                        {% elif appointment.status == 'cancelled' %}bg-red-100 text-red-800
+                                        {% elif appointment.status == 'in_progress' %}bg-yellow-100 text-yellow-800
+                                        {% else %}bg-blue-100 text-blue-800{% endif %}">
+                                        {{ appointment.get_status_display }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="{% url 'appointment:appointment-detail' appointment.pk %}" class="text-blue-600 hover:text-blue-900">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-8">
+                    <i class="fas fa-calendar-times text-4xl text-gray-400 mb-2"></i>
+                    <p class="text-gray-500">No appointments scheduled for this slot.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
