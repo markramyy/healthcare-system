@@ -177,7 +177,16 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Healthcare Management System API',
     'DESCRIPTION': 'API documentation for the Healthcare Management System',
     'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
+    'SERVE_INCLUDE_SCHEMA': True,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'persistAuthorization': True,
+        'displayOperationId': False,
+    },
+    'REDOC_SETTINGS': {
+        'expandResponses': '200,201',
+    },
 }
 
 # JWT Settings
