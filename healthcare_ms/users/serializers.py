@@ -9,16 +9,16 @@ from healthcare_ms.users.models import User
 class ListUserAdminSerializer(BaseSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'user_type', 'is_active', 'created', 'modified')
+        fields = ('guid', 'username', 'email', 'user_type', 'created', 'modified')
 
 
 class DetailUserAdminSerializer(BaseSerializer):
     class Meta:
         model = User
         fields = (
-            'id', 'username', 'email', 'first_name', 'last_name',
+            'guid', 'username', 'email', 'first_name', 'last_name',
             'user_type', 'phone_number', 'date_of_birth', 'address',
-            'profile_picture', 'is_verified', 'is_active', 'created', 'modified'
+            'profile_picture', 'is_verified', 'created', 'modified'
         )
 
 
@@ -27,7 +27,7 @@ class UpdateUserAdminSerializer(BaseSerializer):
         model = User
         fields = (
             'first_name', 'last_name', 'email', 'phone_number',
-            'date_of_birth', 'address', 'profile_picture', 'is_active'
+            'date_of_birth', 'address', 'profile_picture'
         )
 
 
@@ -35,45 +35,46 @@ class MeUserAdminSerializer(BaseSerializer):
     class Meta:
         model = User
         fields = (
-            'id', 'username', 'email', 'first_name', 'last_name',
+            'guid', 'username', 'email', 'first_name', 'last_name',
             'user_type', 'phone_number', 'date_of_birth', 'address',
             'profile_picture', 'is_verified', 'created', 'modified'
         )
 
 
-class UserPasswordChangeSerializer(BaseSerializer):
+class UserPasswordChangeSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(
         required=True,
         validators=[validate_password]
     )
-    new_password2 = serializers.CharField(required=True)
+    confirm_password = serializers.CharField(required=True)
+
+    def validate_old_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError(_("Old password is not correct"))
+        return value
 
     def validate(self, attrs):
-        if attrs['new_password'] != attrs['new_password2']:
+        if attrs['new_password'] != attrs['confirm_password']:
             raise serializers.ValidationError(
                 {"new_password": _("Password fields didn't match.")}
             )
         return attrs
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['new_password'])
+        instance.save()
+        return instance
 
 
 class ExportUserCSVSerializer(BaseSerializer):
     class Meta:
         model = User
         fields = (
-            'id', 'username', 'email', 'first_name', 'last_name',
+            'username', 'email', 'first_name', 'last_name',
             'user_type', 'phone_number', 'date_of_birth', 'address',
-            'is_verified', 'is_active', 'created', 'modified'
-        )
-
-
-class ExportUserJSONSerializer(BaseSerializer):
-    class Meta:
-        model = User
-        fields = (
-            'id', 'username', 'email', 'first_name', 'last_name',
-            'user_type', 'phone_number', 'date_of_birth', 'address',
-            'profile_picture', 'is_verified', 'is_active', 'created', 'modified'
+            'is_verified', 'created', 'modified'
         )
 
 
@@ -83,40 +84,23 @@ class UserRegistrationSerializer(BaseSerializer):
         required=True,
         validators=[validate_password]
     )
-    password2 = serializers.CharField(write_only=True, required=True)
+    confirm_password = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
         fields = (
-            'username', 'email', 'password', 'password2',
-            'first_name', 'last_name', 'user_type',
-            'phone_number', 'date_of_birth', 'address'
+            'username', 'email', 'password', 'confirm_password',
+            'user_type'
         )
 
     def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
+        if attrs['password'] != attrs['confirm_password']:
             raise serializers.ValidationError(
                 {"password": _("Password fields didn't match.")}
             )
         return attrs
 
     def create(self, validated_data):
-        validated_data.pop('password2')
+        validated_data.pop('confirm_password')
         user = User.objects.create_user(**validated_data)
         return user
-
-
-class UserProfileSerializer(BaseSerializer):
-    class Meta:
-        model = User
-        fields = (
-            'id', 'username', 'email', 'first_name', 'last_name',
-            'user_type', 'phone_number', 'date_of_birth', 'address',
-            'profile_picture', 'is_verified', 'created', 'modified'
-        )
-        read_only_fields = ('id', 'username', 'created', 'modified')
-
-
-class UserLoginSerializer(BaseSerializer):
-    username = serializers.CharField(required=True)
-    password = serializers.CharField(required=True, write_only=True)
