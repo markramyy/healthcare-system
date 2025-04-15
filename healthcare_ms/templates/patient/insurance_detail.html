@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ insurance.provider_name }} - Insurance Policy{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow">
+    <!-- Policy Header -->
+    <div class="p-6 border-b">
+        <div class="flex justify-between items-start">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">{{ insurance.provider_name }}</h1>
+                <p class="text-gray-500">Policy #: {{ insurance.policy_number }}</p>
+            </div>
+            <div class="flex space-x-4">
+                <a href="{% url 'patient:insurance-update' insurance.guid %}"
+                   class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-edit mr-2"></i>Edit Policy
+                </a>
+                <a href="{% url 'patient:profile-detail' insurance.patient.guid %}"
+                   class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-user-injured mr-2"></i>View Patient
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Policy Information -->
+            <div>
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Policy Information</h2>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm text-gray-500">Status</p>
+                        <span class="px-3 py-1 text-sm rounded-full {% if insurance.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ insurance.is_active|yesno:"Active,Inactive" }}
+                        </span>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Coverage Type</p>
+                        <p class="font-medium">{{ insurance.get_coverage_type_display }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Policy Number</p>
+                        <p class="font-medium">{{ insurance.policy_number }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Group Number</p>
+                        <p class="font-medium">{{ insurance.group_number|default:"Not specified" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Valid From</p>
+                        <p class="font-medium">{{ insurance.valid_from|date:"F j, Y" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Valid Until</p>
+                        <p class="font-medium">{{ insurance.valid_until|date:"F j, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patient Information -->
+            <div>
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Patient Information</h2>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm text-gray-500">Patient Name</p>
+                        <p class="font-medium">{{ insurance.patient.get_full_name }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Date of Birth</p>
+                        <p class="font-medium">{{ insurance.patient.date_of_birth|date:"F j, Y" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Contact Information</p>
+                        <p class="font-medium">{{ insurance.patient.phone_number }}</p>
+                        <p class="text-gray-600">{{ insurance.patient.email }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coverage Details -->
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Coverage Details</h2>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-500">Deductible</p>
+                        <p class="font-medium">${{ insurance.deductible|default:"0.00" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Co-payment</p>
+                        <p class="font-medium">${{ insurance.copayment|default:"0.00" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Co-insurance</p>
+                        <p class="font-medium">{{ insurance.coinsurance|default:"0" }}%</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Out-of-pocket Maximum</p>
+                        <p class="font-medium">${{ insurance.out_of_pocket_max|default:"0.00" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Information -->
+        {% if insurance.notes %}
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Additional Information</h2>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p class="text-gray-800">{{ insurance.notes }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Documents -->
+        {% if insurance.documents.all %}
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Policy Documents</h2>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="space-y-2">
+                    {% for document in insurance.documents.all %}
+                    <div class="flex items-center justify-between p-2 hover:bg-gray-100 rounded">
+                        <div class="flex items-center">
+                            <i class="fas fa-file-pdf text-red-500 mr-3"></i>
+                            <span class="text-gray-800">{{ document.name }}</span>
+                        </div>
+                        <a href="{{ document.file.url }}" target="_blank"
+                           class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

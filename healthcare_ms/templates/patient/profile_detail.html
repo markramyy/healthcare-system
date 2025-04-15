@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile.user.get_full_name }} - Patient Profile{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow">
+    <!-- Profile Header -->
+    <div class="p-6 border-b">
+        <div class="flex justify-between items-start">
+            <div class="flex items-center">
+                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user-injured text-3xl text-blue-600"></i>
+                </div>
+                <div class="ml-6">
+                    <h1 class="text-2xl font-bold text-gray-800">{{ profile.user.get_full_name }}</h1>
+                    <p class="text-gray-500">{{ profile.user.email }}</p>
+                </div>
+            </div>
+            <div class="flex space-x-4">
+                <a href="{% url 'patient:profile-update' profile.guid %}"
+                   class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-edit mr-2"></i>Edit Profile
+                </a>
+                <a href="{% url 'patient:insurance-create' %}?patient={{ profile.guid }}"
+                   class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Add Insurance
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Personal Information -->
+            <div>
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Personal Information</h2>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm text-gray-500">Date of Birth</p>
+                        <p class="font-medium">{{ profile.date_of_birth|date:"F d, Y" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Gender</p>
+                        <p class="font-medium">{{ profile.get_gender_display }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Blood Type</p>
+                        <p class="font-medium">{{ profile.blood_type }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Height</p>
+                        <p class="font-medium">{{ profile.height }} cm</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Weight</p>
+                        <p class="font-medium">{{ profile.weight }} kg</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div>
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Contact Information</h2>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm text-gray-500">Phone Number</p>
+                        <p class="font-medium">{{ profile.phone_number }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Address</p>
+                        <p class="font-medium">{{ profile.address }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Emergency Contact</p>
+                        <p class="font-medium">{{ profile.emergency_contact_name }}</p>
+                        <p class="text-gray-600">{{ profile.emergency_contact_phone }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insurance Information -->
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Insurance Information</h2>
+            {% if profile.insurance_set.all %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for insurance in profile.insurance_set.all %}
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">{{ insurance.provider }}</h3>
+                                    <p class="text-gray-600">Policy #: {{ insurance.policy_number }}</p>
+                                </div>
+                                <a href="{% url 'patient:insurance-detail' insurance.guid %}"
+                                   class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </div>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500">Coverage Type</p>
+                                <p class="font-medium">{{ insurance.get_coverage_type_display }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-500">No insurance information available.</p>
+            {% endif %}
+        </div>
+
+        <!-- Medical History -->
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Medical History</h2>
+            {% if profile.medical_history %}
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p class="text-gray-800">{{ profile.medical_history }}</p>
+                </div>
+            {% else %}
+                <p class="text-gray-500">No medical history recorded.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Patient Management{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+        }
+        .btn-hover {
+            transition: all 0.3s ease;
+        }
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white bg-opacity-10 backdrop-blur-md fixed w-full z-10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-white text-2xl font-bold">
+                    <i class="fas fa-hospital text-blue-400 mr-2"></i>
+                    Patient Management
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="{% url 'patient:profile-list' %}" class="text-white hover:text-blue-200 transition">Profiles</a>
+                    <a href="{% url 'patient:insurance-list' %}" class="text-white hover:text-blue-200 transition">Insurance</a>
+                    <a href="{% url 'patient:emergency-contact-list' %}" class="text-white hover:text-blue-200 transition">Emergency Contacts</a>
+                    <a href="/admin/" class="text-white hover:text-blue-200 transition">Admin</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-24">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white bg-opacity-10 backdrop-blur-md py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-white mb-4 md:mb-0">
+                    <i class="fas fa-hospital text-blue-400 mr-2"></i>
+                    Healthcare Management System
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="/api/docs/" class="text-white hover:text-blue-200 transition">
+                        <i class="fas fa-book"></i>
+                    </a>
+                    <a href="/admin/" class="text-white hover:text-blue-200 transition">
+                        <i class="fas fa-user-shield"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
