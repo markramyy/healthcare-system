@@ -79,6 +79,35 @@
                         </div>
                     </div>
 
+                    <!-- EHR Collapsible Section -->
+                    <div class="mt-2">
+                        <button onclick="toggleSubmenu('ehr-submenu')" class="sidebar-item w-full flex items-center justify-between py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fas fa-file-medical mr-3"></i>
+                                <span>EHR</span>
+                            </div>
+                            <i class="fas fa-chevron-right transition-transform duration-300" id="ehr-arrow"></i>
+                        </button>
+                        <div class="submenu ml-4" id="ehr-submenu">
+                            <a href="{% url 'ehr:medical-record-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
+                                <i class="fas fa-file-medical-alt mr-3"></i>
+                                Medical Records
+                            </a>
+                            <a href="{% url 'ehr:diagnosis-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
+                                <i class="fas fa-diagnoses mr-3"></i>
+                                Diagnoses
+                            </a>
+                            <a href="{% url 'ehr:treatment-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
+                                <i class="fas fa-procedures mr-3"></i>
+                                Treatments
+                            </a>
+                            <a href="{% url 'ehr:prescription-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
+                                <i class="fas fa-prescription mr-3"></i>
+                                Prescriptions
+                            </a>
+                        </div>
+                    </div>
+
                     <a href="{% url 'api-docs' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg mt-2">
                         <i class="fas fa-book mr-3"></i>
                         API Documentation
