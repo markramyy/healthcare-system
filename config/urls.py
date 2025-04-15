@@ -20,11 +20,21 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, Sp
 from rest_framework.permissions import AllowAny
 from healthcare_ms.core.views import landing_page
 
+api_patterns = [
+    path('users/', include('healthcare_ms.users.api_router')),
+    path('patient/', include('healthcare_ms.patient.api_router')),
+]
+
 urlpatterns = [
     path('', landing_page, name='landing'),
     path('admin/', admin.site.urls),
     path('auth/', include('config.auth_router')),
-    path('users/', include('healthcare_ms.users.api_router')),
+
+    path('dashboard/', include('healthcare_ms.core.urls')),
+    path('users/', include('healthcare_ms.users.urls')),
+    path('patient/', include('healthcare_ms.patient.urls')),
+
+    path('api/', include(api_patterns)),
 
     path('api/schema/', SpectacularAPIView.as_view(), name='api-schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='api-schema', permission_classes=[AllowAny]), name='api-docs'),
