@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from healthcare_ms.appointment.models import AppointmentType, AppointmentSlot, Appointment
+from healthcare_ms.appointment.forms import AppointmentSlotForm, AppointmentForm
 from healthcare_ms.appointment.serializers import (
     AppointmentTypeListSerializer,
     AppointmentTypeDetailSerializer,
@@ -13,12 +14,8 @@ from healthcare_ms.appointment.serializers import (
     AppointmentTypeUpdateSerializer,
     AppointmentSlotListSerializer,
     AppointmentSlotDetailSerializer,
-    AppointmentSlotCreateSerializer,
-    AppointmentSlotUpdateSerializer,
     AppointmentListSerializer,
     AppointmentDetailSerializer,
-    AppointmentCreateSerializer,
-    AppointmentUpdateSerializer
 )
 
 
@@ -156,18 +153,18 @@ def appointment_slot_detail(request, guid):
 def appointment_slot_create(request):
     """View for creating a new appointment slot."""
     if request.method == 'POST':
-        serializer = AppointmentSlotCreateSerializer(data=request.POST)
-        if serializer.is_valid():
-            serializer.save()
+        form = AppointmentSlotForm(request.POST)
+        if form.is_valid():
+            form.save()
             messages.success(request, _('Appointment slot created successfully.'))
             return redirect('appointment:appointment-slot-list')
         else:
             messages.error(request, _('Failed to create appointment slot.'))
     else:
-        serializer = AppointmentSlotCreateSerializer()
+        form = AppointmentSlotForm()
 
     context = {
-        'form': serializer,
+        'form': form,
     }
     return render(request, 'appointment/appointment_slot_form.html', context)
 
@@ -178,18 +175,18 @@ def appointment_slot_update(request, guid):
     appointment_slot = get_object_or_404(AppointmentSlot, guid=guid)
 
     if request.method == 'POST':
-        serializer = AppointmentSlotUpdateSerializer(instance=appointment_slot, data=request.POST)
-        if serializer.is_valid():
-            serializer.save()
+        form = AppointmentSlotForm(request.POST, instance=appointment_slot)
+        if form.is_valid():
+            form.save()
             messages.success(request, _('Appointment slot updated successfully.'))
             return redirect('appointment:appointment-slot-list')
         else:
             messages.error(request, _('Failed to update appointment slot.'))
     else:
-        serializer = AppointmentSlotUpdateSerializer(instance=appointment_slot)
+        form = AppointmentSlotForm(instance=appointment_slot)
 
     context = {
-        'form': serializer,
+        'form': form,
         'appointment_slot': appointment_slot,
     }
     return render(request, 'appointment/appointment_slot_form.html', context)
@@ -250,18 +247,18 @@ def appointment_detail(request, guid):
 def appointment_create(request):
     """View for creating a new appointment."""
     if request.method == 'POST':
-        serializer = AppointmentCreateSerializer(data=request.POST)
-        if serializer.is_valid():
-            serializer.save()
+        form = AppointmentForm(request.POST)
+        if form.is_valid():
+            form.save()
             messages.success(request, _('Appointment created successfully.'))
             return redirect('appointment:appointment-list')
         else:
             messages.error(request, _('Failed to create appointment.'))
     else:
-        serializer = AppointmentCreateSerializer()
+        form = AppointmentForm()
 
     context = {
-        'form': serializer,
+        'form': form,
     }
     return render(request, 'appointment/appointment_form.html', context)
 
@@ -271,17 +268,17 @@ def appointment_update(request, guid):
     """View for updating an appointment."""
     appointment = get_object_or_404(Appointment, guid=guid)
     if request.method == 'POST':
-        serializer = AppointmentUpdateSerializer(instance=appointment, data=request.POST)
-        if serializer.is_valid():
-            serializer.save()
+        form = AppointmentForm(request.POST, instance=appointment)
+        if form.is_valid():
+            form.save()
             messages.success(request, _('Appointment updated successfully.'))
             return redirect('appointment:appointment-list')
         else:
             messages.error(request, _('Failed to update appointment.'))
     else:
-        serializer = AppointmentUpdateSerializer(instance=appointment)
+        form = AppointmentForm(instance=appointment)
     context = {
-        'form': serializer,
+        'form': form,
         'appointment': appointment,
     }
     return render(request, 'appointment/appointment_form.html', context)
