@@ -10,7 +10,7 @@ class ServiceListSerializer(BaseSerializer):
     class Meta:
         model = Service
         fields = (
-            'guid', 'id', 'code', 'name',
+            'guid', 'code', 'name',
             'price', 'is_active', 'created', 'modified'
         )
 
@@ -19,7 +19,7 @@ class ServiceDetailSerializer(BaseSerializer):
     class Meta:
         model = Service
         fields = (
-            'guid', 'id', 'code', 'name',
+            'guid', 'code', 'name',
             'description', 'price', 'is_active',
             'created', 'modified'
         )
@@ -39,7 +39,7 @@ class InvoiceItemListSerializer(BaseSerializer):
     class Meta:
         model = InvoiceItem
         fields = (
-            'guid', 'id', 'service', 'quantity',
+            'guid', 'service', 'quantity',
             'unit_price', 'total_price', 'created', 'modified'
         )
 
@@ -50,7 +50,7 @@ class InvoiceItemDetailSerializer(BaseSerializer):
     class Meta:
         model = InvoiceItem
         fields = (
-            'guid', 'id', 'service', 'quantity',
+            'guid', 'service', 'quantity',
             'unit_price', 'total_price', 'description',
             'created', 'modified'
         )
@@ -72,7 +72,7 @@ class InvoiceListSerializer(BaseSerializer):
     class Meta:
         model = Invoice
         fields = (
-            'guid', 'id', 'patient', 'appointment',
+            'guid', 'patient', 'appointment',
             'invoice_number', 'issue_date', 'due_date',
             'total_amount', 'paid_amount', 'status',
             'is_active', 'created', 'modified'
@@ -87,7 +87,7 @@ class InvoiceDetailSerializer(BaseSerializer):
     class Meta:
         model = Invoice
         fields = (
-            'guid', 'id', 'patient', 'appointment',
+            'guid', 'patient', 'appointment',
             'invoice_number', 'issue_date', 'due_date',
             'total_amount', 'paid_amount', 'status',
             'notes', 'items', 'is_active', 'created', 'modified'
@@ -110,7 +110,7 @@ class PaymentListSerializer(BaseSerializer):
     class Meta:
         model = Payment
         fields = (
-            'guid', 'id', 'invoice', 'amount',
+            'guid', 'invoice', 'amount',
             'payment_date', 'payment_method',
             'created', 'modified'
         )
@@ -122,7 +122,7 @@ class PaymentDetailSerializer(BaseSerializer):
     class Meta:
         model = Payment
         fields = (
-            'guid', 'id', 'invoice', 'amount',
+            'guid', 'invoice', 'amount',
             'payment_date', 'payment_method',
             'transaction_id', 'notes',
             'created', 'modified'
@@ -146,7 +146,7 @@ class InsuranceClaimListSerializer(BaseSerializer):
     class Meta:
         model = InsuranceClaim
         fields = (
-            'guid', 'id', 'invoice', 'insurance',
+            'guid', 'invoice', 'insurance',
             'claim_number', 'claim_date', 'amount_claimed',
             'amount_approved', 'status', 'created', 'modified'
         )
@@ -159,7 +159,7 @@ class InsuranceClaimDetailSerializer(BaseSerializer):
     class Meta:
         model = InsuranceClaim
         fields = (
-            'guid', 'id', 'invoice', 'insurance',
+            'guid', 'invoice', 'insurance',
             'claim_number', 'claim_date', 'amount_claimed',
             'amount_approved', 'status', 'notes',
             'created', 'modified'
