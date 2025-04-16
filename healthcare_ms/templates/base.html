@@ -133,6 +133,39 @@
                         </div>
                     </div>
 
+                    <!-- Billing Collapsible Section -->
+                    <div class="mt-2">
+                        <button onclick="toggleSubmenu('billing-submenu')" class="sidebar-item w-full flex items-center justify-between py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fas fa-file-invoice-dollar mr-3"></i>
+                                <span>Billing</span>
+                            </div>
+                            <i class="fas fa-chevron-right transition-transform duration-300" id="billing-arrow"></i>
+                        </button>
+                        <div class="submenu ml-4" id="billing-submenu">
+                            <a href="{% url 'billing:service-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
+                                <i class="fas fa-list mr-3"></i>
+                                Services
+                            </a>
+                            <a href="{% url 'billing:invoice-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
+                                <i class="fas fa-file-invoice mr-3"></i>
+                                Invoices
+                            </a>
+                            <a href="{% url 'billing:invoice-item-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
+                                <i class="fas fa-shopping-cart mr-3"></i>
+                                Invoice Items
+                            </a>
+                            <a href="{% url 'billing:payment-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
+                                <i class="fas fa-credit-card mr-3"></i>
+                                Payments
+                            </a>
+                            <a href="{% url 'billing:insurance-claim-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
+                                <i class="fas fa-file-medical mr-3"></i>
+                                Insurance Claims
+                            </a>
+                        </div>
+                    </div>
+
                     <a href="{% url 'api-docs' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg mt-2">
                         <i class="fas fa-book mr-3"></i>
                         API Documentation
