@@ -38,9 +38,9 @@ def appointment_type_list(request):
 
 
 @login_required
-def appointment_type_detail(request, pk):
+def appointment_type_detail(request, guid):
     """View for displaying appointment type details."""
-    appointment_type = get_object_or_404(AppointmentType, pk=pk)
+    appointment_type = get_object_or_404(AppointmentType, guid=guid)
     context = {
         'appointment_type': appointment_type,
     }
@@ -68,9 +68,9 @@ def appointment_type_create(request):
 
 
 @login_required
-def appointment_type_update(request, pk):
+def appointment_type_update(request, guid):
     """View for updating an appointment type."""
-    appointment_type = get_object_or_404(AppointmentType, pk=pk)
+    appointment_type = get_object_or_404(AppointmentType, guid=guid)
 
     if request.method == 'POST':
         serializer = AppointmentTypeCreateUpdateSerializer(instance=appointment_type, data=request.POST)
@@ -122,9 +122,9 @@ def appointment_slot_list(request):
 
 
 @login_required
-def appointment_slot_detail(request, pk):
+def appointment_slot_detail(request, guid):
     """View for displaying appointment slot details."""
-    appointment_slot = get_object_or_404(AppointmentSlot, pk=pk)
+    appointment_slot = get_object_or_404(AppointmentSlot, guid=guid)
     context = {
         'appointment_slot': appointment_slot,
     }
@@ -152,9 +152,9 @@ def appointment_slot_create(request):
 
 
 @login_required
-def appointment_slot_update(request, pk):
+def appointment_slot_update(request, guid):
     """View for updating an appointment slot."""
-    appointment_slot = get_object_or_404(AppointmentSlot, pk=pk)
+    appointment_slot = get_object_or_404(AppointmentSlot, guid=guid)
 
     if request.method == 'POST':
         serializer = AppointmentSlotCreateUpdateSerializer(instance=appointment_slot, data=request.POST)
@@ -210,9 +210,9 @@ def appointment_list(request):
 
 
 @login_required
-def appointment_detail(request, pk):
+def appointment_detail(request, guid):
     """View for displaying appointment details."""
-    appointment = get_object_or_404(Appointment, pk=pk)
+    appointment = get_object_or_404(Appointment, guid=guid)
     context = {
         'appointment': appointment,
     }
@@ -240,9 +240,9 @@ def appointment_create(request):
 
 
 @login_required
-def appointment_update(request, pk):
+def appointment_update(request, guid):
     """View for updating an appointment."""
-    appointment = get_object_or_404(Appointment, pk=pk)
+    appointment = get_object_or_404(Appointment, guid=guid)
 
     if request.method == 'POST':
         serializer = AppointmentCreateUpdateSerializer(instance=appointment, data=request.POST)
