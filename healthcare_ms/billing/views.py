@@ -8,19 +8,24 @@ from healthcare_ms.billing.models import Service, Invoice, InvoiceItem, Payment,
 from healthcare_ms.billing.serializers import (
     ServiceListSerializer,
     ServiceDetailSerializer,
-    ServiceCreateUpdateSerializer,
+    ServiceCreateSerializer,
+    ServiceUpdateSerializer,
     InvoiceListSerializer,
     InvoiceDetailSerializer,
-    InvoiceCreateUpdateSerializer,
+    InvoiceCreateSerializer,
+    InvoiceUpdateSerializer,
     InvoiceItemListSerializer,
     InvoiceItemDetailSerializer,
-    InvoiceItemCreateUpdateSerializer,
+    InvoiceItemCreateSerializer,
+    InvoiceItemUpdateSerializer,
     PaymentListSerializer,
     PaymentDetailSerializer,
-    PaymentCreateUpdateSerializer,
+    PaymentCreateSerializer,
+    PaymentUpdateSerializer,
     InsuranceClaimListSerializer,
     InsuranceClaimDetailSerializer,
-    InsuranceClaimCreateUpdateSerializer
+    InsuranceClaimCreateSerializer,
+    InsuranceClaimUpdateSerializer
 )
 
 
@@ -66,7 +71,7 @@ def service_detail(request, guid):
 @login_required
 def service_create(request):
     if request.method == 'POST':
-        serializer = ServiceCreateUpdateSerializer(data=request.POST)
+        serializer = ServiceCreateSerializer(data=request.POST)
         if serializer.is_valid():
             service = serializer.save()
             messages.success(request, 'Service created successfully.')
@@ -74,7 +79,7 @@ def service_create(request):
         else:
             messages.error(request, 'Failed to create service.')
     else:
-        serializer = ServiceCreateUpdateSerializer()
+        serializer = ServiceCreateSerializer()
 
     return render(request, 'billing/service_form.html', {
         'serialized_data': serializer.data if hasattr(serializer, 'data') else None
@@ -86,7 +91,7 @@ def service_update(request, guid):
     service = get_object_or_404(Service, guid=guid)
 
     if request.method == 'POST':
-        serializer = ServiceCreateUpdateSerializer(service, data=request.POST)
+        serializer = ServiceUpdateSerializer(service, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, 'Service updated successfully.')
@@ -94,7 +99,7 @@ def service_update(request, guid):
         else:
             messages.error(request, 'Failed to update service.')
     else:
-        serializer = ServiceCreateUpdateSerializer(service)
+        serializer = ServiceUpdateSerializer(service)
 
     return render(request, 'billing/service_form.html', {
         'service': service,
@@ -144,7 +149,7 @@ def invoice_detail(request, guid):
 @login_required
 def invoice_create(request):
     if request.method == 'POST':
-        serializer = InvoiceCreateUpdateSerializer(data=request.POST)
+        serializer = InvoiceCreateSerializer(data=request.POST)
         if serializer.is_valid():
             invoice = serializer.save()
             messages.success(request, 'Invoice created successfully.')
@@ -152,7 +157,7 @@ def invoice_create(request):
         else:
             messages.error(request, 'Failed to create invoice.')
     else:
-        serializer = InvoiceCreateUpdateSerializer()
+        serializer = InvoiceCreateSerializer()
 
     return render(request, 'billing/invoice_form.html', {
         'serialized_data': serializer.data if hasattr(serializer, 'data') else None
@@ -164,7 +169,7 @@ def invoice_update(request, guid):
     invoice = get_object_or_404(Invoice, guid=guid)
 
     if request.method == 'POST':
-        serializer = InvoiceCreateUpdateSerializer(invoice, data=request.POST)
+        serializer = InvoiceUpdateSerializer(invoice, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, 'Invoice updated successfully.')
@@ -172,7 +177,7 @@ def invoice_update(request, guid):
         else:
             messages.error(request, 'Failed to update invoice.')
     else:
-        serializer = InvoiceCreateUpdateSerializer(invoice)
+        serializer = InvoiceUpdateSerializer(invoice)
 
     return render(request, 'billing/invoice_form.html', {
         'invoice': invoice,
@@ -222,7 +227,7 @@ def payment_detail(request, guid):
 @login_required
 def payment_create(request):
     if request.method == 'POST':
-        serializer = PaymentCreateUpdateSerializer(data=request.POST)
+        serializer = PaymentCreateSerializer(data=request.POST)
         if serializer.is_valid():
             payment = serializer.save()
             messages.success(request, 'Payment created successfully.')
@@ -230,7 +235,7 @@ def payment_create(request):
         else:
             messages.error(request, 'Failed to create payment.')
     else:
-        serializer = PaymentCreateUpdateSerializer()
+        serializer = PaymentCreateSerializer()
 
     return render(request, 'billing/payment_form.html', {
         'serialized_data': serializer.data if hasattr(serializer, 'data') else None
@@ -242,7 +247,7 @@ def payment_update(request, guid):
     payment = get_object_or_404(Payment, guid=guid)
 
     if request.method == 'POST':
-        serializer = PaymentCreateUpdateSerializer(payment, data=request.POST)
+        serializer = PaymentUpdateSerializer(payment, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, 'Payment updated successfully.')
@@ -250,7 +255,7 @@ def payment_update(request, guid):
         else:
             messages.error(request, 'Failed to update payment.')
     else:
-        serializer = PaymentCreateUpdateSerializer(payment)
+        serializer = PaymentUpdateSerializer(payment)
 
     return render(request, 'billing/payment_form.html', {
         'payment': payment,
@@ -300,7 +305,7 @@ def insurance_claim_detail(request, guid):
 @login_required
 def insurance_claim_create(request):
     if request.method == 'POST':
-        serializer = InsuranceClaimCreateUpdateSerializer(data=request.POST)
+        serializer = InsuranceClaimCreateSerializer(data=request.POST)
         if serializer.is_valid():
             claim = serializer.save()
             messages.success(request, 'Insurance claim created successfully.')
@@ -308,7 +313,7 @@ def insurance_claim_create(request):
         else:
             messages.error(request, 'Failed to create insurance claim.')
     else:
-        serializer = InsuranceClaimCreateUpdateSerializer()
+        serializer = InsuranceClaimCreateSerializer()
 
     return render(request, 'billing/insurance_claim_form.html', {
         'serialized_data': serializer.data if hasattr(serializer, 'data') else None
@@ -320,7 +325,7 @@ def insurance_claim_update(request, guid):
     claim = get_object_or_404(InsuranceClaim, guid=guid)
 
     if request.method == 'POST':
-        serializer = InsuranceClaimCreateUpdateSerializer(claim, data=request.POST)
+        serializer = InsuranceClaimUpdateSerializer(claim, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, 'Insurance claim updated successfully.')
@@ -328,7 +333,7 @@ def insurance_claim_update(request, guid):
         else:
             messages.error(request, 'Failed to update insurance claim.')
     else:
-        serializer = InsuranceClaimCreateUpdateSerializer(claim)
+        serializer = InsuranceClaimUpdateSerializer(claim)
 
     return render(request, 'billing/insurance_claim_form.html', {
         'claim': claim,
@@ -378,7 +383,7 @@ def invoice_item_detail(request, guid):
 @login_required
 def invoice_item_create(request):
     if request.method == 'POST':
-        serializer = InvoiceItemCreateUpdateSerializer(data=request.POST)
+        serializer = InvoiceItemCreateSerializer(data=request.POST)
         if serializer.is_valid():
             item = serializer.save()
             messages.success(request, 'Invoice item created successfully.')
@@ -386,7 +391,7 @@ def invoice_item_create(request):
         else:
             messages.error(request, 'Failed to create invoice item.')
     else:
-        serializer = InvoiceItemCreateUpdateSerializer()
+        serializer = InvoiceItemCreateSerializer()
 
     return render(request, 'billing/invoice_item_form.html', {
         'serialized_data': serializer.data if hasattr(serializer, 'data') else None
@@ -398,7 +403,7 @@ def invoice_item_update(request, guid):
     item = get_object_or_404(InvoiceItem, guid=guid)
 
     if request.method == 'POST':
-        serializer = InvoiceItemCreateUpdateSerializer(item, data=request.POST)
+        serializer = InvoiceItemUpdateSerializer(item, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, 'Invoice item updated successfully.')
@@ -406,7 +411,7 @@ def invoice_item_update(request, guid):
         else:
             messages.error(request, 'Failed to update invoice item.')
     else:
-        serializer = InvoiceItemCreateUpdateSerializer(item)
+        serializer = InvoiceItemUpdateSerializer(item)
 
     return render(request, 'billing/invoice_item_form.html', {
         'item': item,

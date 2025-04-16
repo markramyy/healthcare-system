@@ -7,16 +7,20 @@ from healthcare_ms.ehr.models import MedicalRecord, Diagnosis, Treatment, Prescr
 from healthcare_ms.ehr.serializers import (
     MedicalRecordListSerializer,
     MedicalRecordDetailSerializer,
-    MedicalRecordCreateUpdateSerializer,
+    MedicalRecordCreateSerializer,
+    MedicalRecordUpdateSerializer,
     DiagnosisListSerializer,
     DiagnosisDetailSerializer,
-    DiagnosisCreateUpdateSerializer,
+    DiagnosisCreateSerializer,
+    DiagnosisUpdateSerializer,
     TreatmentListSerializer,
     TreatmentDetailSerializer,
-    TreatmentCreateUpdateSerializer,
+    TreatmentCreateSerializer,
+    TreatmentUpdateSerializer,
     PrescriptionListSerializer,
     PrescriptionDetailSerializer,
-    PrescriptionCreateUpdateSerializer
+    PrescriptionCreateSerializer,
+    PrescriptionUpdateSerializer
 )
 
 import operator
@@ -33,8 +37,10 @@ class MedicalRecordViewSet(BaseViewSet):
             return MedicalRecordListSerializer
         elif self.action == 'retrieve':
             return MedicalRecordDetailSerializer
-        elif self.action in ['create', 'update']:
-            return MedicalRecordCreateUpdateSerializer
+        elif self.action == 'create':
+            return MedicalRecordCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return MedicalRecordUpdateSerializer
         return MedicalRecordListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
@@ -136,8 +142,10 @@ class DiagnosisViewSet(BaseViewSet):
             return DiagnosisListSerializer
         elif self.action == 'retrieve':
             return DiagnosisDetailSerializer
-        elif self.action in ['create', 'update']:
-            return DiagnosisCreateUpdateSerializer
+        elif self.action == 'create':
+            return DiagnosisCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return DiagnosisUpdateSerializer
         return DiagnosisListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
@@ -239,8 +247,10 @@ class TreatmentViewSet(BaseViewSet):
             return TreatmentListSerializer
         elif self.action == 'retrieve':
             return TreatmentDetailSerializer
-        elif self.action in ['create', 'update']:
-            return TreatmentCreateUpdateSerializer
+        elif self.action == 'create':
+            return TreatmentCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return TreatmentUpdateSerializer
         return TreatmentListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
@@ -342,8 +352,10 @@ class PrescriptionViewSet(BaseViewSet):
             return PrescriptionListSerializer
         elif self.action == 'retrieve':
             return PrescriptionDetailSerializer
-        elif self.action in ['create', 'update']:
-            return PrescriptionCreateUpdateSerializer
+        elif self.action == 'create':
+            return PrescriptionCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return PrescriptionUpdateSerializer
         return PrescriptionListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):

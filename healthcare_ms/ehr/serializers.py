@@ -28,12 +28,21 @@ class MedicalRecordDetailSerializer(BaseSerializer):
         )
 
 
-class MedicalRecordCreateUpdateSerializer(BaseSerializer):
+class MedicalRecordCreateSerializer(BaseSerializer):
     class Meta:
         model = MedicalRecord
         fields = (
             'guid', 'patient', 'doctor', 'visit_date',
             'symptoms', 'notes', 'follow_up_date'
+        )
+
+
+class MedicalRecordUpdateSerializer(BaseSerializer):
+    class Meta:
+        model = MedicalRecord
+        fields = (
+            'guid', 'patient', 'doctor', 'visit_date',
+            'symptoms', 'notes', 'follow_up_date', 'is_active'
         )
 
 
@@ -59,12 +68,21 @@ class DiagnosisDetailSerializer(BaseSerializer):
         )
 
 
-class DiagnosisCreateUpdateSerializer(BaseSerializer):
+class DiagnosisCreateSerializer(BaseSerializer):
     class Meta:
         model = Diagnosis
         fields = (
             'guid', 'medical_record', 'diagnosis_code',
             'description', 'severity'
+        )
+
+
+class DiagnosisUpdateSerializer(BaseSerializer):
+    class Meta:
+        model = Diagnosis
+        fields = (
+            'guid', 'medical_record', 'diagnosis_code',
+            'description', 'severity', 'is_active'
         )
 
 
@@ -91,12 +109,21 @@ class TreatmentDetailSerializer(BaseSerializer):
         )
 
 
-class TreatmentCreateUpdateSerializer(BaseSerializer):
+class TreatmentCreateSerializer(BaseSerializer):
     class Meta:
         model = Treatment
         fields = (
             'guid', 'medical_record', 'name', 'description',
             'start_date', 'end_date', 'status'
+        )
+
+
+class TreatmentUpdateSerializer(BaseSerializer):
+    class Meta:
+        model = Treatment
+        fields = (
+            'guid', 'medical_record', 'name', 'description',
+            'start_date', 'end_date', 'status', 'is_active'
         )
 
 
@@ -123,10 +150,19 @@ class PrescriptionDetailSerializer(BaseSerializer):
         )
 
 
-class PrescriptionCreateUpdateSerializer(BaseSerializer):
+class PrescriptionCreateSerializer(BaseSerializer):
     class Meta:
         model = Prescription
         fields = (
             'guid', 'medical_record', 'medication_name',
             'dosage', 'frequency', 'duration', 'instructions'
+        )
+
+
+class PrescriptionUpdateSerializer(BaseSerializer):
+    class Meta:
+        model = Prescription
+        fields = (
+            'guid', 'medical_record', 'medication_name',
+            'dosage', 'frequency', 'duration', 'instructions', 'is_active'
         )

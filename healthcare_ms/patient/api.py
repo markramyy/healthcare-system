@@ -7,13 +7,16 @@ from healthcare_ms.patient.models import PatientProfile, Insurance, EmergencyCon
 from healthcare_ms.patient.serializers import (
     PatientProfileListSerializer,
     PatientProfileDetailSerializer,
-    PatientProfileCreateUpdateSerializer,
+    PatientProfileCreateSerializer,
+    PatientProfileUpdateSerializer,
     InsuranceListSerializer,
     InsuranceDetailSerializer,
-    InsuranceCreateUpdateSerializer,
+    InsuranceCreateSerializer,
+    InsuranceUpdateSerializer,
     EmergencyContactListSerializer,
     EmergencyContactDetailSerializer,
-    EmergencyContactCreateUpdateSerializer
+    EmergencyContactCreateSerializer,
+    EmergencyContactUpdateSerializer
 )
 
 import operator
@@ -30,8 +33,10 @@ class PatientProfileViewSet(BaseViewSet):
             return PatientProfileListSerializer
         elif self.action == 'retrieve':
             return PatientProfileDetailSerializer
-        elif self.action in ['create', 'update']:
-            return PatientProfileCreateUpdateSerializer
+        elif self.action == 'create':
+            return PatientProfileCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return PatientProfileUpdateSerializer
         return PatientProfileListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
@@ -138,8 +143,10 @@ class InsuranceViewSet(BaseViewSet):
             return InsuranceListSerializer
         elif self.action == 'retrieve':
             return InsuranceDetailSerializer
-        elif self.action in ['create', 'update']:
-            return InsuranceCreateUpdateSerializer
+        elif self.action == 'create':
+            return InsuranceCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return InsuranceUpdateSerializer
         return InsuranceListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
@@ -246,8 +253,10 @@ class EmergencyContactViewSet(BaseViewSet):
             return EmergencyContactListSerializer
         elif self.action == 'retrieve':
             return EmergencyContactDetailSerializer
-        elif self.action in ['create', 'update']:
-            return EmergencyContactCreateUpdateSerializer
+        elif self.action == 'create':
+            return EmergencyContactCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return EmergencyContactUpdateSerializer
         return EmergencyContactListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):

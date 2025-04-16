@@ -14,16 +14,20 @@ from healthcare_ms.ehr.forms import (
 from healthcare_ms.ehr.serializers import (
     MedicalRecordListSerializer,
     MedicalRecordDetailSerializer,
-    MedicalRecordCreateUpdateSerializer,
+    MedicalRecordCreateSerializer,
+    MedicalRecordUpdateSerializer,
     DiagnosisListSerializer,
     DiagnosisDetailSerializer,
-    DiagnosisCreateUpdateSerializer,
+    DiagnosisCreateSerializer,
+    DiagnosisUpdateSerializer,
     TreatmentListSerializer,
     TreatmentDetailSerializer,
-    TreatmentCreateUpdateSerializer,
+    TreatmentCreateSerializer,
+    TreatmentUpdateSerializer,
     PrescriptionListSerializer,
     PrescriptionDetailSerializer,
-    PrescriptionCreateUpdateSerializer
+    PrescriptionCreateSerializer,
+    PrescriptionUpdateSerializer
 )
 
 
@@ -69,7 +73,7 @@ def medical_record_detail(request, guid):
 @login_required
 def medical_record_create(request):
     if request.method == 'POST':
-        serializer = MedicalRecordCreateUpdateSerializer(data=request.POST)
+        serializer = MedicalRecordCreateSerializer(data=request.POST)
         if serializer.is_valid():
             record = serializer.save()
             messages.success(request, 'Medical record created successfully.')
@@ -79,7 +83,7 @@ def medical_record_create(request):
             form.errors.update(serializer.errors)
     else:
         form = MedicalRecordForm(initial={'doctor': request.user})
-        serializer = MedicalRecordCreateUpdateSerializer()
+        serializer = MedicalRecordCreateSerializer()
 
     return render(request, 'ehr/medical_record_form.html', {
         'form': form,
@@ -92,7 +96,7 @@ def medical_record_update(request, guid):
     record = get_object_or_404(MedicalRecord, guid=guid)
 
     if request.method == 'POST':
-        serializer = MedicalRecordCreateUpdateSerializer(record, data=request.POST)
+        serializer = MedicalRecordUpdateSerializer(record, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, 'Medical record updated successfully.')
@@ -102,7 +106,7 @@ def medical_record_update(request, guid):
             form.errors.update(serializer.errors)
     else:
         form = MedicalRecordForm(instance=record)
-        serializer = MedicalRecordCreateUpdateSerializer(record)
+        serializer = MedicalRecordUpdateSerializer(record)
 
     return render(request, 'ehr/medical_record_form.html', {
         'form': form,
@@ -151,7 +155,7 @@ def diagnosis_detail(request, guid):
 @login_required
 def diagnosis_create(request):
     if request.method == 'POST':
-        serializer = DiagnosisCreateUpdateSerializer(data=request.POST)
+        serializer = DiagnosisCreateSerializer(data=request.POST)
         if serializer.is_valid():
             diagnosis = serializer.save()
             messages.success(request, 'Diagnosis created successfully.')
@@ -161,7 +165,7 @@ def diagnosis_create(request):
             form.errors.update(serializer.errors)
     else:
         form = DiagnosisForm()
-        serializer = DiagnosisCreateUpdateSerializer()
+        serializer = DiagnosisCreateSerializer()
 
     return render(request, 'ehr/diagnosis_form.html', {
         'form': form,
@@ -174,7 +178,7 @@ def diagnosis_update(request, guid):
     diagnosis = get_object_or_404(Diagnosis, guid=guid)
 
     if request.method == 'POST':
-        serializer = DiagnosisCreateUpdateSerializer(diagnosis, data=request.POST)
+        serializer = DiagnosisUpdateSerializer(diagnosis, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, 'Diagnosis updated successfully.')
@@ -184,7 +188,7 @@ def diagnosis_update(request, guid):
             form.errors.update(serializer.errors)
     else:
         form = DiagnosisForm(instance=diagnosis)
-        serializer = DiagnosisCreateUpdateSerializer(diagnosis)
+        serializer = DiagnosisUpdateSerializer(diagnosis)
 
     return render(request, 'ehr/diagnosis_form.html', {
         'form': form,
@@ -233,7 +237,7 @@ def treatment_detail(request, guid):
 @login_required
 def treatment_create(request):
     if request.method == 'POST':
-        serializer = TreatmentCreateUpdateSerializer(data=request.POST)
+        serializer = TreatmentCreateSerializer(data=request.POST)
         if serializer.is_valid():
             treatment = serializer.save()
             messages.success(request, 'Treatment created successfully.')
@@ -243,7 +247,7 @@ def treatment_create(request):
             form.errors.update(serializer.errors)
     else:
         form = TreatmentForm()
-        serializer = TreatmentCreateUpdateSerializer()
+        serializer = TreatmentCreateSerializer()
 
     return render(request, 'ehr/treatment_form.html', {
         'form': form,
@@ -256,7 +260,7 @@ def treatment_update(request, guid):
     treatment = get_object_or_404(Treatment, guid=guid)
 
     if request.method == 'POST':
-        serializer = TreatmentCreateUpdateSerializer(treatment, data=request.POST)
+        serializer = TreatmentUpdateSerializer(treatment, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, 'Treatment updated successfully.')
@@ -266,7 +270,7 @@ def treatment_update(request, guid):
             form.errors.update(serializer.errors)
     else:
         form = TreatmentForm(instance=treatment)
-        serializer = TreatmentCreateUpdateSerializer(treatment)
+        serializer = TreatmentUpdateSerializer(treatment)
 
     return render(request, 'ehr/treatment_form.html', {
         'form': form,
@@ -315,7 +319,7 @@ def prescription_detail(request, guid):
 @login_required
 def prescription_create(request):
     if request.method == 'POST':
-        serializer = PrescriptionCreateUpdateSerializer(data=request.POST)
+        serializer = PrescriptionCreateSerializer(data=request.POST)
         if serializer.is_valid():
             prescription = serializer.save()
             messages.success(request, 'Prescription created successfully.')
@@ -325,7 +329,7 @@ def prescription_create(request):
             form.errors.update(serializer.errors)
     else:
         form = PrescriptionForm()
-        serializer = PrescriptionCreateUpdateSerializer()
+        serializer = PrescriptionCreateSerializer()
 
     return render(request, 'ehr/prescription_form.html', {
         'form': form,
@@ -338,7 +342,7 @@ def prescription_update(request, guid):
     prescription = get_object_or_404(Prescription, guid=guid)
 
     if request.method == 'POST':
-        serializer = PrescriptionCreateUpdateSerializer(prescription, data=request.POST)
+        serializer = PrescriptionUpdateSerializer(prescription, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, 'Prescription updated successfully.')
@@ -348,7 +352,7 @@ def prescription_update(request, guid):
             form.errors.update(serializer.errors)
     else:
         form = PrescriptionForm(instance=prescription)
-        serializer = PrescriptionCreateUpdateSerializer(prescription)
+        serializer = PrescriptionUpdateSerializer(prescription)
 
     return render(request, 'ehr/prescription_form.html', {
         'form': form,

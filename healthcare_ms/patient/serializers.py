@@ -27,7 +27,16 @@ class PatientProfileDetailSerializer(BaseSerializer):
         )
 
 
-class PatientProfileCreateUpdateSerializer(BaseSerializer):
+class PatientProfileCreateSerializer(BaseSerializer):
+    class Meta:
+        model = PatientProfile
+        fields = (
+            'guid', 'user', 'primary_doctor', 'blood_type',
+            'height', 'weight', 'allergies', 'chronic_conditions'
+        )
+
+
+class PatientProfileUpdateSerializer(BaseSerializer):
     class Meta:
         model = PatientProfile
         fields = (
@@ -57,7 +66,16 @@ class InsuranceDetailSerializer(BaseSerializer):
         )
 
 
-class InsuranceCreateUpdateSerializer(BaseSerializer):
+class InsuranceCreateSerializer(BaseSerializer):
+    class Meta:
+        model = Insurance
+        fields = (
+            'guid', 'patient', 'provider', 'policy_number',
+            'group_number', 'coverage_start_date', 'coverage_end_date'
+        )
+
+
+class InsuranceUpdateSerializer(BaseSerializer):
     class Meta:
         model = Insurance
         fields = (
@@ -88,7 +106,16 @@ class EmergencyContactDetailSerializer(BaseSerializer):
         )
 
 
-class EmergencyContactCreateUpdateSerializer(BaseSerializer):
+class EmergencyContactCreateSerializer(BaseSerializer):
+    class Meta:
+        model = EmergencyContact
+        fields = (
+            'guid', 'patient', 'name', 'relationship',
+            'phone_number', 'email', 'address', 'is_primary'
+        )
+
+
+class EmergencyContactUpdateSerializer(BaseSerializer):
     class Meta:
         model = EmergencyContact
         fields = (

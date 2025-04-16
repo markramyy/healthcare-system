@@ -21,11 +21,19 @@ class AppointmentTypeDetailSerializer(BaseSerializer):
         )
 
 
-class AppointmentTypeCreateUpdateSerializer(BaseSerializer):
+class AppointmentTypeCreateSerializer(BaseSerializer):
     class Meta:
         model = AppointmentType
         fields = (
             'guid', 'name', 'description', 'duration'
+        )
+
+
+class AppointmentTypeUpdateSerializer(BaseSerializer):
+    class Meta:
+        model = AppointmentType
+        fields = (
+            'guid', 'name', 'description', 'duration', 'is_active'
         )
 
 
@@ -53,12 +61,21 @@ class AppointmentSlotDetailSerializer(BaseSerializer):
         )
 
 
-class AppointmentSlotCreateUpdateSerializer(BaseSerializer):
+class AppointmentSlotCreateSerializer(BaseSerializer):
     class Meta:
         model = AppointmentSlot
         fields = (
             'guid', 'doctor', 'date',
             'start_time', 'end_time', 'is_available'
+        )
+
+
+class AppointmentSlotUpdateSerializer(BaseSerializer):
+    class Meta:
+        model = AppointmentSlot
+        fields = (
+            'guid', 'doctor', 'date',
+            'start_time', 'end_time', 'is_available', 'is_active'
         )
 
 
@@ -93,10 +110,19 @@ class AppointmentDetailSerializer(BaseSerializer):
         )
 
 
-class AppointmentCreateUpdateSerializer(BaseSerializer):
+class AppointmentCreateSerializer(BaseSerializer):
     class Meta:
         model = Appointment
         fields = (
             'guid', 'patient', 'doctor', 'appointment_type',
             'slot', 'status', 'notes', 'reason'
+        )
+
+
+class AppointmentUpdateSerializer(BaseSerializer):
+    class Meta:
+        model = Appointment
+        fields = (
+            'guid', 'patient', 'doctor', 'appointment_type',
+            'slot', 'status', 'notes', 'reason', 'is_active'
         )

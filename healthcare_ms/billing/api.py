@@ -7,19 +7,24 @@ from healthcare_ms.billing.models import Service, Invoice, InvoiceItem, Payment,
 from healthcare_ms.billing.serializers import (
     ServiceListSerializer,
     ServiceDetailSerializer,
-    ServiceCreateUpdateSerializer,
+    ServiceCreateSerializer,
+    ServiceUpdateSerializer,
     InvoiceListSerializer,
     InvoiceDetailSerializer,
-    InvoiceCreateUpdateSerializer,
+    InvoiceCreateSerializer,
+    InvoiceUpdateSerializer,
     InvoiceItemListSerializer,
     InvoiceItemDetailSerializer,
-    InvoiceItemCreateUpdateSerializer,
+    InvoiceItemCreateSerializer,
+    InvoiceItemUpdateSerializer,
     PaymentListSerializer,
     PaymentDetailSerializer,
-    PaymentCreateUpdateSerializer,
+    PaymentCreateSerializer,
+    PaymentUpdateSerializer,
     InsuranceClaimListSerializer,
     InsuranceClaimDetailSerializer,
-    InsuranceClaimCreateUpdateSerializer
+    InsuranceClaimCreateSerializer,
+    InsuranceClaimUpdateSerializer
 )
 
 import operator
@@ -36,8 +41,10 @@ class ServiceViewSet(BaseViewSet):
             return ServiceListSerializer
         elif self.action == 'retrieve':
             return ServiceDetailSerializer
-        elif self.action in ['create', 'update']:
-            return ServiceCreateUpdateSerializer
+        elif self.action == 'create':
+            return ServiceCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return ServiceUpdateSerializer
         return ServiceListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
@@ -144,8 +151,10 @@ class InvoiceViewSet(BaseViewSet):
             return InvoiceListSerializer
         elif self.action == 'retrieve':
             return InvoiceDetailSerializer
-        elif self.action in ['create', 'update']:
-            return InvoiceCreateUpdateSerializer
+        elif self.action == 'create':
+            return InvoiceCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return InvoiceUpdateSerializer
         return InvoiceListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
@@ -252,8 +261,10 @@ class InvoiceItemViewSet(BaseViewSet):
             return InvoiceItemListSerializer
         elif self.action == 'retrieve':
             return InvoiceItemDetailSerializer
-        elif self.action in ['create', 'update']:
-            return InvoiceItemCreateUpdateSerializer
+        elif self.action == 'create':
+            return InvoiceItemCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return InvoiceItemUpdateSerializer
         return InvoiceItemListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
@@ -360,8 +371,10 @@ class PaymentViewSet(BaseViewSet):
             return PaymentListSerializer
         elif self.action == 'retrieve':
             return PaymentDetailSerializer
-        elif self.action in ['create', 'update']:
-            return PaymentCreateUpdateSerializer
+        elif self.action == 'create':
+            return PaymentCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return PaymentUpdateSerializer
         return PaymentListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
@@ -468,8 +481,10 @@ class InsuranceClaimViewSet(BaseViewSet):
             return InsuranceClaimListSerializer
         elif self.action == 'retrieve':
             return InsuranceClaimDetailSerializer
-        elif self.action in ['create', 'update']:
-            return InsuranceClaimCreateUpdateSerializer
+        elif self.action == 'create':
+            return InsuranceClaimCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return InsuranceClaimUpdateSerializer
         return InsuranceClaimListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):

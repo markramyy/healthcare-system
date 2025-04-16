@@ -13,13 +13,16 @@ from healthcare_ms.patient.forms import (
 from healthcare_ms.patient.serializers import (
     PatientProfileListSerializer,
     PatientProfileDetailSerializer,
-    PatientProfileCreateUpdateSerializer,
+    PatientProfileCreateSerializer,
+    PatientProfileUpdateSerializer,
     InsuranceListSerializer,
     InsuranceDetailSerializer,
-    InsuranceCreateUpdateSerializer,
+    InsuranceCreateSerializer,
+    InsuranceUpdateSerializer,
     EmergencyContactListSerializer,
     EmergencyContactDetailSerializer,
-    EmergencyContactCreateUpdateSerializer
+    EmergencyContactCreateSerializer,
+    EmergencyContactUpdateSerializer
 )
 
 
@@ -65,7 +68,7 @@ def profile_detail(request, guid):
 @login_required
 def profile_create(request):
     if request.method == 'POST':
-        serializer = PatientProfileCreateUpdateSerializer(data=request.POST)
+        serializer = PatientProfileCreateSerializer(data=request.POST)
         if serializer.is_valid():
             profile = serializer.save()
             messages.success(request, 'Patient profile created successfully.')
@@ -75,7 +78,7 @@ def profile_create(request):
             form.errors.update(serializer.errors)
     else:
         form = PatientProfileForm()
-        serializer = PatientProfileCreateUpdateSerializer()
+        serializer = PatientProfileCreateSerializer()
 
     return render(request, 'patient/profile_form.html', {
         'form': form,
@@ -88,7 +91,7 @@ def profile_update(request, guid):
     profile = get_object_or_404(PatientProfile, guid=guid)
 
     if request.method == 'POST':
-        serializer = PatientProfileCreateUpdateSerializer(profile, data=request.POST)
+        serializer = PatientProfileUpdateSerializer(profile, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, 'Patient profile updated successfully.')
@@ -98,7 +101,7 @@ def profile_update(request, guid):
             form.errors.update(serializer.errors)
     else:
         form = PatientProfileForm(instance=profile)
-        serializer = PatientProfileCreateUpdateSerializer(profile)
+        serializer = PatientProfileUpdateSerializer(profile)
 
     return render(request, 'patient/profile_form.html', {
         'form': form,
@@ -138,7 +141,7 @@ def insurance_list(request):
 @login_required
 def insurance_create(request):
     if request.method == 'POST':
-        serializer = InsuranceCreateUpdateSerializer(data=request.POST)
+        serializer = InsuranceCreateSerializer(data=request.POST)
         if serializer.is_valid():
             insurance = serializer.save()
             messages.success(request, 'Insurance policy created successfully.')
@@ -148,7 +151,7 @@ def insurance_create(request):
             form.errors.update(serializer.errors)
     else:
         form = InsuranceForm(initial={'patient': request.GET.get('patient')})
-        serializer = InsuranceCreateUpdateSerializer()
+        serializer = InsuranceCreateSerializer()
 
     return render(request, 'patient/insurance_form.html', {
         'form': form,
@@ -161,7 +164,7 @@ def insurance_update(request, guid):
     insurance = get_object_or_404(Insurance, guid=guid)
 
     if request.method == 'POST':
-        serializer = InsuranceCreateUpdateSerializer(insurance, data=request.POST)
+        serializer = InsuranceUpdateSerializer(insurance, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, 'Insurance policy updated successfully.')
@@ -171,7 +174,7 @@ def insurance_update(request, guid):
             form.errors.update(serializer.errors)
     else:
         form = InsuranceForm(instance=insurance)
-        serializer = InsuranceCreateUpdateSerializer(insurance)
+        serializer = InsuranceUpdateSerializer(insurance)
 
     return render(request, 'patient/insurance_form.html', {
         'form': form,
@@ -219,7 +222,7 @@ def emergency_contact_list(request):
 @login_required
 def emergency_contact_create(request):
     if request.method == 'POST':
-        serializer = EmergencyContactCreateUpdateSerializer(data=request.POST)
+        serializer = EmergencyContactCreateSerializer(data=request.POST)
         if serializer.is_valid():
             contact = serializer.save()
             messages.success(request, 'Emergency contact created successfully.')
@@ -229,7 +232,7 @@ def emergency_contact_create(request):
             form.errors.update(serializer.errors)
     else:
         form = EmergencyContactForm(initial={'patient': request.GET.get('patient')})
-        serializer = EmergencyContactCreateUpdateSerializer()
+        serializer = EmergencyContactCreateSerializer()
 
     return render(request, 'patient/emergency_contact_form.html', {
         'form': form,
@@ -242,7 +245,7 @@ def emergency_contact_update(request, guid):
     contact = get_object_or_404(EmergencyContact, guid=guid)
 
     if request.method == 'POST':
-        serializer = EmergencyContactCreateUpdateSerializer(contact, data=request.POST)
+        serializer = EmergencyContactUpdateSerializer(contact, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, 'Emergency contact updated successfully.')
@@ -252,7 +255,7 @@ def emergency_contact_update(request, guid):
             form.errors.update(serializer.errors)
     else:
         form = EmergencyContactForm(instance=contact)
-        serializer = EmergencyContactCreateUpdateSerializer(contact)
+        serializer = EmergencyContactUpdateSerializer(contact)
 
     return render(request, 'patient/emergency_contact_form.html', {
         'form': form,

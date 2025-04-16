@@ -9,13 +9,16 @@ from healthcare_ms.appointment.models import AppointmentType, AppointmentSlot, A
 from healthcare_ms.appointment.serializers import (
     AppointmentTypeListSerializer,
     AppointmentTypeDetailSerializer,
-    AppointmentTypeCreateUpdateSerializer,
+    AppointmentTypeCreateSerializer,
+    AppointmentTypeUpdateSerializer,
     AppointmentSlotListSerializer,
     AppointmentSlotDetailSerializer,
-    AppointmentSlotCreateUpdateSerializer,
+    AppointmentSlotCreateSerializer,
+    AppointmentSlotUpdateSerializer,
     AppointmentListSerializer,
     AppointmentDetailSerializer,
-    AppointmentCreateUpdateSerializer
+    AppointmentCreateSerializer,
+    AppointmentUpdateSerializer
 )
 
 import operator
@@ -35,8 +38,10 @@ class AppointmentTypeViewSet(BaseViewSet):
             return AppointmentTypeListSerializer
         elif self.action == 'retrieve':
             return AppointmentTypeDetailSerializer
-        elif self.action in ['create', 'update']:
-            return AppointmentTypeCreateUpdateSerializer
+        elif self.action == 'create':
+            return AppointmentTypeCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return AppointmentTypeUpdateSerializer
         return AppointmentTypeListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
@@ -144,8 +149,10 @@ class AppointmentSlotViewSet(BaseViewSet):
             return AppointmentSlotListSerializer
         elif self.action == 'retrieve':
             return AppointmentSlotDetailSerializer
-        elif self.action in ['create', 'update']:
-            return AppointmentSlotCreateUpdateSerializer
+        elif self.action == 'create':
+            return AppointmentSlotCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return AppointmentSlotUpdateSerializer
         return AppointmentSlotListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
@@ -273,8 +280,10 @@ class AppointmentViewSet(BaseViewSet):
             return AppointmentListSerializer
         elif self.action == 'retrieve':
             return AppointmentDetailSerializer
-        elif self.action in ['create', 'update']:
-            return AppointmentCreateUpdateSerializer
+        elif self.action == 'create':
+            return AppointmentCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return AppointmentUpdateSerializer
         return AppointmentListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):

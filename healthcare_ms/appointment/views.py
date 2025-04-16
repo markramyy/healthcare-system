@@ -7,9 +7,18 @@ from django.utils.translation import gettext_lazy as _
 
 from healthcare_ms.appointment.models import AppointmentType, AppointmentSlot, Appointment
 from healthcare_ms.appointment.serializers import (
-    AppointmentTypeCreateUpdateSerializer,
-    AppointmentSlotCreateUpdateSerializer,
-    AppointmentCreateUpdateSerializer
+    AppointmentTypeListSerializer,
+    AppointmentTypeDetailSerializer,
+    AppointmentTypeCreateSerializer,
+    AppointmentTypeUpdateSerializer,
+    AppointmentSlotListSerializer,
+    AppointmentSlotDetailSerializer,
+    AppointmentSlotCreateSerializer,
+    AppointmentSlotUpdateSerializer,
+    AppointmentListSerializer,
+    AppointmentDetailSerializer,
+    AppointmentCreateSerializer,
+    AppointmentUpdateSerializer
 )
 
 
@@ -30,9 +39,13 @@ def appointment_type_list(request):
     paginator = Paginator(appointment_types, 10)
     page_obj = paginator.get_page(page_number)
 
+    # Serialize the data
+    serializer = AppointmentTypeListSerializer(page_obj, many=True)
+
     context = {
         'appointment_types': page_obj,
         'search_query': search_query,
+        'serialized_data': serializer.data
     }
     return render(request, 'appointment/appointment_type_list.html', context)
 
@@ -41,8 +54,10 @@ def appointment_type_list(request):
 def appointment_type_detail(request, guid):
     """View for displaying appointment type details."""
     appointment_type = get_object_or_404(AppointmentType, guid=guid)
+    serializer = AppointmentTypeDetailSerializer(appointment_type)
     context = {
         'appointment_type': appointment_type,
+        'serialized_data': serializer.data
     }
     return render(request, 'appointment/appointment_type_detail.html', context)
 
@@ -51,7 +66,7 @@ def appointment_type_detail(request, guid):
 def appointment_type_create(request):
     """View for creating a new appointment type."""
     if request.method == 'POST':
-        serializer = AppointmentTypeCreateUpdateSerializer(data=request.POST)
+        serializer = AppointmentTypeCreateSerializer(data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, _('Appointment type created successfully.'))
@@ -59,7 +74,7 @@ def appointment_type_create(request):
         else:
             messages.error(request, _('Failed to create appointment type.'))
     else:
-        serializer = AppointmentTypeCreateUpdateSerializer()
+        serializer = AppointmentTypeCreateSerializer()
 
     context = {
         'form': serializer,
@@ -73,7 +88,7 @@ def appointment_type_update(request, guid):
     appointment_type = get_object_or_404(AppointmentType, guid=guid)
 
     if request.method == 'POST':
-        serializer = AppointmentTypeCreateUpdateSerializer(instance=appointment_type, data=request.POST)
+        serializer = AppointmentTypeUpdateSerializer(instance=appointment_type, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, _('Appointment type updated successfully.'))
@@ -81,7 +96,7 @@ def appointment_type_update(request, guid):
         else:
             messages.error(request, _('Failed to update appointment type.'))
     else:
-        serializer = AppointmentTypeCreateUpdateSerializer(instance=appointment_type)
+        serializer = AppointmentTypeUpdateSerializer(instance=appointment_type)
 
     context = {
         'form': serializer,
@@ -112,11 +127,15 @@ def appointment_slot_list(request):
     paginator = Paginator(appointment_slots, 10)
     page_obj = paginator.get_page(page_number)
 
+    # Serialize the data
+    serializer = AppointmentSlotListSerializer(page_obj, many=True)
+
     context = {
         'appointment_slots': page_obj,
         'search_query': search_query,
         'start_date': start_date,
         'end_date': end_date,
+        'serialized_data': serializer.data
     }
     return render(request, 'appointment/appointment_slot_list.html', context)
 
@@ -125,8 +144,10 @@ def appointment_slot_list(request):
 def appointment_slot_detail(request, guid):
     """View for displaying appointment slot details."""
     appointment_slot = get_object_or_404(AppointmentSlot, guid=guid)
+    serializer = AppointmentSlotDetailSerializer(appointment_slot)
     context = {
         'appointment_slot': appointment_slot,
+        'serialized_data': serializer.data
     }
     return render(request, 'appointment/appointment_slot_detail.html', context)
 
@@ -135,7 +156,7 @@ def appointment_slot_detail(request, guid):
 def appointment_slot_create(request):
     """View for creating a new appointment slot."""
     if request.method == 'POST':
-        serializer = AppointmentSlotCreateUpdateSerializer(data=request.POST)
+        serializer = AppointmentSlotCreateSerializer(data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, _('Appointment slot created successfully.'))
@@ -143,7 +164,7 @@ def appointment_slot_create(request):
         else:
             messages.error(request, _('Failed to create appointment slot.'))
     else:
-        serializer = AppointmentSlotCreateUpdateSerializer()
+        serializer = AppointmentSlotCreateSerializer()
 
     context = {
         'form': serializer,
@@ -157,7 +178,7 @@ def appointment_slot_update(request, guid):
     appointment_slot = get_object_or_404(AppointmentSlot, guid=guid)
 
     if request.method == 'POST':
-        serializer = AppointmentSlotCreateUpdateSerializer(instance=appointment_slot, data=request.POST)
+        serializer = AppointmentSlotUpdateSerializer(instance=appointment_slot, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, _('Appointment slot updated successfully.'))
@@ -165,7 +186,7 @@ def appointment_slot_update(request, guid):
         else:
             messages.error(request, _('Failed to update appointment slot.'))
     else:
-        serializer = AppointmentSlotCreateUpdateSerializer(instance=appointment_slot)
+        serializer = AppointmentSlotUpdateSerializer(instance=appointment_slot)
 
     context = {
         'form': serializer,
@@ -200,11 +221,15 @@ def appointment_list(request):
     paginator = Paginator(appointments, 10)
     page_obj = paginator.get_page(page_number)
 
+    # Serialize the data
+    serializer = AppointmentListSerializer(page_obj, many=True)
+
     context = {
         'appointments': page_obj,
         'search_query': search_query,
         'start_date': start_date,
         'end_date': end_date,
+        'serialized_data': serializer.data
     }
     return render(request, 'appointment/appointment_list.html', context)
 
@@ -213,8 +238,10 @@ def appointment_list(request):
 def appointment_detail(request, guid):
     """View for displaying appointment details."""
     appointment = get_object_or_404(Appointment, guid=guid)
+    serializer = AppointmentDetailSerializer(appointment)
     context = {
         'appointment': appointment,
+        'serialized_data': serializer.data
     }
     return render(request, 'appointment/appointment_detail.html', context)
 
@@ -223,7 +250,7 @@ def appointment_detail(request, guid):
 def appointment_create(request):
     """View for creating a new appointment."""
     if request.method == 'POST':
-        serializer = AppointmentCreateUpdateSerializer(data=request.POST)
+        serializer = AppointmentCreateSerializer(data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, _('Appointment created successfully.'))
@@ -231,7 +258,7 @@ def appointment_create(request):
         else:
             messages.error(request, _('Failed to create appointment.'))
     else:
-        serializer = AppointmentCreateUpdateSerializer()
+        serializer = AppointmentCreateSerializer()
 
     context = {
         'form': serializer,
@@ -245,7 +272,7 @@ def appointment_update(request, guid):
     appointment = get_object_or_404(Appointment, guid=guid)
 
     if request.method == 'POST':
-        serializer = AppointmentCreateUpdateSerializer(instance=appointment, data=request.POST)
+        serializer = AppointmentUpdateSerializer(instance=appointment, data=request.POST)
         if serializer.is_valid():
             serializer.save()
             messages.success(request, _('Appointment updated successfully.'))
@@ -253,7 +280,7 @@ def appointment_update(request, guid):
         else:
             messages.error(request, _('Failed to update appointment.'))
     else:
-        serializer = AppointmentCreateUpdateSerializer(instance=appointment)
+        serializer = AppointmentUpdateSerializer(instance=appointment)
 
     context = {
         'form': serializer,
