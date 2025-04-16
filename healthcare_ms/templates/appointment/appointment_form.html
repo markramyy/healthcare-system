@@ -31,7 +31,7 @@
                                 class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Select a patient</option>
                             {% for patient in form.fields.patient.queryset %}
-                            <option value="{{ patient.pk }}" {% if form.patient.value == patient.pk %}selected{% endif %}>
+                            <option value="{{ patient.guid }}" {% if form.patient.value == patient.guid %}selected{% endif %}>
                                 {{ patient.get_full_name }}
                             </option>
                             {% endfor %}
@@ -50,7 +50,7 @@
                                 class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Select a doctor</option>
                             {% for doctor in form.fields.doctor.queryset %}
-                            <option value="{{ doctor.pk }}" {% if form.doctor.value == doctor.pk %}selected{% endif %}>
+                            <option value="{{ doctor.guid }}" {% if form.doctor.value == doctor.guid %}selected{% endif %}>
                                 {{ doctor.get_full_name }}
                             </option>
                             {% endfor %}
@@ -69,7 +69,7 @@
                                 class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Select an appointment type</option>
                             {% for type in form.fields.appointment_type.queryset %}
-                            <option value="{{ type.pk }}" {% if form.appointment_type.value == type.pk %}selected{% endif %}>
+                            <option value="{{ type.guid }}" {% if form.appointment_type.value == type.guid %}selected{% endif %}>
                                 {{ type.name }} ({{ type.duration }} minutes)
                             </option>
                             {% endfor %}
@@ -88,7 +88,7 @@
                                 class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Select an available slot</option>
                             {% for slot in form.fields.slot.queryset %}
-                            <option value="{{ slot.pk }}" {% if form.slot.value == slot.pk %}selected{% endif %}>
+                            <option value="{{ slot.guid }}" {% if form.slot.value == slot.guid %}selected{% endif %}>
                                 {{ slot.date|date:"F j, Y" }} - {{ slot.start_time|time:"g:i A" }} to {{ slot.end_time|time:"g:i A" }}
                             </option>
                             {% endfor %}

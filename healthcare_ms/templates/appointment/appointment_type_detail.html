@@ -8,7 +8,7 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">{{ appointment_type.name }}</h1>
         <div class="flex space-x-2">
-            <a href="{% url 'appointment:appointment-type-update' appointment_type.pk %}"
+            <a href="{% url 'appointment:appointment-type-update' appointment_type.guid %}"
                class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg">
                 <i class="fas fa-edit mr-2"></i>Edit
             </a>

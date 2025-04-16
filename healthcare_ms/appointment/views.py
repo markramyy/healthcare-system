@@ -270,7 +270,6 @@ def appointment_create(request):
 def appointment_update(request, guid):
     """View for updating an appointment."""
     appointment = get_object_or_404(Appointment, guid=guid)
-
     if request.method == 'POST':
         serializer = AppointmentUpdateSerializer(instance=appointment, data=request.POST)
         if serializer.is_valid():
@@ -281,7 +280,6 @@ def appointment_update(request, guid):
             messages.error(request, _('Failed to update appointment.'))
     else:
         serializer = AppointmentUpdateSerializer(instance=appointment)
-
     context = {
         'form': serializer,
         'appointment': appointment,

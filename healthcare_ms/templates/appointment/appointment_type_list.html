@@ -42,11 +42,11 @@
                     <span>Duration: {{ type.duration }} minutes</span>
                 </div>
                 <div class="flex justify-end space-x-2">
-                    <a href="{% url 'appointment:appointment-type-detail' type.pk %}"
+                    <a href="{% url 'appointment:appointment-type-detail' type.guid %}"
                        class="text-blue-600 hover:text-blue-800">
                         <i class="fas fa-eye"></i>
                     </a>
-                    <a href="{% url 'appointment:appointment-type-update' type.pk %}"
+                    <a href="{% url 'appointment:appointment-type-update' type.guid %}"
                        class="text-yellow-600 hover:text-yellow-800">
                         <i class="fas fa-edit"></i>
                     </a>

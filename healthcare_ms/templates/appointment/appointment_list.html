@@ -95,10 +95,10 @@
                         </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <a href="{% url 'appointment:appointment-detail' appointment.pk %}" class="text-blue-600 hover:text-blue-900 mr-3">
+                        <a href="{% url 'appointment:appointment-detail' appointment.guid %}" class="text-blue-600 hover:text-blue-900 mr-3">
                             <i class="fas fa-eye"></i>
                         </a>
-                        <a href="{% url 'appointment:appointment-update' appointment.pk %}" class="text-yellow-600 hover:text-yellow-900">
+                        <a href="{% url 'appointment:appointment-update' appointment.guid %}" class="text-yellow-600 hover:text-yellow-900">
                             <i class="fas fa-edit"></i>
                         </a>
                     </td>

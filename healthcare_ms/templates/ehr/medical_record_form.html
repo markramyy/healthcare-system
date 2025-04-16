@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {% if form.instance.pk %}Edit Medical Record{% else %}Create New Medical Record{% endif %}
+    {% if form.instance.guid %}Edit Medical Record{% else %}Create New Medical Record{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -9,7 +9,7 @@
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">
-            {% if form.instance.pk %}
+            {% if form.instance.guid %}
                 Edit Medical Record
             {% else %}
                 Create New Medical Record
@@ -108,7 +108,7 @@
                 </a>
                 <button type="submit"
                         class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                    {% if form.instance.pk %}Update{% else %}Create{% endif %} Record
+                    {% if form.instance.guid %}Update{% else %}Create{% endif %} Record
                 </button>
             </div>
         </form>

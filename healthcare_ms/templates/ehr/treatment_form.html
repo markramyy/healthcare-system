@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {% if form.instance.pk %}Edit Treatment{% else %}Create New Treatment{% endif %}
+    {% if form.instance.guid %}Edit Treatment{% else %}Create New Treatment{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -9,7 +9,7 @@
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">
-            {% if form.instance.pk %}
+            {% if form.instance.guid %}
                 Edit Treatment
             {% else %}
                 Create New Treatment
@@ -107,7 +107,7 @@
                     Cancel
                 </a>
                 <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                    {% if form.instance.pk %}
+                    {% if form.instance.guid %}
                         Update Treatment
                     {% else %}
                         Create Treatment
