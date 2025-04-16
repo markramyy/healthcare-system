@@ -122,11 +122,16 @@ class ServiceViewSet(BaseViewSet):
         }, status=400)
 
     def destroy(self, request, *args, **kwargs):
-        service = self.get_object()
-        service.delete()
-        return Response({
-            "message": "Service deleted successfully."
-        }, status=204)
+        try:
+            service = self.get_object()
+            service.delete()
+            return Response({
+                "message": "Service deleted successfully."
+            }, status=204)
+        except Service.DoesNotExist:
+            return Response({
+                "message": "Service not found."
+            }, status=404)
 
 
 class InvoiceViewSet(BaseViewSet):
@@ -224,11 +229,16 @@ class InvoiceViewSet(BaseViewSet):
         }, status=400)
 
     def destroy(self, request, *args, **kwargs):
-        invoice = self.get_object()
-        invoice.delete()
-        return Response({
-            "message": "Invoice deleted successfully."
-        }, status=204)
+        try:
+            invoice = self.get_object()
+            invoice.delete()
+            return Response({
+                "message": "Invoice deleted successfully."
+            }, status=204)
+        except Invoice.DoesNotExist:
+            return Response({
+                "message": "Invoice not found."
+            }, status=404)
 
 
 class InvoiceItemViewSet(BaseViewSet):
@@ -326,11 +336,16 @@ class InvoiceItemViewSet(BaseViewSet):
         }, status=400)
 
     def destroy(self, request, *args, **kwargs):
-        item = self.get_object()
-        item.delete()
-        return Response({
-            "message": "Invoice item deleted successfully."
-        }, status=204)
+        try:
+            item = self.get_object()
+            item.delete()
+            return Response({
+                "message": "Invoice item deleted successfully."
+            }, status=204)
+        except InvoiceItem.DoesNotExist:
+            return Response({
+                "message": "Invoice item not found."
+            }, status=404)
 
 
 class PaymentViewSet(BaseViewSet):
@@ -428,11 +443,16 @@ class PaymentViewSet(BaseViewSet):
         }, status=400)
 
     def destroy(self, request, *args, **kwargs):
-        payment = self.get_object()
-        payment.delete()
-        return Response({
-            "message": "Payment deleted successfully."
-        }, status=204)
+        try:
+            payment = self.get_object()
+            payment.delete()
+            return Response({
+                "message": "Payment deleted successfully."
+            }, status=204)
+        except Payment.DoesNotExist:
+            return Response({
+                "message": "Payment not found."
+            }, status=404)
 
 
 class InsuranceClaimViewSet(BaseViewSet):
@@ -530,8 +550,13 @@ class InsuranceClaimViewSet(BaseViewSet):
         }, status=400)
 
     def destroy(self, request, *args, **kwargs):
-        claim = self.get_object()
-        claim.delete()
-        return Response({
-            "message": "Insurance claim deleted successfully."
-        }, status=204)
+        try:
+            claim = self.get_object()
+            claim.delete()
+            return Response({
+                "message": "Insurance claim deleted successfully."
+            }, status=204)
+        except InsuranceClaim.DoesNotExist:
+            return Response({
+                "message": "Insurance claim not found."
+            }, status=404)

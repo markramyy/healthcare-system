@@ -118,6 +118,13 @@ class MedicalRecordViewSet(BaseViewSet):
             "errors": serializer.errors
         }, status=400)
 
+    def destroy(self, request, *args, **kwargs):
+        record = self.get_object()
+        record.delete()
+        return Response({
+            "message": "Medical record deleted successfully."
+        }, status=204)
+
 
 class DiagnosisViewSet(BaseViewSet):
     queryset = Diagnosis.objects.all()
@@ -212,6 +219,13 @@ class DiagnosisViewSet(BaseViewSet):
             "message": "Failed to update diagnosis.",
             "errors": serializer.errors
         }, status=400)
+
+    def destroy(self, request, *args, **kwargs):
+        diagnosis = self.get_object()
+        diagnosis.delete()
+        return Response({
+            "message": "Diagnosis deleted successfully."
+        }, status=204)
 
 
 class TreatmentViewSet(BaseViewSet):
@@ -308,6 +322,13 @@ class TreatmentViewSet(BaseViewSet):
             "errors": serializer.errors
         }, status=400)
 
+    def destroy(self, request, *args, **kwargs):
+        treatment = self.get_object()
+        treatment.delete()
+        return Response({
+            "message": "Treatment deleted successfully."
+        }, status=204)
+
 
 class PrescriptionViewSet(BaseViewSet):
     queryset = Prescription.objects.all()
@@ -402,3 +423,10 @@ class PrescriptionViewSet(BaseViewSet):
             "message": "Failed to update prescription.",
             "errors": serializer.errors
         }, status=400)
+
+    def destroy(self, request, *args, **kwargs):
+        prescription = self.get_object()
+        prescription.delete()
+        return Response({
+            "message": "Prescription deleted successfully."
+        }, status=204)

@@ -120,6 +120,18 @@ class AppointmentTypeViewSet(BaseViewSet):
             "errors": serializer.errors
         }, status=400)
 
+    def destroy(self, request, *args, **kwargs):
+        try:
+            appointment_type = self.get_object()
+            appointment_type.delete()
+            return Response({
+                "message": "Appointment type deleted successfully."
+            }, status=204)
+        except AppointmentType.DoesNotExist:
+            return Response({
+                "message": "Appointment type not found."
+            }, status=404)
+
 
 class AppointmentSlotViewSet(BaseViewSet):
     queryset = AppointmentSlot.objects.all()
@@ -221,6 +233,18 @@ class AppointmentSlotViewSet(BaseViewSet):
             "message": "Failed to update appointment slot.",
             "errors": serializer.errors
         }, status=400)
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            slot = self.get_object()
+            slot.delete()
+            return Response({
+                "message": "Appointment slot deleted successfully."
+            }, status=204)
+        except AppointmentSlot.DoesNotExist:
+            return Response({
+                "message": "Appointment slot not found."
+            }, status=404)
 
 
 class AppointmentViewSet(BaseViewSet):
@@ -337,3 +361,15 @@ class AppointmentViewSet(BaseViewSet):
             "message": "Failed to update appointment.",
             "errors": serializer.errors
         }, status=400)
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            appointment = self.get_object()
+            appointment.delete()
+            return Response({
+                "message": "Appointment deleted successfully."
+            }, status=204)
+        except Appointment.DoesNotExist:
+            return Response({
+                "message": "Appointment not found."
+            }, status=404)

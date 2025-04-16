@@ -115,6 +115,18 @@ class PatientProfileViewSet(BaseViewSet):
             "errors": serializer.errors
         }, status=400)
 
+    def destroy(self, request, *args, **kwargs):
+        try:
+            profile = self.get_object()
+            profile.delete()
+            return Response({
+                "message": "Patient profile deleted successfully."
+            }, status=204)
+        except PatientProfile.DoesNotExist:
+            return Response({
+                "message": "Patient profile not found."
+            }, status=404)
+
 
 class InsuranceViewSet(BaseViewSet):
     queryset = Insurance.objects.all()
@@ -210,6 +222,18 @@ class InsuranceViewSet(BaseViewSet):
             "errors": serializer.errors
         }, status=400)
 
+    def destroy(self, request, *args, **kwargs):
+        try:
+            insurance = self.get_object()
+            insurance.delete()
+            return Response({
+                "message": "Insurance policy deleted successfully."
+            }, status=204)
+        except Insurance.DoesNotExist:
+            return Response({
+                "message": "Insurance policy not found."
+            }, status=404)
+
 
 class EmergencyContactViewSet(BaseViewSet):
     queryset = EmergencyContact.objects.all()
@@ -304,3 +328,15 @@ class EmergencyContactViewSet(BaseViewSet):
             "message": "Failed to update emergency contact.",
             "errors": serializer.errors
         }, status=400)
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            contact = self.get_object()
+            contact.delete()
+            return Response({
+                "message": "Emergency contact deleted successfully."
+            }, status=204)
+        except EmergencyContact.DoesNotExist:
+            return Response({
+                "message": "Emergency contact not found."
+            }, status=404)
