@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block title %}Invoice Item Details - Healthcare Management System{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Invoice Item Details</h1>
+        <div class="flex space-x-4">
+            <a href="{% url 'billing:invoice-item-update' item.guid %}" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-edit mr-2"></i>Edit Item
+            </a>
+            <a href="{% url 'billing:invoice-item-list' %}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Items
+            </a>
+        </div>
+    </div>
+
+    <!-- Item Information -->
+    <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Basic Information -->
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Basic Information</h2>
+                    <dl class="grid grid-cols-1 gap-4">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Invoice</dt>
+                            <dd class="mt-1 text-sm text-gray-900">
+                                <a href="{% url 'billing:invoice-detail' item.invoice.guid %}" class="text-blue-600 hover:text-blue-900">
+                                    {{ item.invoice.invoice_number }}
+                                </a>
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Service</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ item.service.name }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Quantity</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ item.quantity }}</dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <!-- Price Information -->
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Price Information</h2>
+                    <dl class="grid grid-cols-1 gap-4">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Unit Price</dt>
+                            <dd class="mt-1 text-sm text-gray-900">${{ item.unit_price|floatformat:2 }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Total Price</dt>
+                            <dd class="mt-1 text-sm text-gray-900">${{ item.total_price|floatformat:2 }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Created</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ item.created|date:"M d, Y H:i" }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Last Modified</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ item.modified|date:"M d, Y H:i" }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Description -->
+            {% if item.description %}
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Description</h2>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-sm text-gray-700">{{ item.description }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Related Invoice Information -->
+    <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+        <div class="p-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Related Invoice Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <dl class="grid grid-cols-1 gap-4">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Invoice Number</dt>
+                            <dd class="mt-1 text-sm text-gray-900">
+                                <a href="{% url 'billing:invoice-detail' item.invoice.guid %}" class="text-blue-600 hover:text-blue-900">
+                                    {{ item.invoice.invoice_number }}
+                                </a>
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Patient</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ item.invoice.patient.get_full_name }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Issue Date</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ item.invoice.issue_date|date:"M d, Y" }}</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div>
+                    <dl class="grid grid-cols-1 gap-4">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Total Amount</dt>
+                            <dd class="mt-1 text-sm text-gray-900">${{ item.invoice.total_amount|floatformat:2 }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Paid Amount</dt>
+                            <dd class="mt-1 text-sm text-gray-900">${{ item.invoice.paid_amount|floatformat:2 }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Remaining Amount</dt>
+                            <dd class="mt-1 text-sm text-gray-900">${{ item.invoice.remaining_amount|floatformat:2 }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Information -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="p-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Service Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <dl class="grid grid-cols-1 gap-4">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Service Code</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ item.service.code }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Service Name</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ item.service.name }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Price</dt>
+                            <dd class="mt-1 text-sm text-gray-900">${{ item.service.price|floatformat:2 }}</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div>
+                    <dl class="grid grid-cols-1 gap-4">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Status</dt>
+                            <dd class="mt-1">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    {% if item.service.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                    {{ item.service.is_active|yesno:"Active,Inactive" }}
+                                </span>
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Created</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ item.service.created|date:"M d, Y H:i" }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Last Modified</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ item.service.modified|date:"M d, Y H:i" }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+            {% if item.service.description %}
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Service Description</h2>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-sm text-gray-700">{{ item.service.description }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

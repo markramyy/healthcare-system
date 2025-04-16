@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if claim %}Edit{% else %}Create{% endif %} Insurance Claim - Healthcare Management System{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">
+            {% if claim %}Edit{% else %}Create{% endif %} Insurance Claim
+        </h1>
+        <a href="{% url 'billing:insurance-claim-list' %}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Claims
+        </a>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <form method="post" class="p-6">
+            {% csrf_token %}
+
+            <!-- Basic Information -->
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Basic Information</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="invoice" class="block text-sm font-medium text-gray-700">Invoice</label>
+                        <select name="invoice" id="invoice" required
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="">Select Invoice</option>
+                            {% for invoice in invoices %}
+                            <option value="{{ invoice.guid }}" {% if claim and claim.invoice.guid == invoice.guid %}selected{% endif %}>
+                                {{ invoice.invoice_number }} - {{ invoice.patient.get_full_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.invoice.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.invoice.errors }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="insurance" class="block text-sm font-medium text-gray-700">Insurance</label>
+                        <select name="insurance" id="insurance" required
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="">Select Insurance</option>
+                            {% for insurance in insurances %}
+                            <option value="{{ insurance.guid }}" {% if claim and claim.insurance.guid == insurance.guid %}selected{% endif %}>
+                                {{ insurance.provider }} - {{ insurance.policy_number }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.insurance.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.insurance.errors }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="claim_number" class="block text-sm font-medium text-gray-700">Claim Number</label>
+                        <input type="text" name="claim_number" id="claim_number" required
+                               value="{{ claim.claim_number|default:'' }}"
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        {% if form.claim_number.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.claim_number.errors }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="claim_date" class="block text-sm font-medium text-gray-700">Claim Date</label>
+                        <input type="date" name="claim_date" id="claim_date" required
+                               value="{{ claim.claim_date|date:'Y-m-d'|default:'' }}"
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        {% if form.claim_date.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.claim_date.errors }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Amount Information -->
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Amount Information</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="amount_claimed" class="block text-sm font-medium text-gray-700">Amount Claimed</label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500 sm:text-sm">$</span>
+                            </div>
+                            <input type="number" name="amount_claimed" id="amount_claimed" required
+                                   value="{{ claim.amount_claimed|default:'' }}" step="0.01" min="0"
+                                   class="pl-7 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                        {% if form.amount_claimed.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.amount_claimed.errors }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                        <select name="status" id="status" required
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="submitted" {% if claim and claim.status == 'submitted' %}selected{% endif %}>Submitted</option>
+                            <option value="processing" {% if claim and claim.status == 'processing' %}selected{% endif %}>Processing</option>
+                            <option value="approved" {% if claim and claim.status == 'approved' %}selected{% endif %}>Approved</option>
+                            <option value="rejected" {% if claim and claim.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                            <option value="paid" {% if claim and claim.status == 'paid' %}selected{% endif %}>Paid</option>
+                        </select>
+                        {% if form.status.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.status.errors }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Notes</h2>
+                <div>
+                    <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
+                    <textarea name="notes" id="notes" rows="4"
+                              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">{{ claim.notes|default:'' }}</textarea>
+                    {% if form.notes.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.notes.errors }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex justify-end">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    {% if claim %}Update{% else %}Create{% endif %} Claim
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

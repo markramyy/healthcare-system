@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Details - Healthcare Management System{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Payment Details</h1>
+        <div class="flex space-x-4">
+            <a href="{% url 'billing:payment-update' payment.guid %}" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-edit mr-2"></i>Edit Payment
+            </a>
+            <a href="{% url 'billing:payment-list' %}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Payments
+            </a>
+        </div>
+    </div>
+
+    <!-- Payment Information -->
+    <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Basic Information -->
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Basic Information</h2>
+                    <dl class="grid grid-cols-1 gap-4">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Invoice</dt>
+                            <dd class="mt-1 text-sm text-gray-900">
+                                <a href="{% url 'billing:invoice-detail' payment.invoice.guid %}" class="text-blue-600 hover:text-blue-900">
+                                    {{ payment.invoice.invoice_number }}
+                                </a>
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Patient</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ payment.invoice.patient.get_full_name }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Payment Method</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ payment.get_payment_method_display }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Transaction ID</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ payment.transaction_id|default:"N/A" }}</dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <!-- Amount and Date -->
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Amount and Date</h2>
+                    <dl class="grid grid-cols-1 gap-4">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Amount</dt>
+                            <dd class="mt-1 text-sm text-gray-900">${{ payment.amount|floatformat:2 }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Payment Date</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ payment.payment_date|date:"M d, Y" }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Created</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ payment.created|date:"M d, Y H:i" }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Last Modified</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ payment.modified|date:"M d, Y H:i" }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            {% if payment.notes %}
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Notes</h2>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-sm text-gray-700">{{ payment.notes }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Related Invoice Information -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="p-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Related Invoice Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <dl class="grid grid-cols-1 gap-4">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Invoice Number</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ payment.invoice.invoice_number }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Issue Date</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ payment.invoice.issue_date|date:"M d, Y" }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Due Date</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ payment.invoice.due_date|date:"M d, Y" }}</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div>
+                    <dl class="grid grid-cols-1 gap-4">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Total Amount</dt>
+                            <dd class="mt-1 text-sm text-gray-900">${{ payment.invoice.total_amount|floatformat:2 }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Paid Amount</dt>
+                            <dd class="mt-1 text-sm text-gray-900">${{ payment.invoice.paid_amount|floatformat:2 }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Remaining Amount</dt>
+                            <dd class="mt-1 text-sm text-gray-900">${{ payment.invoice.remaining_amount|floatformat:2 }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

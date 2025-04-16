@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if invoice %}
+        Edit Invoice {{ invoice.invoice_number }} - Healthcare Management System
+    {% else %}
+        Create New Invoice - Healthcare Management System
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">
+            {% if invoice %}
+                Edit Invoice: {{ invoice.invoice_number }}
+            {% else %}
+                Create New Invoice
+            {% endif %}
+        </h1>
+        <a href="{% url 'billing:invoice-list' %}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Invoices
+        </a>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <form method="post" class="p-6">
+            {% csrf_token %}
+
+            <!-- Basic Information -->
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Basic Information</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="patient" class="block text-sm font-medium text-gray-700">Patient *</label>
+                        <select name="patient" id="patient" required
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="">Select a patient</option>
+                            {% for patient in patients %}
+                            <option value="{{ patient.guid }}" {% if serialized_data.patient == patient.guid %}selected{% endif %}>
+                                {{ patient.get_full_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% if serialized_data.errors.patient %}
+                            <p class="mt-2 text-sm text-red-600">{{ serialized_data.errors.patient }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="appointment" class="block text-sm font-medium text-gray-700">Appointment</label>
+                        <select name="appointment" id="appointment"
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="">Select an appointment</option>
+                            {% for appointment in appointments %}
+                            <option value="{{ appointment.guid }}" {% if serialized_data.appointment == appointment.guid %}selected{% endif %}>
+                                {{ appointment.appointment_type.name }} - {{ appointment.date|date:"M d, Y" }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% if serialized_data.errors.appointment %}
+                            <p class="mt-2 text-sm text-red-600">{{ serialized_data.errors.appointment }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="invoice_number" class="block text-sm font-medium text-gray-700">Invoice Number *</label>
+                        <input type="text" name="invoice_number" id="invoice_number" value="{{ serialized_data.invoice_number|default:'' }}"
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                               required>
+                        {% if serialized_data.errors.invoice_number %}
+                            <p class="mt-2 text-sm text-red-600">{{ serialized_data.errors.invoice_number }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700">Status *</label>
+                        <select name="status" id="status" required
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="draft" {% if serialized_data.status == 'draft' %}selected{% endif %}>Draft</option>
+                            <option value="sent" {% if serialized_data.status == 'sent' %}selected{% endif %}>Sent</option>
+                            <option value="paid" {% if serialized_data.status == 'paid' %}selected{% endif %}>Paid</option>
+                            <option value="overdue" {% if serialized_data.status == 'overdue' %}selected{% endif %}>Overdue</option>
+                            <option value="cancelled" {% if serialized_data.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                        </select>
+                        {% if serialized_data.errors.status %}
+                            <p class="mt-2 text-sm text-red-600">{{ serialized_data.errors.status }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dates and Amounts -->
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Dates and Amounts</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="issue_date" class="block text-sm font-medium text-gray-700">Issue Date *</label>
+                        <input type="date" name="issue_date" id="issue_date" value="{{ serialized_data.issue_date|default:'' }}"
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                               required>
+                        {% if serialized_data.errors.issue_date %}
+                            <p class="mt-2 text-sm text-red-600">{{ serialized_data.errors.issue_date }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="due_date" class="block text-sm font-medium text-gray-700">Due Date *</label>
+                        <input type="date" name="due_date" id="due_date" value="{{ serialized_data.due_date|default:'' }}"
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                               required>
+                        {% if serialized_data.errors.due_date %}
+                            <p class="mt-2 text-sm text-red-600">{{ serialized_data.errors.due_date }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="total_amount" class="block text-sm font-medium text-gray-700">Total Amount *</label>
+                        <input type="number" name="total_amount" id="total_amount" value="{{ serialized_data.total_amount|default:'' }}"
+                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                               step="0.01" min="0" required>
+                        {% if serialized_data.errors.total_amount %}
+                            <p class="mt-2 text-sm text-red-600">{{ serialized_data.errors.total_amount }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Notes</h2>
+                <div>
+                    <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
+                    <textarea name="notes" id="notes" rows="4"
+                              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">{{ serialized_data.notes|default:'' }}</textarea>
+                    {% if serialized_data.errors.notes %}
+                        <p class="mt-2 text-sm text-red-600">{{ serialized_data.errors.notes }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex justify-end">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    {% if invoice %}
+                        <i class="fas fa-save mr-2"></i>Update Invoice
+                    {% else %}
+                        <i class="fas fa-plus mr-2"></i>Create Invoice
+                    {% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
