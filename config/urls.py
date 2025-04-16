@@ -25,6 +25,7 @@ api_patterns = [
     path('patient/', include('healthcare_ms.patient.api_router')),
     path('ehr/', include('healthcare_ms.ehr.api_router')),
     path('appointment/', include('healthcare_ms.appointment.api_router')),
+    path('billing/', include('healthcare_ms.billing.api_router')),
 ]
 
 views_patterns = [
@@ -33,6 +34,7 @@ views_patterns = [
     path('patient/', include('healthcare_ms.patient.urls')),
     path('ehr/', include('healthcare_ms.ehr.urls')),
     path('appointment/', include('healthcare_ms.appointment.urls')),
+    path('billing/', include('healthcare_ms.billing.urls')),
 ]
 
 urlpatterns = [
