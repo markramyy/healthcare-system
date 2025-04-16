@@ -37,6 +37,7 @@ class AppointmentTypeViewSet(BaseViewSet):
             return AppointmentTypeDetailSerializer
         elif self.action in ['create', 'update']:
             return AppointmentTypeCreateUpdateSerializer
+        return AppointmentTypeListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)
@@ -145,6 +146,7 @@ class AppointmentSlotViewSet(BaseViewSet):
             return AppointmentSlotDetailSerializer
         elif self.action in ['create', 'update']:
             return AppointmentSlotCreateUpdateSerializer
+        return AppointmentSlotListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)
@@ -273,6 +275,7 @@ class AppointmentViewSet(BaseViewSet):
             return AppointmentDetailSerializer
         elif self.action in ['create', 'update']:
             return AppointmentCreateUpdateSerializer
+        return AppointmentListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)

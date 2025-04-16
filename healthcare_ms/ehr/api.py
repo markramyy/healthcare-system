@@ -35,6 +35,7 @@ class MedicalRecordViewSet(BaseViewSet):
             return MedicalRecordDetailSerializer
         elif self.action in ['create', 'update']:
             return MedicalRecordCreateUpdateSerializer
+        return MedicalRecordListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)
@@ -137,6 +138,7 @@ class DiagnosisViewSet(BaseViewSet):
             return DiagnosisDetailSerializer
         elif self.action in ['create', 'update']:
             return DiagnosisCreateUpdateSerializer
+        return DiagnosisListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)
@@ -239,6 +241,7 @@ class TreatmentViewSet(BaseViewSet):
             return TreatmentDetailSerializer
         elif self.action in ['create', 'update']:
             return TreatmentCreateUpdateSerializer
+        return TreatmentListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)
@@ -341,6 +344,7 @@ class PrescriptionViewSet(BaseViewSet):
             return PrescriptionDetailSerializer
         elif self.action in ['create', 'update']:
             return PrescriptionCreateUpdateSerializer
+        return PrescriptionListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)

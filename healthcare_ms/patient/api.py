@@ -32,6 +32,7 @@ class PatientProfileViewSet(BaseViewSet):
             return PatientProfileDetailSerializer
         elif self.action in ['create', 'update']:
             return PatientProfileCreateUpdateSerializer
+        return PatientProfileListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)
@@ -139,6 +140,7 @@ class InsuranceViewSet(BaseViewSet):
             return InsuranceDetailSerializer
         elif self.action in ['create', 'update']:
             return InsuranceCreateUpdateSerializer
+        return InsuranceListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)
@@ -246,6 +248,7 @@ class EmergencyContactViewSet(BaseViewSet):
             return EmergencyContactDetailSerializer
         elif self.action in ['create', 'update']:
             return EmergencyContactCreateUpdateSerializer
+        return EmergencyContactListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)

@@ -38,6 +38,7 @@ class ServiceViewSet(BaseViewSet):
             return ServiceDetailSerializer
         elif self.action in ['create', 'update']:
             return ServiceCreateUpdateSerializer
+        return ServiceListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)
@@ -145,6 +146,7 @@ class InvoiceViewSet(BaseViewSet):
             return InvoiceDetailSerializer
         elif self.action in ['create', 'update']:
             return InvoiceCreateUpdateSerializer
+        return InvoiceListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)
@@ -252,6 +254,7 @@ class InvoiceItemViewSet(BaseViewSet):
             return InvoiceItemDetailSerializer
         elif self.action in ['create', 'update']:
             return InvoiceItemCreateUpdateSerializer
+        return InvoiceItemListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)
@@ -359,6 +362,7 @@ class PaymentViewSet(BaseViewSet):
             return PaymentDetailSerializer
         elif self.action in ['create', 'update']:
             return PaymentCreateUpdateSerializer
+        return PaymentListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)
@@ -466,6 +470,7 @@ class InsuranceClaimViewSet(BaseViewSet):
             return InsuranceClaimDetailSerializer
         elif self.action in ['create', 'update']:
             return InsuranceClaimCreateUpdateSerializer
+        return InsuranceClaimListSerializer
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)
