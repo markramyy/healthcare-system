@@ -1,8 +1,5 @@
 @echo off
 
-echo "Dropping database..."
-python manage.py drop_db
-
 echo "Making migrations..."
 python manage.py makemigrations
 
