@@ -16,5 +16,5 @@ router.register("profiles", PatientProfileViewSet, basename="patient-profiles")
 router.register("insurance", InsuranceViewSet, basename="patient-insurance")
 router.register("emergency-contacts", EmergencyContactViewSet, basename="patient-emergency-contacts")
 
-app_name = "patient"
+app_name = "patient-api"
 urlpatterns = router.urls
