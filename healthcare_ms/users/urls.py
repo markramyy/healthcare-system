@@ -1,14 +1,26 @@
 from django.urls import path
-from . import views
+from .views import (
+    LoginView,
+    RegisterView,
+    user_list,
+    user_detail,
+    user_update,
+    change_password,
+    export_csv,
+    me,
+    delete_user
+)
 
 app_name = 'users'
 
 urlpatterns = [
-    path('', views.user_list, name='user-list'),
-    path('<uuid:guid>/', views.user_detail, name='user-detail'),
-    path('<uuid:guid>/update/', views.user_update, name='user-update'),
-    path('<uuid:guid>/delete/', views.delete_user, name='delete-user'),
-    path('change-password/', views.change_password, name='change-password'),
-    path('export-csv/', views.export_csv, name='export-csv'),
-    path('me/', views.me, name='me'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('register/', RegisterView.as_view(), name='register'),
+    path('', user_list, name='user-list'),
+    path('<uuid:guid>/', user_detail, name='user-detail'),
+    path('<uuid:guid>/update/', user_update, name='user-update'),
+    path('change-password/', change_password, name='change-password'),
+    path('export-csv/', export_csv, name='export-csv'),
+    path('me/', me, name='me'),
+    path('<uuid:guid>/delete/', delete_user, name='delete-user'),
 ]

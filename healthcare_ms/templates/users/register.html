@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - Healthcare System{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Create your account
+            </h2>
+        </div>
+        <form class="mt-8 space-y-6" method="POST" action="{% url 'users:register' %}">
+            {% csrf_token %}
+            {% if form.errors %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Error!</strong>
+                <span class="block sm:inline">Please correct the errors below.</span>
+            </div>
+            {% endif %}
+            <div class="rounded-md shadow-sm -space-y-px">
+                <!-- Username -->
+                <div>
+                    <label for="{{ form.username.id_for_label }}" class="sr-only">{{ form.username.label }}</label>
+                    {{ form.username }}
+                </div>
+                <!-- Email -->
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="sr-only">{{ form.email.label }}</label>
+                    {{ form.email }}
+                </div>
+                <!-- First Name -->
+                <div>
+                    <label for="{{ form.first_name.id_for_label }}" class="sr-only">{{ form.first_name.label }}</label>
+                    {{ form.first_name }}
+                </div>
+                <!-- Last Name -->
+                <div>
+                    <label for="{{ form.last_name.id_for_label }}" class="sr-only">{{ form.last_name.label }}</label>
+                    {{ form.last_name }}
+                </div>
+                <!-- Phone Number -->
+                <div>
+                    <label for="{{ form.phone_number.id_for_label }}" class="sr-only">{{ form.phone_number.label }}</label>
+                    {{ form.phone_number }}
+                </div>
+                <!-- Date of Birth -->
+                <div>
+                    <label for="{{ form.date_of_birth.id_for_label }}" class="sr-only">{{ form.date_of_birth.label }}</label>
+                    {{ form.date_of_birth }}
+                </div>
+                <!-- Address -->
+                <div>
+                    <label for="{{ form.address.id_for_label }}" class="sr-only">{{ form.address.label }}</label>
+                    {{ form.address }}
+                </div>
+                <!-- User Type -->
+                <div>
+                    <label for="{{ form.user_type.id_for_label }}" class="sr-only">{{ form.user_type.label }}</label>
+                    {{ form.user_type }}
+                </div>
+                <!-- Password 1 -->
+                <div>
+                    <label for="{{ form.password1.id_for_label }}" class="sr-only">{{ form.password1.label }}</label>
+                    {{ form.password1 }}
+                </div>
+                <!-- Password 2 -->
+                <div>
+                    <label for="{{ form.password2.id_for_label }}" class="sr-only">{{ form.password2.label }}</label>
+                    {{ form.password2 }}
+                </div>
+            </div>
+
+            <div>
+                <button type="submit"
+                    class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Sign up
+                </button>
+            </div>
+        </form>
+        <div class="text-center">
+            <p class="text-sm text-gray-600">
+                Already have an account?
+                <a href="{% url 'users:login' %}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                    Sign in
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

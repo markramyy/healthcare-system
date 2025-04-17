@@ -19,6 +19,7 @@ from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from rest_framework.permissions import AllowAny
 from healthcare_ms.core.views import landing_page
+from django.contrib.auth import views as auth_views
 
 views_patterns = [
     path('dashboard/', include('healthcare_ms.core.urls')),
@@ -27,6 +28,8 @@ views_patterns = [
     path('ehr/', include('healthcare_ms.ehr.urls')),
     path('appointment/', include('healthcare_ms.appointment.urls')),
     path('billing/', include('healthcare_ms.billing.urls')),
+    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
 
 urlpatterns = [

@@ -10,6 +10,9 @@ from django.db.models import Q
 from django.contrib import messages
 from django.http import HttpResponse
 import csv
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import AuthenticationForm
+from django.views.generic import View
 
 from healthcare_ms.users.models import User
 from healthcare_ms.users.serializers import (
@@ -21,6 +24,8 @@ from healthcare_ms.users.serializers import (
     MeUserAdminSerializer,
     UserRegistrationSerializer
 )
+from healthcare_ms.users.forms import UserRegistrationForm
+from healthcare_ms.core.decorators import role_required
 
 
 class UserRegistrationView(APIView):
@@ -174,6 +179,7 @@ def me(request):
 
 
 @login_required
+@role_required('admin')
 def delete_user(request, guid):
     user = get_object_or_404(User, guid=guid)
     if request.method == 'POST':
@@ -181,3 +187,43 @@ def delete_user(request, guid):
         messages.success(request, 'User deleted successfully.')
         return redirect('users:user-list')
     return redirect('users:user-detail', guid=guid)
+
+
+class LoginView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('core:home')
+        form = AuthenticationForm()
+        return render(request, 'users/login.html', {'form': form})
+
+    def post(self, request):
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'Welcome back, {username}!')
+                return redirect('core:home')
+        messages.error(request, 'Invalid username or password.')
+        return render(request, 'users/login.html', {'form': form})
+
+
+class RegisterView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('core:dashboard')
+        form = UserRegistrationForm()
+        return render(request, 'users/register.html', {'form': form})
+
+    def post(self, request):
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            serializer = UserRegistrationSerializer(data=form.cleaned_data)
+            if serializer.is_valid():
+                user = serializer.save()
+                login(request, user)
+                messages.success(request, 'Account created successfully!')
+                return redirect('core:dashboard')
+        return render(request, 'users/register.html', {'form': form})
