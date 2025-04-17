@@ -12,14 +12,15 @@
 <div class="bg-white rounded-lg shadow overflow-hidden">
     <!-- Filters -->
     <div class="p-4 border-b">
-        <form method="get" class="flex flex-wrap gap-4">
+        <form method="get" class="flex flex-wrap gap-4" id="filterForm">
             <div class="flex-1">
                 <input type="text" name="search" placeholder="Search by username or email"
                        value="{{ request.GET.search }}"
-                       class="w-full px-4 py-2 border rounded-lg">
+                       class="w-full px-4 py-2 border rounded-lg"
+                       id="searchInput">
             </div>
             <div>
-                <select name="user_type" class="px-4 py-2 border rounded-lg">
+                <select name="user_type" class="px-4 py-2 border rounded-lg" id="userTypeSelect">
                     <option value="">All Types</option>
                     {% for value, label in user_types %}
                     <option value="{{ value }}" {% if request.GET.user_type == value %}selected{% endif %}>
@@ -29,14 +30,14 @@
                 </select>
             </div>
             <div>
-                <select name="is_verified" class="px-4 py-2 border rounded-lg">
+                <select name="is_verified" class="px-4 py-2 border rounded-lg" id="verifiedSelect">
                     <option value="">All Status</option>
                     <option value="true" {% if request.GET.is_verified == 'true' %}selected{% endif %}>Verified</option>
                     <option value="false" {% if request.GET.is_verified == 'false' %}selected{% endif %}>Not Verified</option>
                 </select>
             </div>
-            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
-                <i class="fas fa-filter mr-2"></i>Filter
+            <button type="button" id="clearFilters" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-times mr-2"></i>Clear
             </button>
         </form>
     </div>
@@ -94,9 +95,16 @@
                             <i class="fas fa-eye"></i>
                         </a>
                         <a href="{% url 'users:user-update' guid=user.guid %}"
-                           class="text-indigo-600 hover:text-indigo-900">
+                           class="text-indigo-600 hover:text-indigo-900 mr-3">
                             <i class="fas fa-edit"></i>
                         </a>
+                        <form method="post" action="{% url 'users:delete-user' guid=user.guid %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-600 hover:text-red-900"
+                                    onclick="return confirm('Are you sure you want to delete this user?')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 {% empty %}
@@ -166,4 +174,53 @@
     </div>
     {% endif %}
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('filterForm');
+    const searchInput = document.getElementById('searchInput');
+    const userTypeSelect = document.getElementById('userTypeSelect');
+    const verifiedSelect = document.getElementById('verifiedSelect');
+    const clearFilters = document.getElementById('clearFilters');
+    let timeout = null;
+
+    // Function to submit form with only non-empty values
+    function submitForm() {
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+
+        // Only append non-empty values
+        for (const [key, value] of formData.entries()) {
+            if (value.trim() !== '') {
+                params.append(key, value);
+            }
+        }
+
+        // Get the base URL
+        const baseUrl = window.location.pathname;
+
+        // Build the new URL with only non-empty parameters
+        const newUrl = params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
+
+        // Navigate to the new URL
+        window.location.href = newUrl;
+    }
+
+    // Real-time search with debounce
+    searchInput.addEventListener('input', function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(submitForm, 500);
+    });
+
+    // Real-time filtering for selects
+    userTypeSelect.addEventListener('change', submitForm);
+    verifiedSelect.addEventListener('change', submitForm);
+
+    // Clear filters
+    clearFilters.addEventListener('click', function() {
+        const baseUrl = window.location.pathname;
+        window.location.href = baseUrl;
+    });
+});
+</script>
 {% endblock %}

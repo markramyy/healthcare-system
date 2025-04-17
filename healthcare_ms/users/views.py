@@ -171,3 +171,13 @@ def me(request):
         'serialized_data': serializer.data,
         'is_me': True
     })
+
+
+@login_required
+def delete_user(request, guid):
+    user = get_object_or_404(User, guid=guid)
+    if request.method == 'POST':
+        user.delete()
+        messages.success(request, 'User deleted successfully.')
+        return redirect('users:user-list')
+    return redirect('users:user-detail', guid=guid)
