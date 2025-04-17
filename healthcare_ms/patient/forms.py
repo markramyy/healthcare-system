@@ -7,23 +7,22 @@ class PatientProfileForm(forms.ModelForm):
     class Meta:
         model = PatientProfile
         fields = [
-            'user', 'primary_doctor', 'blood_type',
+            'user', 'gender', 'primary_doctor', 'blood_type',
             'height', 'weight', 'allergies', 'chronic_conditions'
         ]
-        widgets = {
-            'user': forms.Select(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white'}),
-            'primary_doctor': forms.Select(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white'}),
-            'blood_type': forms.Select(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white'}),
-            'height': forms.NumberInput(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white'}),
-            'weight': forms.NumberInput(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white'}),
-            'allergies': forms.Textarea(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white', 'rows': 3}),
-            'chronic_conditions': forms.Textarea(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white', 'rows': 3}),
-        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['user'].queryset = User.objects.filter(user_type='patient')
+        self.fields['primary_doctor'].required = False
         self.fields['primary_doctor'].queryset = User.objects.filter(user_type='doctor')
+        self.fields['primary_doctor'].empty_label = "-- Select Primary Doctor --"
+
+        self.fields['blood_type'].required = False
+        self.fields['height'].required = False
+        self.fields['weight'].required = False
+        self.fields['allergies'].required = False
+        self.fields['chronic_conditions'].required = False
 
 
 class InsuranceForm(forms.ModelForm):

@@ -105,6 +105,7 @@ def profile_update(request, guid):
 
     return render(request, 'patient/profile_form.html', {
         'form': form,
+        'profile': profile,
         'serialized_data': serializer.data
     })
 

@@ -40,7 +40,7 @@ class PatientProfileUpdateSerializer(BaseSerializer):
     class Meta:
         model = PatientProfile
         fields = (
-            'guid', 'user', 'primary_doctor', 'blood_type',
+            'guid', 'user', 'gender', 'primary_doctor', 'blood_type',
             'height', 'weight', 'allergies', 'chronic_conditions'
         )
 
