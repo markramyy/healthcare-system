@@ -225,6 +225,69 @@ class Command(BaseCommand):
                 'date_of_birth': '1992-11-05',
                 'address': '456 Wellness Avenue'
             },
+            {
+                'username': 'patient4',
+                'first_name': 'Michael',
+                'last_name': 'Johnson',
+                'email': 'michael.johnson@example.com',
+                'phone_number': '+1234567801',
+                'date_of_birth': '1985-03-25',
+                'address': '789 Health Street'
+            },
+            {
+                'username': 'patient5',
+                'first_name': 'Sophia',
+                'last_name': 'Martinez',
+                'email': 'sophia.martinez@example.com',
+                'phone_number': '+1234567802',
+                'date_of_birth': '1990-09-12',
+                'address': '321 Wellness Lane'
+            },
+            {
+                'username': 'patient6',
+                'first_name': 'William',
+                'last_name': 'Taylor',
+                'email': 'william.taylor@example.com',
+                'phone_number': '+1234567803',
+                'date_of_birth': '1982-06-18',
+                'address': '654 Medical Avenue'
+            },
+            {
+                'username': 'patient7',
+                'first_name': 'Isabella',
+                'last_name': 'Anderson',
+                'email': 'isabella.anderson@example.com',
+                'phone_number': '+1234567804',
+                'date_of_birth': '1993-04-30',
+                'address': '987 Care Street'
+            },
+            {
+                'username': 'patient8',
+                'first_name': 'David',
+                'last_name': 'Thomas',
+                'email': 'david.thomas@example.com',
+                'phone_number': '+1234567805',
+                'date_of_birth': '1979-12-08',
+                'address': '147 Health Avenue'
+            },
+            {
+                'username': 'patient9',
+                'first_name': 'Mia',
+                'last_name': 'Jackson',
+                'email': 'mia.jackson@example.com',
+                'phone_number': '+1234567806',
+                'date_of_birth': '1991-07-22',
+                'address': '258 Wellness Road'
+            },
+            {
+                'username': 'patient10',
+                'first_name': 'Daniel',
+                'last_name': 'White',
+                'email': 'daniel.white@example.com',
+                'phone_number': '+1234567807',
+                'date_of_birth': '1987-01-14',
+                'address': '369 Medical Lane'
+            }
         ]
 
         for data in patient_data:
@@ -264,10 +327,19 @@ class Command(BaseCommand):
             'High Cholesterol'
         ]
 
+        # Create a balanced distribution of genders
+        genders = ['male', 'female']
+        gender_distribution = {gender: 0 for gender in genders}
+
         for patient in patients:
             if not hasattr(patient, 'patient_profile'):
+                # Ensure balanced gender distribution
+                gender = min(gender_distribution.items(), key=lambda x: x[1])[0]
+                gender_distribution[gender] += 1
+
                 PatientProfile.objects.create(
                     user=patient,
+                    gender=gender,
                     blood_type=random.choice(blood_types),
                     height=Decimal(random.uniform(150, 190)),
                     weight=Decimal(random.uniform(50, 100)),
