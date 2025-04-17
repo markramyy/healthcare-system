@@ -618,10 +618,11 @@ class Command(BaseCommand):
 
                 # Create insurance claim
                 claim_statuses = ['submitted', 'processing', 'approved', 'rejected', 'paid']
-                if random.choice([True, False]):
+                insurance = patient.insurance_policies.first()
+                if insurance and random.choice([True, False]):
                     InsuranceClaim.objects.create(
                         invoice=invoice,
-                        insurance=patient.insurance_policies.first(),
+                        insurance=insurance,
                         claim_number=f'CLM{random.randint(100000, 999999)}',
                         claim_date=invoice.issue_date,
                         amount_claimed=invoice.total_amount,

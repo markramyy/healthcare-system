@@ -25,7 +25,6 @@ from healthcare_ms.users.serializers import (
     UserRegistrationSerializer
 )
 from healthcare_ms.users.forms import UserRegistrationForm
-from healthcare_ms.core.decorators import role_required
 
 
 class UserRegistrationView(APIView):
@@ -179,7 +178,6 @@ def me(request):
 
 
 @login_required
-@role_required('admin')
 def delete_user(request, guid):
     user = get_object_or_404(User, guid=guid)
     if request.method == 'POST':
@@ -192,7 +190,7 @@ def delete_user(request, guid):
 class LoginView(View):
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect('core:home')
+            return redirect('dashboard:home')
         form = AuthenticationForm()
         return render(request, 'users/login.html', {'form': form})
 
@@ -205,7 +203,7 @@ class LoginView(View):
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Welcome back, {username}!')
-                return redirect('core:home')
+                return redirect('dashboard:home')
         messages.error(request, 'Invalid username or password.')
         return render(request, 'users/login.html', {'form': form})
 
@@ -213,7 +211,7 @@ class LoginView(View):
 class RegisterView(View):
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect('core:dashboard')
+            return redirect('dashboard:home')
         form = UserRegistrationForm()
         return render(request, 'users/register.html', {'form': form})
 
@@ -225,5 +223,5 @@ class RegisterView(View):
                 user = serializer.save()
                 login(request, user)
                 messages.success(request, 'Account created successfully!')
-                return redirect('core:dashboard')
+                return redirect('dashboard:home')
         return render(request, 'users/register.html', {'form': form})
