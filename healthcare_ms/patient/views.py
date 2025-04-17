@@ -141,6 +141,9 @@ def insurance_list(request):
 
 @login_required
 def insurance_create(request):
+    patient_guid = request.GET.get('patient')
+    initial_data = {'patient': patient_guid}
+
     if request.method == 'POST':
         serializer = InsuranceCreateSerializer(data=request.POST)
         if serializer.is_valid():
@@ -151,12 +154,12 @@ def insurance_create(request):
             form = InsuranceForm(request.POST)
             form.errors.update(serializer.errors)
     else:
-        form = InsuranceForm(initial={'patient': request.GET.get('patient')})
-        serializer = InsuranceCreateSerializer()
+        form = InsuranceForm(initial=initial_data)
+        serializer = InsuranceCreateSerializer(initial=initial_data)
 
     return render(request, 'patient/insurance_form.html', {
         'form': form,
-        'serialized_data': serializer.data if hasattr(serializer, 'data') else None
+        'serialized_data': serializer.initial if hasattr(serializer, 'initial') else None
     })
 
 
@@ -222,6 +225,9 @@ def emergency_contact_list(request):
 
 @login_required
 def emergency_contact_create(request):
+    patient_guid = request.GET.get('patient')
+    initial_data = {'patient': patient_guid}
+
     if request.method == 'POST':
         serializer = EmergencyContactCreateSerializer(data=request.POST)
         if serializer.is_valid():
@@ -232,12 +238,12 @@ def emergency_contact_create(request):
             form = EmergencyContactForm(request.POST)
             form.errors.update(serializer.errors)
     else:
-        form = EmergencyContactForm(initial={'patient': request.GET.get('patient')})
-        serializer = EmergencyContactCreateSerializer()
+        form = EmergencyContactForm(initial=initial_data)
+        serializer = EmergencyContactCreateSerializer(initial=initial_data)
 
     return render(request, 'patient/emergency_contact_form.html', {
         'form': form,
-        'serialized_data': serializer.data if hasattr(serializer, 'data') else None
+        'serialized_data': serializer.initial if hasattr(serializer, 'initial') else None
     })
 
 

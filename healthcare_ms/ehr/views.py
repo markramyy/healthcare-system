@@ -72,22 +72,28 @@ def medical_record_detail(request, guid):
 
 @login_required
 def medical_record_create(request):
+    patient_guid = request.GET.get('patient')
+    initial_data = {
+        'doctor': request.user,
+        'patient': patient_guid
+    }
+
     if request.method == 'POST':
         serializer = MedicalRecordCreateSerializer(data=request.POST)
         if serializer.is_valid():
             record = serializer.save()
             messages.success(request, 'Medical record created successfully.')
-            return redirect('ehr:medical-record-detail', guid=record.guid)
+            return redirect('patient:profile-detail', guid=record.patient.guid)
         else:
             form = MedicalRecordForm(request.POST)
             form.errors.update(serializer.errors)
     else:
-        form = MedicalRecordForm(initial={'doctor': request.user})
-        serializer = MedicalRecordCreateSerializer()
+        form = MedicalRecordForm(initial=initial_data)
+        serializer = MedicalRecordCreateSerializer(initial=initial_data)
 
     return render(request, 'ehr/medical_record_form.html', {
         'form': form,
-        'serialized_data': serializer.data if hasattr(serializer, 'data') else None
+        'serialized_data': serializer.initial if hasattr(serializer, 'initial') else None
     })
 
 
