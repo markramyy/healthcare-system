@@ -6,12 +6,22 @@ from healthcare_ms.users.models import User
 
 
 class PatientProfile(DBBase):
+    GENDER_CHOICES = (
+        ('male', _('Male')),
+        ('female', _('Female')),
+    )
+
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
         related_name='patient_profile',
         limit_choices_to={'user_type': 'patient'},
         verbose_name=_('User')
+    )
+    gender = models.CharField(
+        max_length=10,
+        choices=GENDER_CHOICES,
+        verbose_name=_('Gender')
     )
     blood_type = models.CharField(
         max_length=3,
