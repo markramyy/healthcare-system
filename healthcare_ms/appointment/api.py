@@ -1,4 +1,4 @@
-from rest_framework import permissions, filters
+from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from django.db.models import Q
@@ -20,6 +20,11 @@ from healthcare_ms.appointment.serializers import (
     AppointmentCreateSerializer,
     AppointmentUpdateSerializer
 )
+from healthcare_ms.core.permissions import (
+    AppointmentTypePermission,
+    AppointmentSlotPermission,
+    AppointmentPermission
+)
 
 import operator
 import logging
@@ -32,6 +37,7 @@ class AppointmentTypeViewSet(BaseViewSet):
     """
     queryset = AppointmentType.objects.all()
     search_fields = ['name', 'description']
+    permission_classes = [AppointmentTypePermission]
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -143,6 +149,25 @@ class AppointmentSlotViewSet(BaseViewSet):
     queryset = AppointmentSlot.objects.all()
     filterset_fields = ['doctor', 'date', 'is_available']
     search_fields = ['doctor__first_name', 'doctor__last_name']
+    permission_classes = [AppointmentSlotPermission]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        # If user is admin or staff, return all slots
+        if user.user_type in ['admin', 'staff']:
+            return queryset
+
+        # If user is doctor, return only their slots
+        if user.user_type == 'doctor':
+            return queryset.filter(doctor=user)
+
+        # If user is patient, return all available slots
+        if user.user_type == 'patient':
+            return queryset.filter(is_available=True)
+
+        return AppointmentSlot.objects.none()
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -217,6 +242,10 @@ class AppointmentSlotViewSet(BaseViewSet):
         }, status=200)
 
     def create(self, request, *args, **kwargs):
+        # If user is doctor, automatically set the doctor field
+        if request.user.user_type == 'doctor':
+            request.data['doctor'] = request.user.guid
+
         serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -258,7 +287,7 @@ class AppointmentSlotViewSet(BaseViewSet):
 
 class AppointmentViewSet(BaseViewSet):
     queryset = Appointment.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [AppointmentPermission]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = [
         'patient', 'doctor', 'appointment_type',
@@ -274,6 +303,24 @@ class AppointmentViewSet(BaseViewSet):
         'status', 'created'
     ]
     ordering = ['-slot__date', '-slot__start_time']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        # If user is admin or staff, return all appointments
+        if user.user_type in ['admin', 'staff']:
+            return queryset
+
+        # If user is doctor, return only their appointments
+        if user.user_type == 'doctor':
+            return queryset.filter(doctor=user)
+
+        # If user is patient, return only their appointments
+        if user.user_type == 'patient':
+            return queryset.filter(patient=user)
+
+        return Appointment.objects.none()
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -348,6 +395,10 @@ class AppointmentViewSet(BaseViewSet):
         }, status=200)
 
     def create(self, request, *args, **kwargs):
+        # If user is patient, automatically set the patient field
+        if request.user.user_type == 'patient':
+            request.data['patient'] = request.user.guid
+
         serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
             serializer.save()

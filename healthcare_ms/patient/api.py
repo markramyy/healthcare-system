@@ -18,7 +18,7 @@ from healthcare_ms.patient.serializers import (
     EmergencyContactCreateSerializer,
     EmergencyContactUpdateSerializer
 )
-from healthcare_ms.patient.permissions import (
+from healthcare_ms.core.permissions import (
     PatientProfilePermission,
     InsurancePermission,
     EmergencyContactPermission

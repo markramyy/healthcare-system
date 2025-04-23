@@ -26,6 +26,13 @@ from healthcare_ms.billing.serializers import (
     InsuranceClaimCreateSerializer,
     InsuranceClaimUpdateSerializer
 )
+from healthcare_ms.core.permissions import (
+    ServicePermission,
+    InvoicePermission,
+    InvoiceItemPermission,
+    PaymentPermission,
+    InsuranceClaimPermission
+)
 
 import operator
 import logging
@@ -35,6 +42,21 @@ logger = logging.getLogger(__name__)
 class ServiceViewSet(BaseViewSet):
     queryset = Service.objects.all()
     search_fields = ['code', 'name', 'description']
+    permission_classes = [ServicePermission]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        # If user is admin or staff, return all services
+        if user.user_type in ['admin', 'staff']:
+            return queryset
+
+        # For doctors and patients, return only active services
+        if user.user_type in ['doctor', 'patient']:
+            return queryset.filter(is_active=True)
+
+        return Service.objects.none()
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -145,6 +167,25 @@ class ServiceViewSet(BaseViewSet):
 class InvoiceViewSet(BaseViewSet):
     queryset = Invoice.objects.all()
     search_fields = ['patient__username', 'invoice_number', 'status']
+    permission_classes = [InvoicePermission]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        # If user is admin or staff, return all invoices
+        if user.user_type in ['admin', 'staff']:
+            return queryset
+
+        # If user is doctor, return only their patients' invoices
+        if user.user_type == 'doctor':
+            return queryset.filter(patient__primary_doctor=user)
+
+        # If user is patient, return only their invoices
+        if user.user_type == 'patient':
+            return queryset.filter(patient=user)
+
+        return Invoice.objects.none()
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -213,6 +254,10 @@ class InvoiceViewSet(BaseViewSet):
         }, status=200)
 
     def create(self, request, *args, **kwargs):
+        # If user is patient, automatically set the patient field
+        if request.user.user_type == 'patient':
+            request.data['patient'] = request.user.guid
+
         serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -255,6 +300,25 @@ class InvoiceViewSet(BaseViewSet):
 class InvoiceItemViewSet(BaseViewSet):
     queryset = InvoiceItem.objects.all()
     search_fields = ['service__name', 'description']
+    permission_classes = [InvoiceItemPermission]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        # If user is admin or staff, return all invoice items
+        if user.user_type in ['admin', 'staff']:
+            return queryset
+
+        # If user is doctor, return only their patients' invoice items
+        if user.user_type == 'doctor':
+            return queryset.filter(invoice__patient__primary_doctor=user)
+
+        # If user is patient, return only their invoice items
+        if user.user_type == 'patient':
+            return queryset.filter(invoice__patient=user)
+
+        return InvoiceItem.objects.none()
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -365,6 +429,25 @@ class InvoiceItemViewSet(BaseViewSet):
 class PaymentViewSet(BaseViewSet):
     queryset = Payment.objects.all()
     search_fields = ['invoice__invoice_number', 'transaction_id', 'payment_method']
+    permission_classes = [PaymentPermission]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        # If user is admin or staff, return all payments
+        if user.user_type in ['admin', 'staff']:
+            return queryset
+
+        # If user is doctor, return only their patients' payments
+        if user.user_type == 'doctor':
+            return queryset.filter(invoice__patient__primary_doctor=user)
+
+        # If user is patient, return only their payments
+        if user.user_type == 'patient':
+            return queryset.filter(invoice__patient=user)
+
+        return Payment.objects.none()
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -475,6 +558,25 @@ class PaymentViewSet(BaseViewSet):
 class InsuranceClaimViewSet(BaseViewSet):
     queryset = InsuranceClaim.objects.all()
     search_fields = ['claim_number', 'insurance__provider', 'status']
+    permission_classes = [InsuranceClaimPermission]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        # If user is admin or staff, return all claims
+        if user.user_type in ['admin', 'staff']:
+            return queryset
+
+        # If user is doctor, return only their patients' claims
+        if user.user_type == 'doctor':
+            return queryset.filter(invoice__patient__primary_doctor=user)
+
+        # If user is patient, return only their claims
+        if user.user_type == 'patient':
+            return queryset.filter(invoice__patient=user)
+
+        return InsuranceClaim.objects.none()
 
     def get_serializer_class(self):
         if self.action == 'list':

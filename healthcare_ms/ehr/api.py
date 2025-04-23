@@ -22,6 +22,12 @@ from healthcare_ms.ehr.serializers import (
     PrescriptionCreateSerializer,
     PrescriptionUpdateSerializer
 )
+from healthcare_ms.core.permissions import (
+    MedicalRecordPermission,
+    DiagnosisPermission,
+    TreatmentPermission,
+    PrescriptionPermission
+)
 
 import operator
 import logging
@@ -31,6 +37,25 @@ logger = logging.getLogger(__name__)
 class MedicalRecordViewSet(BaseViewSet):
     queryset = MedicalRecord.objects.all()
     search_fields = ['patient__username', 'doctor__username', 'symptoms']
+    permission_classes = [MedicalRecordPermission]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        # If user is admin or staff, return all records
+        if user.user_type in ['admin', 'staff']:
+            return queryset
+
+        # If user is doctor, return only their records
+        if user.user_type == 'doctor':
+            return queryset.filter(doctor=user)
+
+        # If user is patient, return only their records
+        if user.user_type == 'patient':
+            return queryset.filter(patient=user)
+
+        return MedicalRecord.objects.none()
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -99,6 +124,10 @@ class MedicalRecordViewSet(BaseViewSet):
         }, status=200)
 
     def create(self, request, *args, **kwargs):
+        # If user is doctor, automatically set the doctor field
+        if request.user.user_type == 'doctor':
+            request.data['doctor'] = request.user.guid
+
         serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -136,6 +165,25 @@ class MedicalRecordViewSet(BaseViewSet):
 class DiagnosisViewSet(BaseViewSet):
     queryset = Diagnosis.objects.all()
     search_fields = ['diagnosis_code', 'description']
+    permission_classes = [DiagnosisPermission]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        # If user is admin or staff, return all diagnoses
+        if user.user_type in ['admin', 'staff']:
+            return queryset
+
+        # If user is doctor, return only their patients' diagnoses
+        if user.user_type == 'doctor':
+            return queryset.filter(medical_record__doctor=user)
+
+        # If user is patient, return only their diagnoses
+        if user.user_type == 'patient':
+            return queryset.filter(medical_record__patient=user)
+
+        return Diagnosis.objects.none()
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -241,6 +289,25 @@ class DiagnosisViewSet(BaseViewSet):
 class TreatmentViewSet(BaseViewSet):
     queryset = Treatment.objects.all()
     search_fields = ['name', 'description']
+    permission_classes = [TreatmentPermission]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        # If user is admin or staff, return all treatments
+        if user.user_type in ['admin', 'staff']:
+            return queryset
+
+        # If user is doctor, return only their patients' treatments
+        if user.user_type == 'doctor':
+            return queryset.filter(medical_record__doctor=user)
+
+        # If user is patient, return only their treatments
+        if user.user_type == 'patient':
+            return queryset.filter(medical_record__patient=user)
+
+        return Treatment.objects.none()
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -346,6 +413,25 @@ class TreatmentViewSet(BaseViewSet):
 class PrescriptionViewSet(BaseViewSet):
     queryset = Prescription.objects.all()
     search_fields = ['medication_name', 'dosage']
+    permission_classes = [PrescriptionPermission]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        # If user is admin or staff, return all prescriptions
+        if user.user_type in ['admin', 'staff']:
+            return queryset
+
+        # If user is doctor, return only their patients' prescriptions
+        if user.user_type == 'doctor':
+            return queryset.filter(medical_record__doctor=user)
+
+        # If user is patient, return only their prescriptions
+        if user.user_type == 'patient':
+            return queryset.filter(medical_record__patient=user)
+
+        return Prescription.objects.none()
 
     def get_serializer_class(self):
         if self.action == 'list':
