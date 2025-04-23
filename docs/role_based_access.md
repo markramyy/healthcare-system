@@ -15,18 +15,12 @@ The healthcare system implements a role-based access control (RBAC) system to ma
    - Can view and manage medical records
    - Can create prescriptions and treatments
 
-3. **Nurse** (`nurse`)
-   - Can view patient records
-   - Can manage appointments
-   - Can update medical records
-   - Can view prescriptions and treatments
-
-4. **Staff** (`staff`)
+3. **Staff** (`staff`)
    - Can manage appointments
    - Can handle billing and insurance
    - Can view basic patient information
 
-5. **Patient** (`patient`)
+4. **Patient** (`patient`)
    - Can view own records
    - Can manage own appointments
    - Can view own prescriptions and treatments
@@ -44,34 +38,31 @@ def admin_only_view(request):
     # Only admins can access this view
     pass
 
-@role_required('doctor', 'nurse')
+@role_required('doctor')
 def medical_staff_view(request):
-    # Both doctors and nurses can access this view
+    # Both doctors can access this view
     pass
 ```
 
 ### Available Decorators
 1. `@admin_required` - Admin only
 2. `@doctor_required` - Doctor only
-3. `@nurse_required` - Nurse only
-4. `@staff_required` - Staff only
-5. `@patient_required` - Patient only
-6. `@staff_or_admin_required` - Staff or Admin
-7. `@doctor_or_nurse_required` - Doctor or Nurse
-8. `@doctor_or_admin_required` - Doctor or Admin
+3. `@staff_required` - Staff only
+4. `@patient_required` - Patient only
+5. `@staff_or_admin_required` - Staff or Admin
+6. `@doctor_or_admin_required` - Doctor or Admin
 
 ## Feature Access Matrix
-
-| Feature | Admin | Doctor | Nurse | Staff | Patient |
-|---------|-------|--------|-------|-------|---------|
-| User Management | ✓ | ✗ | ✗ | ✗ | ✗ |
-| Patient Records | ✓ | ✓ | ✓ | ✗ | Own only |
-| Medical Records | ✓ | ✓ | ✓ | ✗ | Own only |
-| Appointments | ✓ | ✓ | ✓ | ✓ | Own only |
-| Prescriptions | ✓ | ✓ | ✓ | ✗ | Own only |
-| Treatments | ✓ | ✓ | ✓ | ✗ | Own only |
-| Billing | ✓ | ✗ | ✗ | ✓ | Own only |
-| Insurance | ✓ | ✗ | ✗ | ✓ | Own only |
+| Feature | Admin | Doctor | Staff | Patient |
+|---------|-------|--------|-------|---------|
+| User Management | ✓ | ✗ | ✗ | ✗ |
+| Patient Records | ✓ | ✓ | ✗ | Own only |
+| Medical Records | ✓ | ✓ | ✗ | Own only |
+| Appointments | ✓ | ✓ | ✓ | Own only |
+| Prescriptions | ✓ | ✓ | ✗ | Own only |
+| Treatments | ✓ | ✓ | ✗ | Own only |
+| Billing | ✓ | ✗ | ✓ | Own only |
+| Insurance | ✓ | ✗ | ✓ | Own only |
 
 ## Implementation Guidelines
 

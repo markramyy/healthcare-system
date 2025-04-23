@@ -12,7 +12,6 @@ class User(AbstractUser, DBBase):
     USER_TYPE_CHOICES = (
         ('admin', _('Administrator')),
         ('doctor', _('Doctor')),
-        ('nurse', _('Nurse')),
         ('patient', _('Patient')),
         ('staff', _('Staff')),
     )

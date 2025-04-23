@@ -22,7 +22,6 @@ class Command(BaseCommand):
 
         # Create users
         doctors = self._create_doctors()
-        self._create_nurses()
         self._create_staff()
         patients = self._create_patients()
 
@@ -110,48 +109,6 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS(f'Created doctor: {doctor.get_full_name()}'))
 
         return doctors
-
-    def _create_nurses(self):
-        nurses = []
-        nurse_data = [
-            {
-                'username': 'nurse_brown',
-                'first_name': 'Emily',
-                'last_name': 'Brown',
-                'email': 'nurse.brown@hospital.com',
-                'phone_number': '+1234567894',
-                'date_of_birth': '1985-06-25',
-                'address': '654 Nurse Street'
-            },
-            {
-                'username': 'nurse_taylor',
-                'first_name': 'David',
-                'last_name': 'Taylor',
-                'email': 'nurse.taylor@hospital.com',
-                'phone_number': '+1234567895',
-                'date_of_birth': '1988-11-15',
-                'address': '987 Care Lane'
-            },
-        ]
-
-        for data in nurse_data:
-            if not User.objects.filter(username=data['username']).exists():
-                nurse = User.objects.create_user(
-                    username=data['username'],
-                    email=data['email'],
-                    password='1',
-                    first_name=data['first_name'],
-                    last_name=data['last_name'],
-                    user_type='nurse',
-                    is_verified=True,
-                    phone_number=data['phone_number'],
-                    date_of_birth=data['date_of_birth'],
-                    address=data['address']
-                )
-                nurses.append(nurse)
-                self.stdout.write(self.style.SUCCESS(f'Created nurse: {nurse.get_full_name()}'))
-
-        return nurses
 
     def _create_staff(self):
         staff = []
