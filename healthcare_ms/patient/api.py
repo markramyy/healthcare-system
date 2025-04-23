@@ -1,13 +1,13 @@
 from rest_framework.response import Response
 from django.db.models import Q
 from functools import reduce
+from rest_framework.decorators import action
 
 from healthcare_ms.core.base_viewset import BaseViewSet
 from healthcare_ms.patient.models import PatientProfile, Insurance, EmergencyContact
 from healthcare_ms.patient.serializers import (
     PatientProfileListSerializer,
     PatientProfileDetailSerializer,
-    PatientProfileCreateSerializer,
     PatientProfileUpdateSerializer,
     InsuranceListSerializer,
     InsuranceDetailSerializer,
@@ -18,6 +18,11 @@ from healthcare_ms.patient.serializers import (
     EmergencyContactCreateSerializer,
     EmergencyContactUpdateSerializer
 )
+from healthcare_ms.patient.permissions import (
+    PatientProfilePermission,
+    InsurancePermission,
+    EmergencyContactPermission
+)
 
 import operator
 import logging
@@ -27,17 +32,51 @@ logger = logging.getLogger(__name__)
 class PatientProfileViewSet(BaseViewSet):
     queryset = PatientProfile.objects.all()
     search_fields = ['user__username', 'user__email', 'blood_type']
+    permission_classes = [PatientProfilePermission]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        if user.user_type in ['admin', 'staff']:
+            return queryset
+
+        if user.user_type == 'doctor':
+            return queryset.filter(primary_doctor=user)
+
+        if user.user_type == 'patient':
+            return queryset.filter(user=user)
+
+        return PatientProfile.objects.none()
 
     def get_serializer_class(self):
         if self.action == 'list':
             return PatientProfileListSerializer
-        elif self.action == 'retrieve':
+        elif self.action in ['retrieve', 'me']:
             return PatientProfileDetailSerializer
-        elif self.action == 'create':
-            return PatientProfileCreateSerializer
         elif self.action in ['update', 'partial_update']:
             return PatientProfileUpdateSerializer
         return PatientProfileListSerializer
+
+    @action(detail=False, methods=['get'], url_path='me')
+    def me(self, request):
+        if request.user.user_type != 'patient':
+            return Response({
+                "message": "This endpoint is only accessible by patients."
+            }, status=403)
+
+        try:
+            profile = PatientProfile.objects.get(user=request.user)
+            serializer = self.get_serializer_class()(profile)
+            return Response({
+                "message": "Patient profile retrieved successfully.",
+                "data": serializer.data
+            }, status=200)
+        except PatientProfile.DoesNotExist:
+            return Response({
+                "message": "Patient profile not found.",
+                "data": {}
+            }, status=404)
 
     def get_paginated_response(self, queryset, serializer_class):
         page = self.paginate_queryset(queryset)
@@ -94,19 +133,6 @@ class PatientProfileViewSet(BaseViewSet):
             "data": serializer.data
         }, status=200)
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer_class()(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({
-                "message": "Patient profile created successfully.",
-                "data": serializer.data
-            }, status=201)
-        return Response({
-            "message": "Failed to create patient profile.",
-            "errors": serializer.errors
-        }, status=400)
-
     def update(self, request, *args, **kwargs):
         profile = self.get_object()
         serializer = self.get_serializer_class()(profile, data=request.data, partial=True)
@@ -122,6 +148,11 @@ class PatientProfileViewSet(BaseViewSet):
         }, status=400)
 
     def destroy(self, request, *args, **kwargs):
+        if request.user.user_type != 'admin':
+            return Response({
+                "message": "Only administrators can delete patient profiles."
+            }, status=403)
+
         try:
             profile = self.get_object()
             profile.delete()
@@ -137,6 +168,22 @@ class PatientProfileViewSet(BaseViewSet):
 class InsuranceViewSet(BaseViewSet):
     queryset = Insurance.objects.all()
     search_fields = ['patient__username', 'provider', 'policy_number']
+    permission_classes = [InsurancePermission]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        if user.user_type in ['admin', 'staff']:
+            return queryset
+
+        if user.user_type == 'doctor':
+            return queryset.filter(patient__primary_doctor=user)
+
+        if user.user_type == 'patient':
+            return queryset.filter(patient=user)
+
+        return Insurance.objects.none()
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -205,6 +252,9 @@ class InsuranceViewSet(BaseViewSet):
         }, status=200)
 
     def create(self, request, *args, **kwargs):
+        if request.user.user_type == 'patient':
+            request.data['patient'] = request.user.guid
+
         serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -232,6 +282,11 @@ class InsuranceViewSet(BaseViewSet):
         }, status=400)
 
     def destroy(self, request, *args, **kwargs):
+        if request.user.user_type not in ['admin', 'patient']:
+            return Response({
+                "message": "You don't have permission to delete insurance policies."
+            }, status=403)
+
         try:
             insurance = self.get_object()
             insurance.delete()
@@ -247,6 +302,22 @@ class InsuranceViewSet(BaseViewSet):
 class EmergencyContactViewSet(BaseViewSet):
     queryset = EmergencyContact.objects.all()
     search_fields = ['patient__username', 'name', 'relationship']
+    permission_classes = [EmergencyContactPermission]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        if user.user_type in ['admin', 'staff']:
+            return queryset
+
+        if user.user_type == 'doctor':
+            return queryset.filter(patient__primary_doctor=user)
+
+        if user.user_type == 'patient':
+            return queryset.filter(patient=user)
+
+        return EmergencyContact.objects.none()
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -315,6 +386,9 @@ class EmergencyContactViewSet(BaseViewSet):
         }, status=200)
 
     def create(self, request, *args, **kwargs):
+        if request.user.user_type == 'patient':
+            request.data['patient'] = request.user.guid
+
         serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -342,6 +416,11 @@ class EmergencyContactViewSet(BaseViewSet):
         }, status=400)
 
     def destroy(self, request, *args, **kwargs):
+        if request.user.user_type != 'patient':
+            return Response({
+                "message": "Only patients can delete their own emergency contacts."
+            }, status=403)
+
         try:
             contact = self.get_object()
             contact.delete()
