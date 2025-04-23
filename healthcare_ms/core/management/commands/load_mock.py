@@ -131,6 +131,33 @@ class Command(BaseCommand):
                 'date_of_birth': '1992-09-30',
                 'address': '852 Office Street'
             },
+            {
+                'username': 'staff_wilson',
+                'first_name': 'David',
+                'last_name': 'Wilson',
+                'email': 'staff.wilson@hospital.com',
+                'phone_number': '+1234567898',
+                'date_of_birth': '1988-11-15',
+                'address': '963 Admin Street'
+            },
+            {
+                'username': 'staff_brown',
+                'first_name': 'Sarah',
+                'last_name': 'Brown',
+                'email': 'staff.brown@hospital.com',
+                'phone_number': '+1234567899',
+                'date_of_birth': '1991-07-22',
+                'address': '147 Staff Lane'
+            },
+            {
+                'username': 'staff_davis',
+                'first_name': 'Michael',
+                'last_name': 'Davis',
+                'email': 'staff.davis@hospital.com',
+                'phone_number': '+1234567800',
+                'date_of_birth': '1989-03-18',
+                'address': '258 Office Avenue'
+            }
         ]
 
         for data in staff_data:
@@ -433,16 +460,38 @@ class Command(BaseCommand):
             'Emergency consultation'
         ]
 
+        # Create a balanced distribution of appointment statuses
+        status_distribution = {status: 0 for status in appointment_statuses}
+        target_distribution = {
+            'scheduled': 0.2,  # 20%
+            'confirmed': 0.2,  # 20%
+            'in_progress': 0.1,  # 10%
+            'completed': 0.3,  # 30%
+            'cancelled': 0.1,  # 10%
+            'no_show': 0.1  # 10%
+        }
+
         for patient in patients:
             for _ in range(random.randint(1, 3)):  # 1-3 appointments per patient
                 if slots.exists():
                     slot = random.choice(slots)
+
+                    # Choose status based on distribution
+                    available_statuses = [
+                        s for s in appointment_statuses
+                        if status_distribution[s] < target_distribution[s] * len(patients) * 3
+                    ]
+                    if not available_statuses:
+                        available_statuses = appointment_statuses
+                    status = random.choice(available_statuses)
+                    status_distribution[status] += 1
+
                     Appointment.objects.create(
                         patient=patient,
                         doctor=slot.doctor,
                         appointment_type=random.choice(appointment_types),
                         slot=slot,
-                        appointment_status=random.choice(appointment_statuses),
+                        appointment_status=status,
                         reason=random.choice(reasons),
                         notes=f'Patient notes for {patient.get_full_name()}'
                     )
@@ -481,6 +530,15 @@ class Command(BaseCommand):
             {'name': 'Metformin', 'dosage': '1000mg', 'frequency': 'Twice daily'}
         ]
 
+        treatment_statuses = ['planned', 'in_progress', 'completed', 'cancelled']
+        treatment_status_distribution = {status: 0 for status in treatment_statuses}
+        target_treatment_distribution = {
+            'planned': 0.2,  # 20%
+            'in_progress': 0.3,  # 30%
+            'completed': 0.4,  # 40%
+            'cancelled': 0.1  # 10%
+        }
+
         for patient in patients:
             for _ in range(random.randint(1, 3)):  # 1-3 medical records per patient
                 visit_date = timezone.now() - timedelta(days=random.randint(1, 90))
@@ -501,15 +559,23 @@ class Command(BaseCommand):
                     severity=random.choice(['low', 'medium', 'high', 'critical'])
                 )
 
-                # Create treatment
-                treatment_statuses = ['planned', 'in_progress', 'completed', 'cancelled']
+                # Create treatment with balanced status distribution
+                available_statuses = [
+                    s for s in treatment_statuses
+                    if treatment_status_distribution[s] < target_treatment_distribution[s] * len(patients) * 3
+                ]
+                if not available_statuses:
+                    available_statuses = treatment_statuses
+                treatment_status = random.choice(available_statuses)
+                treatment_status_distribution[treatment_status] += 1
+
                 Treatment.objects.create(
                     medical_record=record,
                     name=f'Treatment for {record.symptoms.split(",")[0]}',
                     description='Follow prescribed medication and lifestyle changes',
                     start_date=record.visit_date,
                     end_date=record.visit_date + timedelta(days=random.randint(7, 30)),
-                    treatment_status=random.choice(treatment_statuses)
+                    treatment_status=treatment_status
                 )
 
                 # Create prescription
@@ -545,16 +611,45 @@ class Command(BaseCommand):
                 services.append(service)
 
         # Create invoices and related data
+        invoice_statuses = ['draft', 'sent', 'paid', 'overdue', 'cancelled']
+        invoice_status_distribution = {status: 0 for status in invoice_statuses}
+        target_invoice_distribution = {
+            'draft': 0.2,  # 20%
+            'sent': 0.2,  # 20%
+            'paid': 0.3,  # 30%
+            'overdue': 0.2,  # 20%
+            'cancelled': 0.1  # 10%
+        }
+
+        claim_statuses = ['submitted', 'processing', 'approved', 'rejected', 'paid']
+        claim_status_distribution = {status: 0 for status in claim_statuses}
+        target_claim_distribution = {
+            'submitted': 0.2,  # 20%
+            'processing': 0.2,  # 20%
+            'approved': 0.2,  # 20%
+            'rejected': 0.2,  # 20%
+            'paid': 0.2  # 20%
+        }
+
         for patient in patients:
             for _ in range(random.randint(1, 3)):  # 1-3 invoices per patient
-                invoice_statuses = ['draft', 'sent', 'paid', 'overdue', 'cancelled']
+                # Choose invoice status based on distribution
+                available_statuses = [
+                    s for s in invoice_statuses
+                    if invoice_status_distribution[s] < target_invoice_distribution[s] * len(patients) * 3
+                ]
+                if not available_statuses:
+                    available_statuses = invoice_statuses
+                invoice_status = random.choice(available_statuses)
+                invoice_status_distribution[invoice_status] += 1
+
                 invoice = Invoice.objects.create(
                     patient=patient,
                     invoice_number=f'INV{random.randint(100000, 999999)}',
                     issue_date=timezone.now().date() - timedelta(days=random.randint(1, 30)),
                     due_date=timezone.now().date() + timedelta(days=random.randint(7, 30)),
                     total_amount=Decimal('0.00'),
-                    invoice_status=random.choice(invoice_statuses),
+                    invoice_status=invoice_status,
                     notes=f'Invoice notes for {patient.get_full_name()}'
                 )
 
@@ -577,7 +672,7 @@ class Command(BaseCommand):
 
                 invoice.save()
 
-                # Create payment
+                # Create payment if invoice is paid
                 payment_methods = ['cash', 'credit_card', 'debit_card', 'bank_transfer', 'insurance']
                 if invoice.invoice_status == 'paid':
                     Payment.objects.create(
@@ -592,9 +687,18 @@ class Command(BaseCommand):
                     invoice.save()
 
                 # Create insurance claim
-                claim_statuses = ['submitted', 'processing', 'approved', 'rejected', 'paid']
                 insurance = patient.insurance_policies.first()
                 if insurance and random.choice([True, False]):
+                    # Choose claim status based on distribution
+                    available_statuses = [
+                        s for s in claim_statuses
+                        if claim_status_distribution[s] < target_claim_distribution[s] * len(patients) * 3
+                    ]
+                    if not available_statuses:
+                        available_statuses = claim_statuses
+                    claim_status = random.choice(available_statuses)
+                    claim_status_distribution[claim_status] += 1
+
                     InsuranceClaim.objects.create(
                         invoice=invoice,
                         insurance=insurance,
@@ -602,6 +706,6 @@ class Command(BaseCommand):
                         claim_date=invoice.issue_date,
                         amount_claimed=invoice.total_amount,
                         amount_approved=invoice.total_amount * Decimal('0.8'),  # 80% coverage
-                        insurance_status=random.choice(claim_statuses),
+                        insurance_status=claim_status,
                         notes=f'Insurance claim notes for {patient.get_full_name()}'
                     )
