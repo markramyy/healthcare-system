@@ -3,7 +3,7 @@ from rest_framework.exceptions import APIException
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
+from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 from healthcare_ms.core.pagination import StandardResultsSetPagination
@@ -23,4 +23,4 @@ class BaseViewSet(viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication, JWTAuthentication]
     permission_classes = [IsAuthenticated]
     pagination_class = StandardResultsSetPagination
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
