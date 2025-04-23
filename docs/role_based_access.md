@@ -8,95 +8,134 @@ The healthcare system implements a role-based access control (RBAC) system to ma
    - Full system access
    - Can manage all users and settings
    - Can view and manage all records
+   - Can perform all operations on all resources
 
-2. **Doctor** (`doctor`)
-   - Can manage patient records
-   - Can create and manage appointments
-   - Can view and manage medical records
-   - Can create prescriptions and treatments
-
-3. **Staff** (`staff`)
+2. **Staff** (`staff`)
+   - Can view all records
    - Can manage appointments
    - Can handle billing and insurance
-   - Can view basic patient information
+   - Limited delete permissions on certain resources
+
+3. **Doctor** (`doctor`)
+   - Can manage their own patients' records
+   - Can create and manage their own appointments
+   - Can view and manage their patients' medical records
+   - Can create prescriptions and treatments for their patients
+   - Can view their patients' billing information
 
 4. **Patient** (`patient`)
-   - Can view own records
-   - Can manage own appointments
-   - Can view own prescriptions and treatments
+   - Can view and manage their own profile
+   - Can view and manage their own appointments
+   - Can view their own medical records
+   - Can view their own prescriptions and treatments
+   - Can manage their own insurance and emergency contacts
+   - Can view and manage their own billing information
 
-## Access Control Implementation
+## Detailed Access Control Matrix
 
-### Decorators
-The system uses custom decorators to enforce role-based access control:
+### Patient Profile Management
+| Action | Admin | Staff | Doctor | Patient |
+|--------|-------|-------|--------|---------|
+| List Profiles | ✓ | ✓ | Own patients | ✗ |
+| View Profile | ✓ | ✓ | Own patients | Own only |
+| Create Profile | ✓ | ✓ | ✗ | ✗ |
+| Update Profile | ✓ | ✓ | Own patients | Own only |
+| Delete Profile | ✓ | ✗ | ✗ | ✗ |
 
-```python
-from healthcare_ms.core.decorators import role_required
+### Insurance Management
+| Action | Admin | Staff | Doctor | Patient |
+|--------|-------|-------|--------|---------|
+| List Insurance | ✓ | ✓ | Own patients | Own only |
+| View Insurance | ✓ | ✓ | Own patients | Own only |
+| Create Insurance | ✓ | ✓ | ✗ | Own only |
+| Update Insurance | ✓ | ✓ | ✗ | Own only |
+| Delete Insurance | ✓ | ✗ | ✗ | Own only |
 
-@role_required('admin')
-def admin_only_view(request):
-    # Only admins can access this view
-    pass
+### Emergency Contact Management
+| Action | Admin | Staff | Doctor | Patient |
+|--------|-------|-------|--------|---------|
+| List Contacts | ✓ | ✓ | Own patients | Own only |
+| View Contact | ✓ | ✓ | Own patients | Own only |
+| Create Contact | ✓ | ✓ | ✗ | Own only |
+| Update Contact | ✓ | ✓ | ✗ | Own only |
+| Delete Contact | ✓ | ✓ | ✗ | Own only |
 
-@role_required('doctor')
-def medical_staff_view(request):
-    # Both doctors can access this view
-    pass
-```
+### Appointment Management
+| Action | Admin | Staff | Doctor | Patient |
+|--------|-------|-------|--------|---------|
+| List Appointments | ✓ | ✓ | Own | Own only |
+| View Appointment | ✓ | ✓ | Own | Own only |
+| Create Appointment | ✓ | ✓ | Own | Own only |
+| Update Appointment | ✓ | ✓ | Own | Own only |
+| Delete Appointment | ✓ | ✓ | Own | Own only |
 
-### Available Decorators
-1. `@admin_required` - Admin only
-2. `@doctor_required` - Doctor only
-3. `@staff_required` - Staff only
-4. `@patient_required` - Patient only
-5. `@staff_or_admin_required` - Staff or Admin
-6. `@doctor_or_admin_required` - Doctor or Admin
+### Medical Records
+| Action | Admin | Staff | Doctor | Patient |
+|--------|-------|-------|--------|---------|
+| List Records | ✓ | ✓ | Own patients | Own only |
+| View Record | ✓ | ✓ | Own patients | Own only |
+| Create Record | ✓ | ✓ | Own patients | ✗ |
+| Update Record | ✓ | ✓ | Own patients | ✗ |
+| Delete Record | ✓ | ✓ | Own patients | ✗ |
 
-## Feature Access Matrix
-| Feature | Admin | Doctor | Staff | Patient |
-|---------|-------|--------|-------|---------|
-| User Management | ✓ | ✗ | ✗ | ✗ |
-| Patient Records | ✓ | ✓ | ✗ | Own only |
-| Medical Records | ✓ | ✓ | ✗ | Own only |
-| Appointments | ✓ | ✓ | ✓ | Own only |
-| Prescriptions | ✓ | ✓ | ✗ | Own only |
-| Treatments | ✓ | ✓ | ✗ | Own only |
-| Billing | ✓ | ✗ | ✓ | Own only |
-| Insurance | ✓ | ✗ | ✓ | Own only |
+### Billing Management
+| Action | Admin | Staff | Doctor | Patient |
+|--------|-------|-------|--------|---------|
+| List Invoices | ✓ | ✓ | Own patients | Own only |
+| View Invoice | ✓ | ✓ | Own patients | Own only |
+| Create Invoice | ✓ | ✓ | ✗ | Own only |
+| Update Invoice | ✓ | ✓ | ✗ | Own only |
+| Delete Invoice | ✓ | ✓ | ✗ | Own only |
 
-## Implementation Guidelines
+### Insurance Claims
+| Action | Admin | Staff | Doctor | Patient |
+|--------|-------|-------|--------|---------|
+| List Claims | ✓ | ✓ | Own patients | Own only |
+| View Claim | ✓ | ✓ | Own patients | Own only |
+| Create Claim | ✓ | ✓ | ✗ | Own only |
+| Update Claim | ✓ | ✓ | ✗ | Own only |
+| Delete Claim | ✓ | ✓ | ✗ | Own only |
 
-1. Always use the appropriate decorator for role-based access control
-2. When creating new views, consider which roles should have access
-3. Use the most restrictive access level possible
-4. For combined role access, use the appropriate combined decorator
-5. Test access control thoroughly for each role
+## Implementation Details
 
-## Example Usage
+### Permission Classes
+The system uses custom permission classes for each viewset:
 
-```python
-from healthcare_ms.core.decorators import admin_required, doctor_required, staff_or_admin_required
+1. `PatientProfilePermission`
+2. `InsurancePermission`
+3. `EmergencyContactPermission`
+4. `AppointmentTypePermission`
+5. `AppointmentSlotPermission`
+6. `AppointmentPermission`
+7. `MedicalRecordPermission`
+8. `DiagnosisPermission`
+9. `TreatmentPermission`
+10. `PrescriptionPermission`
+11. `ServicePermission`
+12. `InvoicePermission`
+13. `InvoiceItemPermission`
+14. `PaymentPermission`
+15. `InsuranceClaimPermission`
 
-@admin_required
-def manage_users(request):
-    # Only admins can manage users
-    pass
-
-@doctor_required
-def create_prescription(request):
-    # Only doctors can create prescriptions
-    pass
-
-@staff_or_admin_required
-def manage_appointments(request):
-    # Both staff and admins can manage appointments
-    pass
-```
+### Key Features
+1. **Object-Level Permissions**: Each permission class implements both view-level and object-level permissions
+2. **Action-Based Access**: Different actions (list, retrieve, create, update, delete) have different permission requirements
+3. **User Type Filtering**: Querysets are filtered based on user type
+4. **Automatic Field Setting**: Certain fields are automatically set based on the user type
 
 ## Security Considerations
 
-1. Never rely solely on frontend checks for access control
-2. Always implement server-side role verification
-3. Use the decorators consistently across all views
-4. Regularly audit access control implementations
-5. Keep the documentation updated with any changes to access control
+1. All permissions are enforced at both the view and object level
+2. Querysets are filtered to ensure users only see their authorized data
+3. Create/update operations automatically set user-specific fields
+4. Delete operations have additional restrictions for certain user types
+5. All endpoints require authentication
+6. Permissions are checked before any data access or modification
+
+## Testing Guidelines
+
+1. Test each endpoint with different user types
+2. Verify that users can only access their authorized data
+3. Test create/update operations to ensure proper field setting
+4. Verify that delete operations are properly restricted
+5. Test edge cases and unauthorized access attempts
