@@ -17,8 +17,8 @@ class InvoiceItemInline(admin.TabularInline):
 
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('invoice_number', 'patient', 'issue_date', 'due_date', 'total_amount', 'paid_amount', 'status')
-    list_filter = ('status', 'issue_date', 'due_date')
+    list_display = ('invoice_number', 'patient', 'issue_date', 'due_date', 'total_amount', 'paid_amount', 'invoice_status')
+    list_filter = ('invoice_status', 'issue_date', 'due_date')
     search_fields = ('invoice_number', 'patient__username', 'patient__first_name', 'patient__last_name')
     date_hierarchy = 'issue_date'
     raw_id_fields = ('patient', 'appointment')
@@ -36,8 +36,8 @@ class PaymentAdmin(admin.ModelAdmin):
 
 @admin.register(InsuranceClaim)
 class InsuranceClaimAdmin(admin.ModelAdmin):
-    list_display = ('claim_number', 'invoice', 'insurance', 'claim_date', 'amount_claimed', 'amount_approved', 'status')
-    list_filter = ('status', 'claim_date')
+    list_display = ('claim_number', 'invoice', 'insurance', 'claim_date', 'amount_claimed', 'amount_approved', 'insurance_status')
+    list_filter = ('insurance_status', 'claim_date')
     search_fields = ('claim_number', 'invoice__invoice_number', 'insurance__provider')
     date_hierarchy = 'claim_date'
     raw_id_fields = ('invoice', 'insurance')

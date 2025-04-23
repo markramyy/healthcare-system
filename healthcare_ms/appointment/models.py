@@ -72,7 +72,7 @@ class Appointment(DBBase):
         related_name='appointments',
         verbose_name=_('Appointment Slot')
     )
-    status = models.CharField(
+    appointment_status = models.CharField(
         max_length=20,
         choices=(
             ('scheduled', _('Scheduled')),

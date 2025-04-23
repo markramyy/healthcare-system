@@ -62,7 +62,7 @@ class Invoice(DBBase):
         default=Decimal('0.00'),
         verbose_name=_('Paid Amount')
     )
-    status = models.CharField(
+    invoice_status = models.CharField(
         max_length=20,
         choices=(
             ('draft', _('Draft')),
@@ -194,7 +194,7 @@ class InsuranceClaim(DBBase):
         blank=True,
         verbose_name=_('Amount Approved')
     )
-    status = models.CharField(
+    insurance_status = models.CharField(
         max_length=20,
         choices=(
             ('submitted', _('Submitted')),

@@ -54,7 +54,7 @@ def dashboard_home(request):
     ).order_by('slot__date', 'slot__start_time')[:5]
 
     # Get treatment statistics
-    treatment_stats = Treatment.objects.values('status').annotate(count=Count('id'))
+    treatment_stats = Treatment.objects.values('treatment_status').annotate(count=Count('id'))
 
     context = {
         'total_users': total_users,

@@ -23,8 +23,8 @@ class DiagnosisAdmin(admin.ModelAdmin):
 
 @admin.register(Treatment)
 class TreatmentAdmin(admin.ModelAdmin):
-    list_display = ('medical_record', 'name', 'start_date', 'end_date', 'status')
-    list_filter = ('status', 'start_date', 'end_date')
+    list_display = ('medical_record', 'name', 'start_date', 'end_date', 'treatment_status')
+    list_filter = ('treatment_status', 'start_date', 'end_date')
     search_fields = ('name', 'description', 'medical_record__patient__username')
     date_hierarchy = 'start_date'
     raw_id_fields = ('medical_record',)

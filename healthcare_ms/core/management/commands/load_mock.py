@@ -288,55 +288,73 @@ class Command(BaseCommand):
         genders = ['male', 'female']
         gender_distribution = {gender: 0 for gender in genders}
 
-        for patient in patients:
-            if not hasattr(patient, 'patient_profile'):
-                # Ensure balanced gender distribution
-                gender = min(gender_distribution.items(), key=lambda x: x[1])[0]
-                gender_distribution[gender] += 1
+        # Distribute patients among doctors
+        # Each doctor will have 3-4 patients
+        patients_per_doctor = len(patients) // len(doctors)
+        remaining_patients = len(patients) % len(doctors)
 
-                PatientProfile.objects.create(
-                    user=patient,
-                    gender=gender,
-                    blood_type=random.choice(blood_types),
-                    height=Decimal(random.uniform(150, 190)),
-                    weight=Decimal(random.uniform(50, 100)),
-                    allergies=random.choice(allergies),
-                    chronic_conditions=random.choice(chronic_conditions),
-                    primary_doctor=random.choice(doctors)
-                )
+        for i, doctor in enumerate(doctors):
+            # Calculate how many patients this doctor should have
+            num_patients = patients_per_doctor + (1 if i < remaining_patients else 0)
 
-                # Create insurance
-                insurance_providers = [
-                    'Blue Cross Blue Shield',
-                    'Aetna',
-                    'UnitedHealthcare',
-                    'Cigna',
-                    'Humana'
-                ]
-                Insurance.objects.create(
-                    patient=patient,
-                    provider=random.choice(insurance_providers),
-                    policy_number=f'POL{random.randint(100000, 999999)}',
-                    group_number=f'GRP{random.randint(1000, 9999)}',
-                    coverage_start_date=timezone.now().date() - timedelta(days=random.randint(30, 365)),
-                    coverage_end_date=timezone.now().date() + timedelta(days=random.randint(180, 365)),
-                    is_active=random.choice([True, False])
-                )
+            # Get the patients for this doctor
+            start_idx = i * patients_per_doctor + min(i, remaining_patients)
+            end_idx = start_idx + num_patients
+            doctor_patients = patients[start_idx:end_idx]
 
-                # Create emergency contacts
-                relationships = ['Spouse', 'Parent', 'Sibling', 'Child', 'Friend']
-                for i in range(random.randint(1, 3)):  # 1-3 emergency contacts per patient
-                    EmergencyContact.objects.create(
-                        patient=patient,
-                        name=f'Emergency Contact {i + 1} for {patient.get_full_name()}',
-                        relationship=random.choice(relationships),
-                        phone_number=f'+1{random.randint(1000000000, 9999999999)}',
-                        email=f'emergency{i + 1}.{patient.username}@example.com',
-                        address=f'{random.randint(1, 999)} Emergency St, City, State',
-                        is_primary=(i == 0)  # First contact is primary
+            for patient in doctor_patients:
+                if not hasattr(patient, 'patient_profile'):
+                    # Ensure balanced gender distribution
+                    gender = min(gender_distribution.items(), key=lambda x: x[1])[0]
+                    gender_distribution[gender] += 1
+
+                    # Create patient profile
+                    PatientProfile.objects.create(
+                        user=patient,
+                        gender=gender,
+                        blood_type=random.choice(blood_types),
+                        height=Decimal(random.uniform(150, 190)),
+                        weight=Decimal(random.uniform(50, 100)),
+                        allergies=random.choice(allergies),
+                        chronic_conditions=random.choice(chronic_conditions),
+                        primary_doctor=doctor  # Assign this doctor as primary
                     )
 
-                self.stdout.write(self.style.SUCCESS(f'Created patient profile for: {patient.get_full_name()}'))
+                    # Create insurance policies (1-2 per patient)
+                    insurance_providers = [
+                        'Blue Cross Blue Shield',
+                        'Aetna',
+                        'UnitedHealthcare',
+                        'Cigna',
+                        'Humana'
+                    ]
+                    for _ in range(random.randint(1, 2)):
+                        Insurance.objects.create(
+                            patient=patient,
+                            provider=random.choice(insurance_providers),
+                            policy_number=f'POL{random.randint(100000, 999999)}',
+                            group_number=f'GRP{random.randint(1000, 9999)}',
+                            coverage_start_date=timezone.now().date() - timedelta(days=random.randint(30, 365)),
+                            coverage_end_date=timezone.now().date() + timedelta(days=random.randint(180, 365)),
+                            is_active=random.choice([True, False])
+                        )
+
+                    # Create emergency contacts (1-3 per patient)
+                    relationships = ['Spouse', 'Parent', 'Sibling', 'Child', 'Friend']
+                    for i in range(random.randint(1, 3)):
+                        EmergencyContact.objects.create(
+                            patient=patient,
+                            name=f'Emergency Contact {i + 1} for {patient.get_full_name()}',
+                            relationship=random.choice(relationships),
+                            phone_number=f'+1{random.randint(1000000000, 9999999999)}',
+                            email=f'emergency{i + 1}.{patient.username}@example.com',
+                            address=f'{random.randint(1, 999)} Emergency St, City, State',
+                            is_primary=(i == 0)  # First contact is primary
+                        )
+
+                    self.stdout.write(self.style.SUCCESS(
+                        f'Created patient profile for: {patient.get_full_name()} with doctor: {doctor.get_full_name()}'
+                    ))
 
     def _create_appointment_types(self):
         types = []
@@ -424,7 +442,7 @@ class Command(BaseCommand):
                         doctor=slot.doctor,
                         appointment_type=random.choice(appointment_types),
                         slot=slot,
-                        status=random.choice(appointment_statuses),
+                        appointment_status=random.choice(appointment_statuses),
                         reason=random.choice(reasons),
                         notes=f'Patient notes for {patient.get_full_name()}'
                     )
@@ -491,7 +509,7 @@ class Command(BaseCommand):
                     description='Follow prescribed medication and lifestyle changes',
                     start_date=record.visit_date,
                     end_date=record.visit_date + timedelta(days=random.randint(7, 30)),
-                    status=random.choice(treatment_statuses)
+                    treatment_status=random.choice(treatment_statuses)
                 )
 
                 # Create prescription
@@ -536,7 +554,7 @@ class Command(BaseCommand):
                     issue_date=timezone.now().date() - timedelta(days=random.randint(1, 30)),
                     due_date=timezone.now().date() + timedelta(days=random.randint(7, 30)),
                     total_amount=Decimal('0.00'),
-                    status=random.choice(invoice_statuses),
+                    invoice_status=random.choice(invoice_statuses),
                     notes=f'Invoice notes for {patient.get_full_name()}'
                 )
 
@@ -561,7 +579,7 @@ class Command(BaseCommand):
 
                 # Create payment
                 payment_methods = ['cash', 'credit_card', 'debit_card', 'bank_transfer', 'insurance']
-                if invoice.status == 'paid':
+                if invoice.invoice_status == 'paid':
                     Payment.objects.create(
                         invoice=invoice,
                         amount=invoice.total_amount,
@@ -584,6 +602,6 @@ class Command(BaseCommand):
                         claim_date=invoice.issue_date,
                         amount_claimed=invoice.total_amount,
                         amount_approved=invoice.total_amount * Decimal('0.8'),  # 80% coverage
-                        status=random.choice(claim_statuses),
+                        insurance_status=random.choice(claim_statuses),
                         notes=f'Insurance claim notes for {patient.get_full_name()}'
                     )

@@ -75,7 +75,7 @@ class Treatment(DBBase):
     description = models.TextField(verbose_name=_('Description'))
     start_date = models.DateTimeField(verbose_name=_('Start Date'))
     end_date = models.DateTimeField(null=True, blank=True, verbose_name=_('End Date'))
-    status = models.CharField(
+    treatment_status = models.CharField(
         max_length=20,
         choices=(
             ('planned', _('Planned')),
@@ -92,7 +92,7 @@ class Treatment(DBBase):
         verbose_name_plural = _('Treatments')
 
     def __str__(self):
-        return f"{self.name} - {self.status}"
+        return f"{self.name} - {self.treatment_status}"
 
 
 class Prescription(DBBase):

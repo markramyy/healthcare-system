@@ -89,7 +89,7 @@ class AppointmentListSerializer(BaseSerializer):
         model = Appointment
         fields = (
             'guid', 'id', 'patient', 'doctor',
-            'appointment_type', 'slot', 'status',
+            'appointment_type', 'slot', 'appointment_status',
             'is_active', 'created', 'modified'
         )
 
@@ -104,7 +104,7 @@ class AppointmentDetailSerializer(BaseSerializer):
         model = Appointment
         fields = (
             'guid', 'id', 'patient', 'doctor',
-            'appointment_type', 'slot', 'status',
+            'appointment_type', 'slot', 'appointment_status',
             'notes', 'reason', 'is_active',
             'created', 'modified'
         )
@@ -115,7 +115,7 @@ class AppointmentCreateSerializer(BaseSerializer):
         model = Appointment
         fields = (
             'guid', 'patient', 'doctor', 'appointment_type',
-            'slot', 'status', 'notes', 'reason'
+            'slot', 'appointment_status', 'notes', 'reason'
         )
 
 
@@ -124,5 +124,5 @@ class AppointmentUpdateSerializer(BaseSerializer):
         model = Appointment
         fields = (
             'guid', 'patient', 'doctor', 'appointment_type',
-            'slot', 'status', 'notes', 'reason', 'is_active'
+            'slot', 'appointment_status', 'notes', 'reason', 'is_active'
         )

@@ -16,7 +16,7 @@ class AppointmentSlotForm(forms.ModelForm):
 class AppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointment
-        fields = ['patient', 'doctor', 'appointment_type', 'slot', 'status', 'reason', 'notes']
+        fields = ['patient', 'doctor', 'appointment_type', 'slot', 'appointment_status', 'reason', 'notes']
         widgets = {
             'reason': forms.Textarea(attrs={'rows': 3}),
             'notes': forms.Textarea(attrs={'rows': 3}),

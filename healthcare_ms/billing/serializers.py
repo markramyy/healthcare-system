@@ -91,7 +91,7 @@ class InvoiceListSerializer(BaseSerializer):
         fields = (
             'guid', 'patient', 'appointment',
             'invoice_number', 'issue_date', 'due_date',
-            'total_amount', 'paid_amount', 'status',
+            'total_amount', 'paid_amount', 'invoice_status',
             'is_active', 'created', 'modified'
         )
 
@@ -106,7 +106,7 @@ class InvoiceDetailSerializer(BaseSerializer):
         fields = (
             'guid', 'patient', 'appointment',
             'invoice_number', 'issue_date', 'due_date',
-            'total_amount', 'paid_amount', 'status',
+            'total_amount', 'paid_amount', 'invoice_status',
             'notes', 'items', 'is_active', 'created', 'modified'
         )
 
@@ -117,7 +117,7 @@ class InvoiceCreateSerializer(BaseSerializer):
         fields = (
             'guid', 'patient', 'appointment',
             'invoice_number', 'issue_date', 'due_date',
-            'total_amount', 'status', 'notes'
+            'total_amount', 'invoice_status', 'notes'
         )
 
 
@@ -127,7 +127,7 @@ class InvoiceUpdateSerializer(BaseSerializer):
         fields = (
             'guid', 'patient', 'appointment',
             'invoice_number', 'issue_date', 'due_date',
-            'total_amount', 'status', 'notes', 'is_active'
+            'total_amount', 'invoice_status', 'notes', 'is_active'
         )
 
 
@@ -185,7 +185,7 @@ class InsuranceClaimListSerializer(BaseSerializer):
         fields = (
             'guid', 'invoice', 'insurance',
             'claim_number', 'claim_date', 'amount_claimed',
-            'amount_approved', 'status', 'created', 'modified'
+            'amount_approved', 'insurance_status', 'created', 'modified'
         )
 
 
@@ -198,7 +198,7 @@ class InsuranceClaimDetailSerializer(BaseSerializer):
         fields = (
             'guid', 'invoice', 'insurance',
             'claim_number', 'claim_date', 'amount_claimed',
-            'amount_approved', 'status', 'notes',
+            'amount_approved', 'insurance_status', 'notes',
             'created', 'modified'
         )
 
@@ -209,7 +209,7 @@ class InsuranceClaimCreateSerializer(BaseSerializer):
         fields = (
             'guid', 'invoice', 'insurance',
             'claim_number', 'claim_date', 'amount_claimed',
-            'status', 'notes'
+            'insurance_status', 'notes'
         )
 
 
@@ -219,5 +219,5 @@ class InsuranceClaimUpdateSerializer(BaseSerializer):
         fields = (
             'guid', 'invoice', 'insurance',
             'claim_number', 'claim_date', 'amount_claimed',
-            'amount_approved', 'status', 'notes'
+            'amount_approved', 'insurance_status', 'notes'
         )

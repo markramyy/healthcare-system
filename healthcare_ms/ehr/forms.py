@@ -59,7 +59,7 @@ class TreatmentForm(forms.ModelForm):
         model = Treatment
         fields = [
             'medical_record', 'name', 'description',
-            'start_date', 'end_date', 'status'
+            'start_date', 'end_date', 'treatment_status'
         ]
         widgets = {
             'medical_record': forms.Select(attrs={'class': 'w-full px-3 py-2 rounded-lg border'}),
@@ -76,7 +76,7 @@ class TreatmentForm(forms.ModelForm):
                 'class': 'w-full px-3 py-2 rounded-lg border',
                 'type': 'datetime-local'
             }),
-            'status': forms.Select(attrs={'class': 'w-full px-3 py-2 rounded-lg border'}),
+            'treatment_status': forms.Select(attrs={'class': 'w-full px-3 py-2 rounded-lg border'}),
         }
 
 

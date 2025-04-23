@@ -93,7 +93,7 @@ class TreatmentListSerializer(BaseSerializer):
         model = Treatment
         fields = (
             'guid', 'id', 'medical_record', 'name',
-            'status', 'is_active', 'created', 'modified'
+            'treatment_status', 'is_active', 'created', 'modified'
         )
 
 
@@ -104,7 +104,7 @@ class TreatmentDetailSerializer(BaseSerializer):
         model = Treatment
         fields = (
             'guid', 'id', 'medical_record', 'name',
-            'description', 'start_date', 'end_date', 'status',
+            'description', 'start_date', 'end_date', 'treatment_status',
             'is_active', 'created', 'modified'
         )
 
@@ -114,7 +114,7 @@ class TreatmentCreateSerializer(BaseSerializer):
         model = Treatment
         fields = (
             'guid', 'medical_record', 'name', 'description',
-            'start_date', 'end_date', 'status'
+            'start_date', 'end_date', 'treatment_status'
         )
 
 
@@ -123,7 +123,7 @@ class TreatmentUpdateSerializer(BaseSerializer):
         model = Treatment
         fields = (
             'guid', 'medical_record', 'name', 'description',
-            'start_date', 'end_date', 'status', 'is_active'
+            'start_date', 'end_date', 'treatment_status', 'is_active'
         )
 
 
