@@ -36,142 +36,197 @@
 <body class="bg-gray-100">
     <div class="flex h-screen">
         <!-- Sidebar -->
-        <div class="sidebar w-64 bg-blue-900 text-white">
+        <div class="sidebar w-64 bg-blue-900 text-white flex flex-col">
             <div class="p-4">
                 <h1 class="text-2xl font-bold">
                     <i class="fas fa-hospital text-blue-400 mr-2"></i>
                     HealthcareMS
                 </h1>
             </div>
-            <nav class="mt-6">
-                <div class="px-4">
+            <nav class="mt-6 flex-1 overflow-y-auto">
+                <div class="px-4 space-y-2">
+
+                    <!-- Dashboard (Admin, Staff) -->
+                    {% if user.user_type == 'admin' or user.user_type == 'staff' %}
                     <a href="{% url 'dashboard:home' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                        <i class="fas fa-home mr-3"></i>
+                        <i class="fas fa-home fa-fw mr-3"></i>
                         Dashboard
                     </a>
+                    {% endif %}
+
+                    <!-- My Profile (Doctor, Patient) -->
+                    {% if user.user_type == 'doctor' or user.user_type == 'patient' %}
+                    <a href="{% url 'users:me' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
+                        <i class="fas fa-user-circle fa-fw mr-3"></i>
+                        My Profile
+                    </a>
+                    {% endif %}
+
+                    <!-- Users (Admin, Staff) -->
+                    {% if user.user_type == 'admin' or user.user_type == 'staff' %}
                     <a href="{% url 'users:user-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                        <i class="fas fa-users mr-3"></i>
+                        <i class="fas fa-users fa-fw mr-3"></i>
                         Users
                     </a>
+                    {% endif %}
 
-                    <!-- Patients Collapsible Section -->
-                    <div class="mt-2">
+                    <!-- Patients Section (Admin, Staff, Doctor) -->
+                    {% if user.user_type == 'admin' or user.user_type == 'staff' or user.user_type == 'doctor' %}
+                    <div>
                         <button onclick="toggleSubmenu('patients-submenu')" class="sidebar-item w-full flex items-center justify-between py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
                             <div class="flex items-center">
-                                <i class="fas fa-user-injured mr-3"></i>
+                                <i class="fas fa-user-injured fa-fw mr-3"></i>
                                 <span>Patients</span>
                             </div>
                             <i class="fas fa-chevron-right transition-transform duration-300" id="patients-arrow"></i>
                         </button>
                         <div class="submenu ml-4" id="patients-submenu">
-                            <a href="{% url 'patient:profile-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-id-card mr-3"></i>
+                            <a href="{% url 'patient:profile-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-id-card fa-fw mr-3"></i>
                                 Patient Profiles
                             </a>
-                            <a href="{% url 'patient:insurance-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-file-invoice-dollar mr-3"></i>
+                            <a href="{% url 'patient:insurance-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-file-invoice-dollar fa-fw mr-3"></i>
                                 Insurance
                             </a>
-                            <a href="{% url 'patient:emergency-contact-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-phone-alt mr-3"></i>
+                            <a href="{% url 'patient:emergency-contact-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-phone-alt fa-fw mr-3"></i>
                                 Emergency Contacts
                             </a>
                         </div>
                     </div>
+                    {% endif %}
 
-                    <!-- EHR Collapsible Section -->
-                    <div class="mt-2">
+                    <!-- My Info Section (Patient) -->
+                    {% if user.user_type == 'patient' %}
+                     <div>
+                         <button onclick="toggleSubmenu('my-info-submenu')" class="sidebar-item w-full flex items-center justify-between py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
+                             <div class="flex items-center">
+                                 <i class="fas fa-id-card fa-fw mr-3"></i>
+                                 <span>My Info</span>
+                             </div>
+                             <i class="fas fa-chevron-right transition-transform duration-300" id="my-info-arrow"></i>
+                         </button>
+                         <div class="submenu ml-4" id="my-info-submenu">
+                             <a href="{% url 'patient:insurance-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                 <i class="fas fa-file-invoice-dollar fa-fw mr-3"></i>
+                                 My Insurance
+                             </a>
+                             <a href="{% url 'patient:emergency-contact-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                 <i class="fas fa-phone-alt fa-fw mr-3"></i>
+                                 My Emergency Contacts
+                             </a>
+                         </div>
+                     </div>
+                     {% endif %}
+
+                    <!-- EHR Section (All Authenticated Users) -->
+                    {% if user.is_authenticated %}
+                    <div>
                         <button onclick="toggleSubmenu('ehr-submenu')" class="sidebar-item w-full flex items-center justify-between py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
                             <div class="flex items-center">
-                                <i class="fas fa-file-medical mr-3"></i>
+                                <i class="fas fa-file-medical fa-fw mr-3"></i>
                                 <span>EHR</span>
                             </div>
                             <i class="fas fa-chevron-right transition-transform duration-300" id="ehr-arrow"></i>
                         </button>
                         <div class="submenu ml-4" id="ehr-submenu">
-                            <a href="{% url 'ehr:medical-record-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-file-medical-alt mr-3"></i>
+                            <a href="{% url 'ehr:medical-record-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-file-medical-alt fa-fw mr-3"></i>
                                 Medical Records
                             </a>
-                            <a href="{% url 'ehr:diagnosis-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-diagnoses mr-3"></i>
+                            {% if user.user_type == 'admin' or user.user_type == 'staff' or user.user_type == 'doctor' %}
+                            <a href="{% url 'ehr:diagnosis-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-diagnoses fa-fw mr-3"></i>
                                 Diagnoses
                             </a>
-                            <a href="{% url 'ehr:treatment-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-procedures mr-3"></i>
+                            <a href="{% url 'ehr:treatment-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-procedures fa-fw mr-3"></i>
                                 Treatments
                             </a>
-                            <a href="{% url 'ehr:prescription-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-prescription mr-3"></i>
+                            {% endif %}
+                            <a href="{% url 'ehr:prescription-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-prescription fa-fw mr-3"></i>
                                 Prescriptions
                             </a>
                         </div>
                     </div>
+                    {% endif %}
 
-                    <!-- Appointment Collapsible Section -->
-                    <div class="mt-2">
+                    <!-- Appointment Section (All Authenticated Users) -->
+                    {% if user.is_authenticated %}
+                    <div>
                         <button onclick="toggleSubmenu('appointment-submenu')" class="sidebar-item w-full flex items-center justify-between py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
                             <div class="flex items-center">
-                                <i class="fas fa-calendar-check mr-3"></i>
+                                <i class="fas fa-calendar-check fa-fw mr-3"></i>
                                 <span>Appointments</span>
                             </div>
                             <i class="fas fa-chevron-right transition-transform duration-300" id="appointment-arrow"></i>
                         </button>
                         <div class="submenu ml-4" id="appointment-submenu">
-                            <a href="{% url 'appointment:appointment-type-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-list-alt mr-3"></i>
+                            {% if user.user_type == 'admin' or user.user_type == 'staff' %}
+                            <a href="{% url 'appointment:appointment-type-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-list-alt fa-fw mr-3"></i>
                                 Appointment Types
                             </a>
-                            <a href="{% url 'appointment:appointment-slot-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-clock mr-3"></i>
+                            {% endif %}
+                            <a href="{% url 'appointment:appointment-slot-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-clock fa-fw mr-3"></i>
                                 Appointment Slots
                             </a>
-                            <a href="{% url 'appointment:appointment-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-calendar-alt mr-3"></i>
+                            <a href="{% url 'appointment:appointment-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-calendar-alt fa-fw mr-3"></i>
                                 Appointments
                             </a>
                         </div>
                     </div>
+                    {% endif %}
 
-                    <!-- Billing Collapsible Section -->
-                    <div class="mt-2">
+                    <!-- Billing Section (Admin, Staff) -->
+                    {% if user.user_type == 'admin' or user.user_type == 'staff' %}
+                    <div>
                         <button onclick="toggleSubmenu('billing-submenu')" class="sidebar-item w-full flex items-center justify-between py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
                             <div class="flex items-center">
-                                <i class="fas fa-file-invoice-dollar mr-3"></i>
+                                <i class="fas fa-file-invoice-dollar fa-fw mr-3"></i>
                                 <span>Billing</span>
                             </div>
                             <i class="fas fa-chevron-right transition-transform duration-300" id="billing-arrow"></i>
                         </button>
                         <div class="submenu ml-4" id="billing-submenu">
-                            <a href="{% url 'billing:service-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-list mr-3"></i>
+                            <a href="{% url 'billing:service-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-list fa-fw mr-3"></i>
                                 Services
                             </a>
-                            <a href="{% url 'billing:invoice-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-file-invoice mr-3"></i>
+                            <a href="{% url 'billing:invoice-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-file-invoice fa-fw mr-3"></i>
                                 Invoices
                             </a>
-                            <a href="{% url 'billing:invoice-item-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-shopping-cart mr-3"></i>
+                            <a href="{% url 'billing:invoice-item-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-shopping-cart fa-fw mr-3"></i>
                                 Invoice Items
                             </a>
-                            <a href="{% url 'billing:payment-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-credit-card mr-3"></i>
+                            <a href="{% url 'billing:payment-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-credit-card fa-fw mr-3"></i>
                                 Payments
                             </a>
-                            <a href="{% url 'billing:insurance-claim-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
-                                <i class="fas fa-file-medical mr-3"></i>
+                            <a href="{% url 'billing:insurance-claim-list' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg text-sm">
+                                <i class="fas fa-file-medical fa-fw mr-3"></i>
                                 Insurance Claims
                             </a>
                         </div>
                     </div>
-
-                    <a href="{% url 'api-docs' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg mt-2">
-                        <i class="fas fa-book mr-3"></i>
-                        API Documentation
-                    </a>
+                    {% endif %}
                 </div>
             </nav>
+            <!-- API Docs Link -->
+            <div class="px-4 py-4 mt-auto">
+                {% if user.is_authenticated %}
+                <a href="{% url 'api-docs' %}" class="sidebar-item flex items-center py-2 px-4 text-white hover:bg-blue-800 rounded-lg">
+                    <i class="fas fa-book fa-fw mr-3"></i>
+                    API Documentation
+                </a>
+                {% endif %}
+            </div>
         </div>
 
         <!-- Main Content -->
@@ -180,17 +235,30 @@
             <header class="bg-white shadow">
                 <div class="flex items-center justify-between px-4 py-3">
                     <div class="flex items-center">
-                        <button class="text-gray-500 hover:text-gray-600">
-                            <i class="fas fa-bars"></i>
-                        </button>
+                        {# Hamburger button can be added here if needed for mobile #}
                     </div>
-                    <div class="flex items-center">
-                        <a href="{% url 'landing' %}" class="text-gray-500 hover:text-gray-600 mr-4">
+                    <div class="flex items-center space-x-4">
+                        <a href="{% url 'landing' %}" class="text-gray-500 hover:text-gray-600" title="Landing Page">
                             <i class="fas fa-globe"></i>
                         </a>
                         {% if user.is_authenticated %}
-                            <a href="{% url 'users:me' %}" class="text-gray-500 hover:text-gray-600">
+                            {% if user.user_type == 'admin' %}
+                                <a href="/admin/" class="text-gray-500 hover:text-gray-600" title="Admin Dashboard">
+                                    <i class="fas fa-user-shield"></i>
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'users:me' %}" class="text-gray-500 hover:text-gray-600" title="My Profile">
                                 <i class="fas fa-user-circle"></i>
+                            </a>
+                            <form action="{% url 'logout' %}" method="post" class="inline">
+                                {% csrf_token %}
+                                <button type="submit" class="text-gray-500 hover:text-red-600" title="Logout">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </button>
+                            </form>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="text-gray-500 hover:text-blue-600 text-sm font-medium">
+                                <i class="fas fa-sign-in-alt mr-1"></i> Login
                             </a>
                         {% endif %}
                     </div>

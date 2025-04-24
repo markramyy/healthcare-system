@@ -203,7 +203,14 @@ class LoginView(View):
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Welcome back, {username}!')
-                return redirect('dashboard:home')
+                # Redirect based on user type
+                if user.user_type in ['admin', 'staff']:
+                    return redirect('dashboard:home')
+                elif user.user_type in ['doctor', 'patient']:
+                    return redirect('users:me')
+                else:
+                    # Default redirect if type is somehow not set or unexpected
+                    return redirect('landing')
         messages.error(request, 'Invalid username or password.')
         return render(request, 'users/login.html', {'form': form})
 
@@ -211,7 +218,13 @@ class LoginView(View):
 class RegisterView(View):
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect('dashboard:home')
+            # Redirect based on user type if already logged in
+            if request.user.user_type in ['admin', 'staff']:
+                return redirect('dashboard:home')
+            elif request.user.user_type in ['doctor', 'patient']:
+                return redirect('users:me')
+            else:
+                return redirect('landing')
         form = UserRegistrationForm()
         return render(request, 'users/register.html', {'form': form})
 
@@ -223,5 +236,12 @@ class RegisterView(View):
                 user = serializer.save()
                 login(request, user)
                 messages.success(request, 'Account created successfully!')
-                return redirect('dashboard:home')
+                # Redirect based on user type
+                if user.user_type in ['admin', 'staff']:
+                    return redirect('dashboard:home')
+                elif user.user_type in ['doctor', 'patient']:
+                    return redirect('users:me')
+                else:
+                    # Default redirect if type is somehow not set or unexpected
+                    return redirect('landing')
         return render(request, 'users/register.html', {'form': form})

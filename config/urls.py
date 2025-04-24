@@ -15,10 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, reverse_lazy
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from rest_framework.permissions import AllowAny
 from healthcare_ms.core.views import landing_page
+from healthcare_ms.users.views import LoginView as CustomLoginView
 from django.contrib.auth import views as auth_views
 from config.health import health_check
 from django_prometheus import exports
@@ -30,8 +31,8 @@ views_patterns = [
     path('ehr/', include('healthcare_ms.ehr.urls')),
     path('appointment/', include('healthcare_ms.appointment.urls')),
     path('billing/', include('healthcare_ms.billing.urls')),
-    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('login/', CustomLoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page=reverse_lazy('landing')), name='logout'),
 ]
 
 urlpatterns = [
