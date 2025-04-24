@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ../../base
+
+namespace: healthcare-prod
+
+patches:
+- path: patches/deployment.yaml
+- path: patches/service.yaml
+
+configMapGenerator:
+- name: app-config
+  literals:
+  - DEBUG=0
+  - ENVIRONMENT=production
+
+secretGenerator:
+- name: db-secrets
+  literals:
+  - database-name=healthcare_prod
+  - database-user=postgres
+  - database-password=${POSTGRES_PASSWORD}
+  - database-url=postgres://postgres:${POSTGRES_PASSWORD}@db:5432/healthcare_prod
+- name: app-secrets
+  literals:
+  - secret-key=${SECRET_KEY}
