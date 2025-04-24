@@ -29,3 +29,4 @@ PyYAML==6.0.2
 urllib3==2.4.0
 django-filter==23.5
 django-extensions==3.2.3
+faker==16.0.0
