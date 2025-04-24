@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Unreserve Appointment" %}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-2xl font-bold mb-6">{% trans "Unreserve Appointment" %}</h1>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold mb-4">{% trans "Appointment Details" %}</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-600">{% trans "Doctor" %}</p>
+                        <p class="font-medium">{{ appointment.doctor.get_full_name }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">{% trans "Date" %}</p>
+                        <p class="font-medium">{{ appointment.slot.date }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">{% trans "Time" %}</p>
+                        <p class="font-medium">{{ appointment.slot.start_time }} - {{ appointment.slot.end_time }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">{% trans "Status" %}</p>
+                        <p class="font-medium">{{ appointment.get_appointment_status_display }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <div class="flex justify-end space-x-4">
+                    <a href="{% url 'appointment:appointment-list' %}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                        {% trans "Cancel" %}
+                    </a>
+                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                        {% trans "Confirm Unreservation" %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
