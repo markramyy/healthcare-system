@@ -15,10 +15,12 @@ urlpatterns = [
     path('slots/<uuid:guid>/', views.appointment_slot_detail, name='appointment-slot-detail'),
     path('slots/create/', views.appointment_slot_create, name='appointment-slot-create'),
     path('slots/<uuid:guid>/update/', views.appointment_slot_update, name='appointment-slot-update'),
+    path('slots/<uuid:guid>/reserve/', views.appointment_slot_reserve, name='appointment-slot-reserve'),
 
     # Appointment URLs
     path('', views.appointment_list, name='appointment-list'),
     path('<uuid:guid>/', views.appointment_detail, name='appointment-detail'),
     path('create/', views.appointment_create, name='appointment-create'),
     path('<uuid:guid>/update/', views.appointment_update, name='appointment-update'),
+    path('<uuid:guid>/unreserve/', views.appointment_unreserve, name='appointment-unreserve'),
 ]

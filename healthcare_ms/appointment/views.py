@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 from healthcare_ms.appointment.models import AppointmentType, AppointmentSlot, Appointment
 from healthcare_ms.appointment.forms import AppointmentSlotForm, AppointmentForm
@@ -110,7 +111,16 @@ def appointment_slot_list(request):
     end_date = request.GET.get('end_date')
     page_number = request.GET.get('page', 1)
 
-    appointment_slots = AppointmentSlot.objects.all()
+    # Filter slots based on user type
+    if request.user.user_type == 'patient':
+        # For patients, show only available slots
+        appointment_slots = AppointmentSlot.objects.filter(is_available=True)
+    elif request.user.user_type == 'doctor':
+        # For doctors, show only their slots
+        appointment_slots = AppointmentSlot.objects.filter(doctor=request.user)
+    else:
+        # For other users (admin/staff), show all slots
+        appointment_slots = AppointmentSlot.objects.all()
 
     if search_query:
         appointment_slots = appointment_slots.filter(
@@ -120,6 +130,10 @@ def appointment_slot_list(request):
 
     if start_date and end_date:
         appointment_slots = appointment_slots.filter(date__range=[start_date, end_date])
+
+    # For patients, only show future slots
+    if request.user.user_type == 'patient':
+        appointment_slots = appointment_slots.filter(date__gte=timezone.now().date())
 
     paginator = Paginator(appointment_slots, 10)
     page_obj = paginator.get_page(page_number)
@@ -132,7 +146,8 @@ def appointment_slot_list(request):
         'search_query': search_query,
         'start_date': start_date,
         'end_date': end_date,
-        'serialized_data': serializer.data
+        'serialized_data': serializer.data,
+        'is_patient': request.user.user_type == 'patient'
     }
     return render(request, 'appointment/appointment_slot_list.html', context)
 
@@ -200,7 +215,13 @@ def appointment_list(request):
     end_date = request.GET.get('end_date')
     page_number = request.GET.get('page', 1)
 
-    appointments = Appointment.objects.all()
+    # Filter appointments based on user type
+    if request.user.user_type == 'patient':
+        appointments = Appointment.objects.filter(patient=request.user)
+    elif request.user.user_type == 'doctor':
+        appointments = Appointment.objects.filter(doctor=request.user)
+    else:
+        appointments = Appointment.objects.all()
 
     if search_query:
         appointments = appointments.filter(
@@ -226,7 +247,8 @@ def appointment_list(request):
         'search_query': search_query,
         'start_date': start_date,
         'end_date': end_date,
-        'serialized_data': serializer.data
+        'serialized_data': serializer.data,
+        'is_patient': request.user.user_type == 'patient'
     }
     return render(request, 'appointment/appointment_list.html', context)
 
@@ -282,3 +304,65 @@ def appointment_update(request, guid):
         'appointment': appointment,
     }
     return render(request, 'appointment/appointment_form.html', context)
+
+
+@login_required
+def appointment_slot_reserve(request, guid):
+    """View for reserving an appointment slot."""
+    if request.user.user_type != 'patient':
+        messages.error(request, _('Only patients can reserve appointment slots.'))
+        return redirect('appointment:appointment-slot-list')
+
+    slot = get_object_or_404(AppointmentSlot, guid=guid)
+
+    if not slot.is_available:
+        messages.error(request, _('This slot is not available.'))
+        return redirect('appointment:appointment-slot-list')
+
+    if request.method == 'POST':
+        # Create a new appointment
+        appointment = Appointment.objects.create(
+            patient=request.user,
+            doctor=slot.doctor,
+            appointment_type=AppointmentType.objects.first(),  # Default type
+            slot=slot,
+            appointment_status='scheduled',
+            reason=_('Appointment requested by patient')
+        )
+
+        # Mark the slot as unavailable
+        slot.is_available = False
+        slot.save()
+
+        messages.success(request, _('Appointment slot reserved successfully.'))
+        return redirect('appointment:appointment-list')
+
+    return render(request, 'appointment/appointment_slot_reserve.html', {
+        'slot': slot
+    })
+
+
+@login_required
+def appointment_unreserve(request, guid):
+    """View for unreserving an appointment."""
+    appointment = get_object_or_404(Appointment, guid=guid)
+
+    if request.user.user_type == 'patient' and appointment.patient != request.user:
+        messages.error(request, _('You can only unreserve your own appointments.'))
+        return redirect('appointment:appointment-list')
+
+    if request.method == 'POST':
+        # Mark the slot as available again
+        slot = appointment.slot
+        slot.is_available = True
+        slot.save()
+
+        # Delete the appointment
+        appointment.delete()
+
+        messages.success(request, _('Appointment unreserved successfully.'))
+        return redirect('appointment:appointment-list')
+
+    return render(request, 'appointment/appointment_unreserve.html', {
+        'appointment': appointment
+    })
