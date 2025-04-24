@@ -1,70 +1,141 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Login - Healthcare System{% endblock %}
-
-{% block content %}
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
-        <div>
-            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                Sign in to your account
-            </h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Healthcare Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+        }
+        .btn-hover {
+            transition: all 0.3s ease;
+        }
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white bg-opacity-10 backdrop-blur-md fixed w-full z-10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-white text-2xl font-bold">
+                    <i class="fas fa-hospital text-blue-400 mr-2"></i>
+                    HealthcareMS
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="{% url 'landing' %}" class="text-white hover:text-blue-200 transition">Home</a>
+                    <a href="{% url 'api-docs' %}" class="text-white hover:text-blue-200 transition">API Docs</a>
+                </div>
+            </div>
         </div>
-        <form class="mt-8 space-y-6" method="POST" action="{% url 'users:login' %}">
-            {% csrf_token %}
-            {% if form.errors %}
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <strong class="font-bold">Error!</strong>
-                <span class="block sm:inline">Invalid username or password.</span>
-            </div>
-            {% endif %}
-            <div class="rounded-md shadow-sm -space-y-px">
-                <div>
-                    <label for="username" class="sr-only">Username</label>
-                    <input id="username" name="username" type="text" required
-                        class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                        placeholder="Username">
-                </div>
-                <div>
-                    <label for="password" class="sr-only">Password</label>
-                    <input id="password" name="password" type="password" required
-                        class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                        placeholder="Password">
-                </div>
-            </div>
+    </nav>
 
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <input id="remember_me" name="remember_me" type="checkbox"
-                        class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                    <label for="remember_me" class="ml-2 block text-sm text-gray-900">
-                        Remember me
-                    </label>
+    <!-- Login Form -->
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8 fade-in">
+            <div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-white">
+                    Sign in to your account
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-200">
+                    Or
+                    <a href="{% url 'users:register' %}" class="font-medium text-blue-400 hover:text-blue-300">
+                        create a new account
+                    </a>
+                </p>
+            </div>
+            <form class="mt-8 space-y-6" method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                {% if form.errors %}
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">Error!</strong>
+                    <span class="block sm:inline">Invalid username or password.</span>
+                </div>
+                {% endif %}
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <div>
+                        <label for="username" class="sr-only">Username</label>
+                        <input id="username" name="username" type="text" required
+                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="Username">
+                    </div>
+                    <div>
+                        <label for="password" class="sr-only">Password</label>
+                        <input id="password" name="password" type="password" required
+                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="Password">
+                    </div>
                 </div>
 
-                <div class="text-sm">
-                    <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
-                        Forgot your password?
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="remember_me" name="remember_me" type="checkbox"
+                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="remember_me" class="ml-2 block text-sm text-white">
+                            Remember me
+                        </label>
+                    </div>
+
+                    <div class="text-sm">
+                        <a href="#" class="font-medium text-blue-400 hover:text-blue-300">
+                            Forgot your password?
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 btn-hover">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <i class="fas fa-lock text-blue-500 group-hover:text-blue-400"></i>
+                        </span>
+                        Sign in
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white bg-opacity-10 backdrop-blur-md py-8 fixed bottom-0 w-full">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-white mb-4 md:mb-0">
+                    <i class="fas fa-hospital text-blue-400 mr-2"></i>
+                    Healthcare Management System
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="{% url 'api-docs' %}" class="text-white hover:text-blue-200 transition">
+                        <i class="fas fa-book"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/markramyy/"
+                       target="_blank"
+                       class="text-white hover:text-blue-200 transition flex items-center">
+                        <span class="mr-2">Created by Mark Ramy</span>
+                        <i class="fab fa-linkedin"></i>
                     </a>
                 </div>
             </div>
-
-            <div>
-                <button type="submit"
-                    class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Sign in
-                </button>
-            </div>
-        </form>
-        <div class="text-center">
-            <p class="text-sm text-gray-600">
-                Don't have an account?
-                <a href="{% url 'users:register' %}" class="font-medium text-indigo-600 hover:text-indigo-500">
-                    Sign up
-                </a>
-            </p>
         </div>
-    </div>
-</div>
-{% endblock %}
+    </footer>
+</body>
+</html>

@@ -87,10 +87,17 @@
                    class="btn-hover bg-white text-blue-900 font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-100">
                     <i class="fas fa-book mr-2"></i>API Documentation
                 </a>
+                {% if user.is_authenticated %}
                 <a href="/views/dashboard/"
                    class="btn-hover bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-700">
                     <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
                 </a>
+                {% else %}
+                <a href="{% url 'login' %}?next=/views/dashboard/"
+                   class="btn-hover bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-700">
+                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                </a>
+                {% endif %}
                 <a href="/admin/"
                    class="btn-hover bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-700">
                     <i class="fas fa-user-shield mr-2"></i>Admin Dashboard
