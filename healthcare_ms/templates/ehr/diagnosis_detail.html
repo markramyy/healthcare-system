@@ -108,7 +108,7 @@
                         {% for treatment in diagnosis.medical_record.treatments.all %}
                         <li class="text-sm text-gray-600">
                             <span class="font-medium">{{ treatment.name }}</span> -
-                            {{ treatment.status }}
+                            {{ treatment.treatment_status }}
                         </li>
                         {% endfor %}
                     </ul>
