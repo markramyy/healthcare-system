@@ -112,9 +112,19 @@ def profile_update(request, guid):
 
 @login_required
 def insurance_list(request):
-    insurance_policies = Insurance.objects.all()
+    # Filter by the logged-in user if they are a patient
+    if request.user.user_type == 'patient':
+        insurance_policies = Insurance.objects.filter(patient=request.user)
+    elif request.user.user_type in ['admin', 'staff']:  # Or handle other roles if needed
+        insurance_policies = Insurance.objects.all()
+    else:  # Doctors or other types if applicable (adjust as needed)
+        # Decide how to handle doctors - maybe filter by primary_doctor?
+        # For now, return none or filter appropriately based on your rules.
+        # Example: return based on patients assigned to a doctor
+        # insurance_policies = Insurance.objects.filter(patient__patient_profile__primary_doctor=request.user)
+        insurance_policies = Insurance.objects.none()  # Default to none if not admin/staff/patient
 
-    # Search functionality
+    # Search functionality (applied after initial filtering)
     search_query = request.GET.get('search')
     if search_query:
         insurance_policies = insurance_policies.filter(
@@ -198,9 +208,18 @@ def insurance_detail(request, guid):
 
 @login_required
 def emergency_contact_list(request):
-    contacts = EmergencyContact.objects.all()
+    # Filter by the logged-in user if they are a patient
+    if request.user.user_type == 'patient':
+        contacts = EmergencyContact.objects.filter(patient=request.user)
+    elif request.user.user_type in ['admin', 'staff']:  # Or handle other roles if needed
+        contacts = EmergencyContact.objects.all()
+    else:  # Doctors or other types if applicable (adjust as needed)
+        # Decide how to handle doctors - maybe filter by primary_doctor?
+        # Example: return based on patients assigned to a doctor
+        # contacts = EmergencyContact.objects.filter(patient__patient_profile__primary_doctor=request.user)
+        contacts = EmergencyContact.objects.none()  # Default to none if not admin/staff/patient
 
-    # Search functionality
+    # Search functionality (applied after initial filtering)
     search_query = request.GET.get('search')
     if search_query:
         contacts = contacts.filter(
