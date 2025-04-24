@@ -166,7 +166,7 @@ class ServiceViewSet(BaseViewSet):
 
 class InvoiceViewSet(BaseViewSet):
     queryset = Invoice.objects.all()
-    search_fields = ['patient__username', 'invoice_number', 'status']
+    search_fields = ['patient__username', 'invoice_number', 'invoice_status']
     permission_classes = [InvoicePermission]
 
     def get_queryset(self):
@@ -557,7 +557,7 @@ class PaymentViewSet(BaseViewSet):
 
 class InsuranceClaimViewSet(BaseViewSet):
     queryset = InsuranceClaim.objects.all()
-    search_fields = ['claim_number', 'insurance__provider', 'status']
+    search_fields = ['claim_number', 'insurance__provider', 'insurance_status']
     permission_classes = [InsuranceClaimPermission]
 
     def get_queryset(self):

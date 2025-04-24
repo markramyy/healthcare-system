@@ -291,7 +291,7 @@ class AppointmentViewSet(BaseViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = [
         'patient', 'doctor', 'appointment_type',
-        'slot', 'status', 'is_active'
+        'slot', 'appointment_status', 'is_active'
     ]
     search_fields = [
         'patient__first_name', 'patient__last_name',
@@ -300,7 +300,7 @@ class AppointmentViewSet(BaseViewSet):
     ]
     ordering_fields = [
         'slot__date', 'slot__start_time',
-        'status', 'created'
+        'appointment_status', 'created'
     ]
     ordering = ['-slot__date', '-slot__start_time']
 

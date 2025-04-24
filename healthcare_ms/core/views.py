@@ -50,7 +50,7 @@ def dashboard_home(request):
     # Get upcoming appointments
     upcoming_appointments = Appointment.objects.filter(
         slot__date__gte=today,
-        status__in=['scheduled', 'confirmed']
+        appointment_status__in=['scheduled', 'confirmed']
     ).order_by('slot__date', 'slot__start_time')[:5]
 
     # Get treatment statistics
