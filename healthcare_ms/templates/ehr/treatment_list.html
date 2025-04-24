@@ -39,9 +39,9 @@
                         <p class="text-sm text-gray-600">Patient: {{ treatment.medical_record.patient.get_full_name }}</p>
                     </div>
                     <span class="px-3 py-1 text-sm rounded-full
-                        {% if treatment.status == 'completed' %}bg-green-100 text-green-800
-                        {% elif treatment.status == 'in_progress' %}bg-blue-100 text-blue-800
-                        {% elif treatment.status == 'cancelled' %}bg-red-100 text-red-800
+                        {% if treatment.treatment_status == 'completed' %}bg-green-100 text-green-800
+                        {% elif treatment.treatment_status == 'in_progress' %}bg-blue-100 text-blue-800
+                        {% elif treatment.treatment_status == 'cancelled' %}bg-red-100 text-red-800
                         {% else %}bg-yellow-100 text-yellow-800{% endif %}">
                         {{ treatment.get_status_display }}
                     </span>
