@@ -33,7 +33,13 @@ from healthcare_ms.ehr.serializers import (
 
 @login_required
 def medical_record_list(request):
-    records = MedicalRecord.objects.all()
+    # Filter records based on user type
+    if request.user.user_type == 'patient':
+        records = MedicalRecord.objects.filter(patient=request.user)
+    elif request.user.user_type == 'doctor':
+        records = MedicalRecord.objects.filter(doctor=request.user)
+    else:
+        records = MedicalRecord.objects.all()
 
     # Search functionality
     search_query = request.GET.get('search')
@@ -122,7 +128,13 @@ def medical_record_update(request, guid):
 
 @login_required
 def diagnosis_list(request):
-    diagnoses = Diagnosis.objects.all()
+    # Filter diagnoses based on user type
+    if request.user.user_type == 'patient':
+        diagnoses = Diagnosis.objects.filter(medical_record__patient=request.user)
+    elif request.user.user_type == 'doctor':
+        diagnoses = Diagnosis.objects.filter(medical_record__doctor=request.user)
+    else:
+        diagnoses = Diagnosis.objects.all()
 
     # Search functionality
     search_query = request.GET.get('search')
@@ -204,7 +216,13 @@ def diagnosis_update(request, guid):
 
 @login_required
 def treatment_list(request):
-    treatments = Treatment.objects.all()
+    # Filter treatments based on user type
+    if request.user.user_type == 'patient':
+        treatments = Treatment.objects.filter(medical_record__patient=request.user)
+    elif request.user.user_type == 'doctor':
+        treatments = Treatment.objects.filter(medical_record__doctor=request.user)
+    else:
+        treatments = Treatment.objects.all()
 
     # Search functionality
     search_query = request.GET.get('search')
@@ -286,7 +304,13 @@ def treatment_update(request, guid):
 
 @login_required
 def prescription_list(request):
-    prescriptions = Prescription.objects.all()
+    # Filter prescriptions based on user type
+    if request.user.user_type == 'patient':
+        prescriptions = Prescription.objects.filter(medical_record__patient=request.user)
+    elif request.user.user_type == 'doctor':
+        prescriptions = Prescription.objects.filter(medical_record__doctor=request.user)
+    else:
+        prescriptions = Prescription.objects.all()
 
     # Search functionality
     search_query = request.GET.get('search')
