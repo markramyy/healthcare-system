@@ -20,6 +20,8 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, Sp
 from rest_framework.permissions import AllowAny
 from healthcare_ms.core.views import landing_page
 from django.contrib.auth import views as auth_views
+from config.health import health_check
+from django_prometheus import exports
 
 views_patterns = [
     path('dashboard/', include('healthcare_ms.core.urls')),
@@ -37,14 +39,21 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('views/', include(views_patterns)),
 
+    # Health check and monitoring endpoints
+    path('health/', health_check, name='health-check'),
+    path('metrics/', exports.ExportToDjangoView, name='prometheus-metrics'),
+
+    # Authentication
     path('auth/', include('config.auth_router')),
 
+    # API endpoints
     path('users/', include('healthcare_ms.users.api_router')),
     path('patient/', include('healthcare_ms.patient.api_router')),
     path('ehr/', include('healthcare_ms.ehr.api_router')),
     path('appointment/', include('healthcare_ms.appointment.api_router')),
     path('billing/', include('healthcare_ms.billing.api_router')),
 
+    # API documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='api-schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='api-schema', permission_classes=[AllowAny]), name='api-docs'),
     path('api/redoc/', SpectacularRedocView.as_view(url_name='api-schema'), name='redoc'),
