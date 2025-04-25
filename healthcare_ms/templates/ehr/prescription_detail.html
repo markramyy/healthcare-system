@@ -11,10 +11,12 @@
             <p class="text-sm text-gray-600">Prescription #{{ prescription.guid }}</p>
         </div>
         <div class="flex space-x-4">
+            {% if request.user.user_type != 'patient' %}
             <a href="{% url 'ehr:prescription-update' prescription.guid %}"
                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                 Edit Prescription
             </a>
+            {% endif %}
             <a href="{% url 'ehr:prescription-list' %}"
                class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
                 Back to List

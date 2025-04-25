@@ -7,9 +7,11 @@
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Prescriptions</h1>
+        {% if request.user.user_type != 'patient' %}
         <a href="{% url 'ehr:prescription-create' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
             Add New Prescription
         </a>
+        {% endif %}
     </div>
 
     <!-- Search and Filter -->
@@ -71,10 +73,12 @@
                        class="text-blue-600 hover:text-blue-800 transition-colors">
                         View Details
                     </a>
+                    {% if request.user.user_type != 'patient' %}
                     <a href="{% url 'ehr:prescription-update' prescription.guid %}"
                        class="text-green-600 hover:text-green-800 transition-colors">
                         Edit
                     </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

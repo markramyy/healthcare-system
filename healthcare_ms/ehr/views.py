@@ -78,6 +78,10 @@ def medical_record_detail(request, guid):
 
 @login_required
 def medical_record_create(request):
+    if request.user.user_type == 'patient':
+        messages.error(request, 'Patients are not allowed to create medical records.')
+        return redirect('ehr:medical-record-list')
+
     patient_guid = request.GET.get('patient')
     initial_data = {
         'doctor': request.user,
@@ -105,6 +109,10 @@ def medical_record_create(request):
 
 @login_required
 def medical_record_update(request, guid):
+    if request.user.user_type == 'patient':
+        messages.error(request, 'Patients are not allowed to update medical records.')
+        return redirect('ehr:medical-record-list')
+
     record = get_object_or_404(MedicalRecord, guid=guid)
 
     if request.method == 'POST':
@@ -348,6 +356,10 @@ def prescription_detail(request, guid):
 
 @login_required
 def prescription_create(request):
+    if request.user.user_type == 'patient':
+        messages.error(request, 'Patients are not allowed to create prescriptions.')
+        return redirect('ehr:prescription-list')
+
     if request.method == 'POST':
         serializer = PrescriptionCreateSerializer(data=request.POST)
         if serializer.is_valid():
@@ -369,6 +381,10 @@ def prescription_create(request):
 
 @login_required
 def prescription_update(request, guid):
+    if request.user.user_type == 'patient':
+        messages.error(request, 'Patients are not allowed to update prescriptions.')
+        return redirect('ehr:prescription-list')
+
     prescription = get_object_or_404(Prescription, guid=guid)
 
     if request.method == 'POST':
