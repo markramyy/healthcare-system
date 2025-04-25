@@ -16,20 +16,26 @@
 
     <!-- Search and Filter -->
     <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-        <form method="get" class="flex flex-wrap gap-4">
+        <form method="get" class="flex flex-wrap gap-4" id="searchForm">
             <div class="flex-1">
-                <input type="text" name="search" placeholder="Search by medication name or dosage..."
+                <input type="text" name="search"
+                       placeholder="Search by medication name, dosage, patient name, doctor name, or prescription date..."
                        class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500"
-                       value="{{ request.GET.search }}">
+                       value="{{ search_query }}"
+                       id="searchInput">
             </div>
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                Search
-            </button>
+            <div class="flex gap-2">
+                {% if search_query %}
+                <a href="{% url 'ehr:prescription-list' %}" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                    Clear
+                </a>
+                {% endif %}
+            </div>
         </form>
     </div>
 
     <!-- Prescriptions Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="prescriptionsGrid">
         {% for prescription in prescriptions %}
         <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
             <div class="p-6">
@@ -116,4 +122,21 @@
     </div>
     {% endif %}
 </div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const searchForm = document.getElementById('searchForm');
+    let searchTimeout;
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+            searchForm.submit();
+        }, 500); // 500ms delay
+    });
+});
+</script>
+{% endblock %}
 {% endblock %}

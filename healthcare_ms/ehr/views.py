@@ -45,10 +45,17 @@ def medical_record_list(request):
     search_query = request.GET.get('search')
     if search_query:
         records = records.filter(
+            Q(patient__first_name__icontains=search_query) |
+            Q(patient__last_name__icontains=search_query) |
             Q(patient__username__icontains=search_query) |
+            Q(doctor__first_name__icontains=search_query) |
+            Q(doctor__last_name__icontains=search_query) |
             Q(doctor__username__icontains=search_query) |
-            Q(symptoms__icontains=search_query)
-        )
+            Q(symptoms__icontains=search_query) |
+            Q(notes__icontains=search_query) |
+            Q(visit_date__icontains=search_query) |
+            Q(follow_up_date__icontains=search_query)
+        ).distinct()
 
     # Pagination
     paginator = Paginator(records, 10)
@@ -62,7 +69,8 @@ def medical_record_list(request):
         'records': page_obj,
         'is_paginated': True,
         'page_obj': page_obj,
-        'serialized_data': serializer.data
+        'serialized_data': serializer.data,
+        'search_query': search_query
     })
 
 
@@ -325,8 +333,18 @@ def prescription_list(request):
     if search_query:
         prescriptions = prescriptions.filter(
             Q(medication_name__icontains=search_query) |
-            Q(dosage__icontains=search_query)
-        )
+            Q(dosage__icontains=search_query) |
+            Q(frequency__icontains=search_query) |
+            Q(duration__icontains=search_query) |
+            Q(instructions__icontains=search_query) |
+            Q(medical_record__patient__first_name__icontains=search_query) |
+            Q(medical_record__patient__last_name__icontains=search_query) |
+            Q(medical_record__patient__username__icontains=search_query) |
+            Q(medical_record__doctor__first_name__icontains=search_query) |
+            Q(medical_record__doctor__last_name__icontains=search_query) |
+            Q(medical_record__doctor__username__icontains=search_query) |
+            Q(created__icontains=search_query)
+        ).distinct()
 
     # Pagination
     paginator = Paginator(prescriptions, 10)
@@ -340,7 +358,8 @@ def prescription_list(request):
         'prescriptions': page_obj,
         'is_paginated': True,
         'page_obj': page_obj,
-        'serialized_data': serializer.data
+        'serialized_data': serializer.data,
+        'search_query': search_query
     })
 
 
