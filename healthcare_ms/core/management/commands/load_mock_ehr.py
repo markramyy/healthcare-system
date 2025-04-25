@@ -19,14 +19,12 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **options):
         self.stdout.write("Deleting old EHR data...")
-        # Delete objects in reverse order to avoid FK issues
         Prescription.objects.all().delete()
         Treatment.objects.all().delete()
         Diagnosis.objects.all().delete()
         MedicalRecord.objects.all().delete()
         self.stdout.write("Deleted old EHR data.")
 
-        # Get all doctors and patients
         doctors = User.objects.filter(user_type='doctor')
         patients = User.objects.filter(user_type='patient')
 
@@ -36,15 +34,11 @@ class Command(BaseCommand):
 
         self.stdout.write("Creating mock medical records and related data...")
 
-        # Create medical records for each patient
         for patient in patients:
-            # Create 2-5 medical records per patient
             num_records = random.randint(2, 5)
             for _ in range(num_records):
-                # Random doctor for this record
                 doctor = random.choice(doctors)
 
-                # Create medical record with timezone-aware datetime
                 visit_date = fake.date_time_between(start_date='-1y', end_date='now', tzinfo=timezone.get_current_timezone())
                 record = MedicalRecord.objects.create(
                     patient=patient,
@@ -56,7 +50,6 @@ class Command(BaseCommand):
                 )
                 self.stdout.write(f"Created medical record for {patient.username}")
 
-                # Create 1-3 diagnoses per record
                 for _ in range(random.randint(1, 3)):
                     Diagnosis.objects.create(
                         medical_record=record,
@@ -66,7 +59,6 @@ class Command(BaseCommand):
                     )
                 self.stdout.write(f"  - Created diagnoses for record {record.id}")
 
-                # Create 1-2 treatments per record
                 for _ in range(random.randint(1, 2)):
                     start_date = record.visit_date
                     end_date = start_date + timedelta(days=random.randint(7, 90)) if random.random() > 0.2 else None
@@ -80,7 +72,6 @@ class Command(BaseCommand):
                     )
                 self.stdout.write(f"  - Created treatments for record {record.id}")
 
-                # Create 1-3 prescriptions per record
                 for _ in range(random.randint(1, 3)):
                     Prescription.objects.create(
                         medical_record=record,

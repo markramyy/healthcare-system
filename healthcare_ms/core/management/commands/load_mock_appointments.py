@@ -19,13 +19,11 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **options):
         self.stdout.write("Deleting old appointment data...")
-        # Delete objects in reverse order to avoid FK issues
         Appointment.objects.all().delete()
         AppointmentSlot.objects.all().delete()
         AppointmentType.objects.all().delete()
         self.stdout.write("Deleted old appointment data.")
 
-        # Get all doctors and patients
         doctors = User.objects.filter(user_type='doctor')
         patients = User.objects.filter(user_type='patient')
 
@@ -34,7 +32,6 @@ class Command(BaseCommand):
             return
 
         self.stdout.write("Creating mock appointment types...")
-        # Create appointment types
         appointment_types = []
         type_names = [
             ('General Checkup', 30),
@@ -56,18 +53,14 @@ class Command(BaseCommand):
             self.stdout.write(f"Created appointment type: {name}")
 
         self.stdout.write("Creating mock appointment slots...")
-        # Create appointment slots for the next 30 days
         today = timezone.now().date()
         for doctor in doctors:
-            # Create 2-4 slots per day for each doctor
             for day in range(30):
                 date = today + timedelta(days=day)
                 num_slots = random.randint(2, 4)
 
-                # Generate unique time slots for this doctor and date
                 used_times = set()
                 for _ in range(num_slots):
-                    # Try to find an unused time slot
                     max_attempts = 10
                     for _ in range(max_attempts):
                         hour = random.randint(9, 16)
@@ -95,12 +88,9 @@ class Command(BaseCommand):
                 self.stdout.write(f"Created slots for {doctor.username} on {date}")
 
         self.stdout.write("Creating mock appointments...")
-        # Create appointments for each patient
         for patient in patients:
-            # Create 1-3 appointments per patient
             num_appointments = random.randint(1, 3)
             for _ in range(num_appointments):
-                # Get a random available slot
                 available_slots = AppointmentSlot.objects.filter(
                     is_available=True,
                     date__gte=today
@@ -112,7 +102,6 @@ class Command(BaseCommand):
                 appointment_type = random.choice(appointment_types)
                 doctor = slot.doctor
 
-                # Create the appointment
                 Appointment.objects.create(
                     patient=patient,
                     doctor=doctor,
@@ -123,7 +112,6 @@ class Command(BaseCommand):
                     notes=fake.text(max_nb_chars=200) if random.random() > 0.5 else ''
                 )
 
-                # Mark the slot as unavailable
                 slot.is_available = False
                 slot.save()
 
