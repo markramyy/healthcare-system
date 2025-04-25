@@ -98,11 +98,20 @@ def user_detail(request, guid):
 def user_update(request, guid):
     user = get_object_or_404(User, guid=guid)
 
+    # Check if user is trying to update their own profile or if they are staff/admin
+    if request.user != user and request.user.user_type not in ['admin', 'staff']:
+        messages.error(request, 'You can only update your own profile.')
+        return redirect('users:user-detail', guid=request.user.guid)
+
     if request.method == 'POST':
-        serializer = UpdateUserAdminSerializer(user, data=request.POST, files=request.FILES)
+        data = request.POST.copy()
+        if request.FILES.get('profile_picture'):
+            data['profile_picture'] = request.FILES['profile_picture']
+
+        serializer = UpdateUserAdminSerializer(user, data=data)
         if serializer.is_valid():
             serializer.save()
-            messages.success(request, 'User updated successfully.')
+            messages.success(request, 'Profile updated successfully.')
             return redirect('users:user-detail', guid=user.guid)
         else:
             messages.error(request, 'Please correct the errors below.')
@@ -111,6 +120,7 @@ def user_update(request, guid):
 
     return render(request, 'users/user_form.html', {
         'user': user,
+        'form': serializer,
         'serialized_data': serializer.data
     })
 
@@ -119,17 +129,21 @@ def user_update(request, guid):
 def change_password(request):
     if request.method == 'POST':
         serializer = UserPasswordChangeSerializer(data=request.POST, context={'request': request})
+
         if serializer.is_valid():
-            serializer.save()
-            messages.success(request, 'Password changed successfully.')
-            return redirect('users:user-detail', guid=request.user.guid)
+            try:
+                serializer.save()
+                messages.success(request, 'Password changed successfully. Please log in with your new password.')
+                return redirect('users:login')
+            except Exception:
+                messages.error(request, 'An error occurred while changing your password.')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
         serializer = UserPasswordChangeSerializer()
 
     return render(request, 'users/change_password.html', {
-        'serialized_data': serializer.data if hasattr(serializer, 'data') else None
+        'form': serializer
     })
 
 

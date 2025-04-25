@@ -62,10 +62,11 @@ class UserPasswordChangeSerializer(serializers.Serializer):
             )
         return attrs
 
-    def update(self, instance, validated_data):
-        instance.set_password(validated_data['new_password'])
-        instance.save()
-        return instance
+    def save(self, **kwargs):
+        user = self.context['request'].user
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        return user
 
 
 class ExportUserCSVSerializer(BaseSerializer):
