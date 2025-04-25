@@ -88,6 +88,33 @@ class Insurance(DBBase):
     coverage_end_date = models.DateField(null=True, blank=True, verbose_name=_('Coverage End Date'))
     is_active = models.BooleanField(default=True, verbose_name=_('Is Active'))
 
+    # Coverage Details
+    deductible = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Deductible ($)')
+    )
+    copayment = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Co-payment ($)')
+    )
+    coinsurance = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Co-insurance (%)')
+    )
+    out_of_pocket_max = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Out-of-pocket Maximum ($)')
+    )
+    notes = models.TextField(blank=True, verbose_name=_('Additional Notes'))
+
     class Meta:
         verbose_name = _('Insurance')
         verbose_name_plural = _('Insurance Policies')
