@@ -30,7 +30,8 @@ class InsuranceForm(forms.ModelForm):
         model = Insurance
         fields = [
             'patient', 'provider', 'policy_number',
-            'group_number', 'coverage_start_date', 'coverage_end_date'
+            'group_number', 'coverage_start_date', 'coverage_end_date', 'is_active',
+            'deductible', 'copayment', 'coinsurance', 'out_of_pocket_max', 'notes'
         ]
         widgets = {
             'patient': forms.Select(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white'}),
@@ -39,6 +40,12 @@ class InsuranceForm(forms.ModelForm):
             'group_number': forms.TextInput(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white'}),
             'coverage_start_date': forms.DateInput(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white', 'type': 'date'}),
             'coverage_end_date': forms.DateInput(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white', 'type': 'date'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'w-4 h-4 text-blue-600 bg-white bg-opacity-10 border-gray-300 rounded focus:ring-blue-500'}),
+            'deductible': forms.NumberInput(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white', 'step': '0.01', 'min': '0'}),
+            'copayment': forms.NumberInput(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white', 'step': '0.01', 'min': '0'}),
+            'coinsurance': forms.NumberInput(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white', 'step': '0.01', 'min': '0', 'max': '100'}),
+            'out_of_pocket_max': forms.NumberInput(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white', 'step': '0.01', 'min': '0'}),
+            'notes': forms.Textarea(attrs={'class': 'w-full px-3 py-2 rounded-lg bg-white bg-opacity-10 text-white', 'rows': 3}),
         }
 
     def __init__(self, *args, **kwargs):

@@ -51,7 +51,9 @@ class InsuranceListSerializer(BaseSerializer):
     class Meta:
         model = Insurance
         fields = (
-            'guid', 'patient', 'provider', 'policy_number'
+            'guid', 'patient', 'provider', 'policy_number',
+            'group_number', 'coverage_start_date', 'coverage_end_date',
+            'is_active'
         )
 
 
@@ -62,7 +64,9 @@ class InsuranceDetailSerializer(BaseSerializer):
         model = Insurance
         fields = (
             'guid', 'patient', 'provider', 'policy_number',
-            'group_number', 'coverage_start_date', 'coverage_end_date'
+            'group_number', 'coverage_start_date', 'coverage_end_date',
+            'is_active', 'deductible', 'copayment', 'coinsurance',
+            'out_of_pocket_max', 'notes'
         )
 
 
@@ -71,7 +75,9 @@ class InsuranceCreateSerializer(BaseSerializer):
         model = Insurance
         fields = (
             'guid', 'patient', 'provider', 'policy_number',
-            'group_number', 'coverage_start_date', 'coverage_end_date'
+            'group_number', 'coverage_start_date', 'coverage_end_date',
+            'is_active', 'deductible', 'copayment', 'coinsurance',
+            'out_of_pocket_max', 'notes'
         )
 
 
@@ -80,7 +86,9 @@ class InsuranceUpdateSerializer(BaseSerializer):
         model = Insurance
         fields = (
             'guid', 'patient', 'provider', 'policy_number',
-            'group_number', 'coverage_start_date', 'coverage_end_date'
+            'group_number', 'coverage_start_date', 'coverage_end_date',
+            'is_active', 'deductible', 'copayment', 'coinsurance',
+            'out_of_pocket_max', 'notes'
         )
 
 
