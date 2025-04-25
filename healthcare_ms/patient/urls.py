@@ -15,10 +15,12 @@ urlpatterns = [
     path('insurance/create/', views.insurance_create, name='insurance-create'),
     path('insurance/<uuid:guid>/', views.insurance_detail, name='insurance-detail'),
     path('insurance/<uuid:guid>/update/', views.insurance_update, name='insurance-update'),
+    path('insurance/<uuid:guid>/delete/', views.insurance_delete, name='insurance-delete'),
 
     # Emergency Contact URLs
     path('emergency-contacts/', views.emergency_contact_list, name='emergency-contact-list'),
     path('emergency-contacts/create/', views.emergency_contact_create, name='emergency-contact-create'),
     path('emergency-contacts/<uuid:guid>/', views.emergency_contact_detail, name='emergency-contact-detail'),
     path('emergency-contacts/<uuid:guid>/update/', views.emergency_contact_update, name='emergency-contact-update'),
+    path('emergency-contacts/<uuid:guid>/delete/', views.emergency_contact_delete, name='emergency-contact-delete'),
 ]

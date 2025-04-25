@@ -112,25 +112,20 @@ def profile_update(request, guid):
 
 @login_required
 def insurance_list(request):
-    # Filter by the logged-in user if they are a patient
-    if request.user.user_type == 'patient':
-        insurance_policies = Insurance.objects.filter(patient=request.user)
-    elif request.user.user_type in ['admin', 'staff']:  # Or handle other roles if needed
-        insurance_policies = Insurance.objects.all()
-    else:  # Doctors or other types if applicable (adjust as needed)
-        # Decide how to handle doctors - maybe filter by primary_doctor?
-        # For now, return none or filter appropriately based on your rules.
-        # Example: return based on patients assigned to a doctor
-        # insurance_policies = Insurance.objects.filter(patient__patient_profile__primary_doctor=request.user)
-        insurance_policies = Insurance.objects.none()  # Default to none if not admin/staff/patient
+    # Only allow patients to access their own insurance policies
+    if request.user.user_type != 'patient':
+        messages.error(request, 'Only patients can access their insurance policies.')
+        return redirect('home')
 
-    # Search functionality (applied after initial filtering)
+    insurance_policies = Insurance.objects.filter(patient=request.user)
+
+    # Search functionality
     search_query = request.GET.get('search')
     if search_query:
         insurance_policies = insurance_policies.filter(
-            Q(patient__username__icontains=search_query) |
             Q(provider__icontains=search_query) |
-            Q(policy_number__icontains=search_query)
+            Q(policy_number__icontains=search_query) |
+            Q(group_number__icontains=search_query)
         )
 
     # Pagination
@@ -145,54 +140,119 @@ def insurance_list(request):
         'insurance_policies': page_obj,
         'is_paginated': True,
         'page_obj': page_obj,
-        'serialized_data': serializer.data
+        'serialized_data': serializer.data,
+        'search_query': search_query
     })
 
 
 @login_required
 def insurance_create(request):
-    patient_guid = request.GET.get('patient')
-    initial_data = {'patient': patient_guid}
+    # Only allow patients to create insurance policies
+    if request.user.user_type != 'patient':
+        messages.error(request, 'Only patients can create insurance policies.')
+        return redirect('home')
 
     if request.method == 'POST':
-        serializer = InsuranceCreateSerializer(data=request.POST)
+        data = request.POST.copy()
+        data['patient'] = request.user.id
+
+        # Handle decimal fields
+        for field in ['deductible', 'copayment', 'coinsurance', 'out_of_pocket_max']:
+            if field in data and data[field]:
+                try:
+                    data[field] = float(data[field])
+                except (ValueError, TypeError):
+                    data[field] = 0
+
+        serializer = InsuranceCreateSerializer(data=data)
         if serializer.is_valid():
-            insurance = serializer.save()
+            serializer.save()
             messages.success(request, 'Insurance policy created successfully.')
-            return redirect('patient:profile-detail', guid=insurance.patient.guid)
+            return redirect('patient:insurance-list')
         else:
             form = InsuranceForm(request.POST)
             form.errors.update(serializer.errors)
+            messages.error(request, 'Please correct the errors below.')
     else:
-        form = InsuranceForm(initial=initial_data)
-        serializer = InsuranceCreateSerializer(initial=initial_data)
+        form = InsuranceForm()
+        serializer = InsuranceCreateSerializer()
 
     return render(request, 'patient/insurance_form.html', {
         'form': form,
-        'serialized_data': serializer.initial if hasattr(serializer, 'initial') else None
+        'serialized_data': serializer.initial if hasattr(serializer, 'initial') else None,
+        'is_create': True
     })
 
 
 @login_required
 def insurance_update(request, guid):
+    # Only allow patients to update their own insurance policies
+    if request.user.user_type != 'patient':
+        messages.error(request, 'Only patients can update their insurance policies.')
+        return redirect('home')
+
     insurance = get_object_or_404(Insurance, guid=guid)
 
+    # Check if the insurance belongs to the current user
+    if insurance.patient != request.user:
+        messages.error(request, 'You can only update your own insurance policies.')
+        return redirect('patient:insurance-list')
+
     if request.method == 'POST':
-        serializer = InsuranceUpdateSerializer(insurance, data=request.POST)
+        data = request.POST.copy()
+        data['patient'] = request.user.id
+
+        # Handle decimal fields
+        for field in ['deductible', 'copayment', 'coinsurance', 'out_of_pocket_max']:
+            if field in data and data[field]:
+                try:
+                    data[field] = float(data[field])
+                except (ValueError, TypeError):
+                    data[field] = 0
+
+        serializer = InsuranceUpdateSerializer(insurance, data=data)
+
         if serializer.is_valid():
-            serializer.save()
+            updated_insurance = serializer.save()
             messages.success(request, 'Insurance policy updated successfully.')
-            return redirect('patient:profile-detail', guid=insurance.patient.guid)
+            return redirect('patient:insurance-detail', guid=updated_insurance.guid)
         else:
             form = InsuranceForm(request.POST, instance=insurance)
             form.errors.update(serializer.errors)
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = InsuranceForm(instance=insurance)
         serializer = InsuranceUpdateSerializer(insurance)
 
     return render(request, 'patient/insurance_form.html', {
         'form': form,
-        'serialized_data': serializer.data
+        'insurance': insurance,
+        'serialized_data': serializer.data,
+        'is_create': False
+    })
+
+
+@login_required
+def insurance_delete(request, guid):
+    # Only allow patients to delete their own insurance policies
+    if request.user.user_type != 'patient':
+        messages.error(request, 'Only patients can delete their insurance policies.')
+        return redirect('home')
+
+    insurance = get_object_or_404(Insurance, guid=guid)
+
+    # Check if the insurance belongs to the current user
+    if insurance.patient != request.user:
+        messages.error(request, 'You can only delete your own insurance policies.')
+        return redirect('patient:insurance-list')
+
+    if request.method == 'POST':
+        insurance.delete()
+        messages.success(request, 'Insurance policy deleted successfully.')
+        return redirect('patient:insurance-list')
+
+    return render(request, 'patient/insurance_confirm_delete.html', {
+        'insurance': insurance
     })
 
 
@@ -208,22 +268,21 @@ def insurance_detail(request, guid):
 
 @login_required
 def emergency_contact_list(request):
-    # Filter by the logged-in user if they are a patient
-    if request.user.user_type == 'patient':
-        contacts = EmergencyContact.objects.filter(patient=request.user)
-    elif request.user.user_type in ['admin', 'staff']:  # Or handle other roles if needed
-        contacts = EmergencyContact.objects.all()
-    else:  # Doctors or other types if applicable (adjust as needed)
-        # Decide how to handle doctors - maybe filter by primary_doctor?
-        # Example: return based on patients assigned to a doctor
-        # contacts = EmergencyContact.objects.filter(patient__patient_profile__primary_doctor=request.user)
-        contacts = EmergencyContact.objects.none()  # Default to none if not admin/staff/patient
+    # Only allow patients to access their own emergency contacts
+    if request.user.user_type != 'patient':
+        messages.error(request, 'Only patients can access their emergency contacts.')
+        return redirect('home')
 
-    # Search functionality (applied after initial filtering)
+    contacts = EmergencyContact.objects.filter(patient=request.user)
+
+    # Search functionality
     search_query = request.GET.get('search')
     if search_query:
         contacts = contacts.filter(
-            Q(patient__username__icontains=search_query) | Q(name__icontains=search_query) | Q(relationship__icontains=search_query)
+            Q(name__icontains=search_query) |
+            Q(relationship__icontains=search_query) |
+            Q(phone_number__icontains=search_query) |
+            Q(email__icontains=search_query)
         )
 
     # Pagination
@@ -238,54 +297,75 @@ def emergency_contact_list(request):
         'contacts': page_obj,
         'is_paginated': True,
         'page_obj': page_obj,
-        'serialized_data': serializer.data
+        'serialized_data': serializer.data,
+        'search_query': search_query
     })
 
 
 @login_required
 def emergency_contact_create(request):
-    patient_guid = request.GET.get('patient')
-    initial_data = {'patient': patient_guid}
+    if request.user.user_type != 'patient':
+        messages.error(request, 'Only patients can create emergency contacts.')
+        return redirect('home')
 
     if request.method == 'POST':
-        serializer = EmergencyContactCreateSerializer(data=request.POST)
+        data = request.POST.copy()
+        data['patient'] = request.user.id
+
+        serializer = EmergencyContactCreateSerializer(data=data)
         if serializer.is_valid():
-            contact = serializer.save()
+            serializer.save()
             messages.success(request, 'Emergency contact created successfully.')
-            return redirect('patient:profile-detail', guid=contact.patient.guid)
+            return redirect('patient:emergency-contact-list')
         else:
             form = EmergencyContactForm(request.POST)
             form.errors.update(serializer.errors)
+            messages.error(request, 'Please correct the errors below.')
     else:
-        form = EmergencyContactForm(initial=initial_data)
-        serializer = EmergencyContactCreateSerializer(initial=initial_data)
+        form = EmergencyContactForm()
+        serializer = EmergencyContactCreateSerializer()
 
     return render(request, 'patient/emergency_contact_form.html', {
         'form': form,
-        'serialized_data': serializer.initial if hasattr(serializer, 'initial') else None
+        'serialized_data': serializer.initial if hasattr(serializer, 'initial') else None,
+        'is_create': True
     })
 
 
 @login_required
 def emergency_contact_update(request, guid):
+    if request.user.user_type != 'patient':
+        messages.error(request, 'Only patients can update their emergency contacts.')
+        return redirect('home')
+
     contact = get_object_or_404(EmergencyContact, guid=guid)
 
+    if contact.patient != request.user:
+        messages.error(request, 'You can only update your own emergency contacts.')
+        return redirect('patient:emergency-contact-list')
+
     if request.method == 'POST':
-        serializer = EmergencyContactUpdateSerializer(contact, data=request.POST)
+        data = request.POST.copy()
+        data['patient'] = request.user.id
+        serializer = EmergencyContactUpdateSerializer(contact, data=data)
+
         if serializer.is_valid():
-            serializer.save()
+            updated_contact = serializer.save()
             messages.success(request, 'Emergency contact updated successfully.')
-            return redirect('patient:profile-detail', guid=contact.patient.guid)
+            return redirect('patient:emergency-contact-detail', guid=updated_contact.guid)
         else:
             form = EmergencyContactForm(request.POST, instance=contact)
             form.errors.update(serializer.errors)
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = EmergencyContactForm(instance=contact)
         serializer = EmergencyContactUpdateSerializer(contact)
 
     return render(request, 'patient/emergency_contact_form.html', {
         'form': form,
-        'serialized_data': serializer.data
+        'contact': contact,
+        'serialized_data': serializer.data,
+        'is_create': False
     })
 
 
@@ -296,4 +376,26 @@ def emergency_contact_detail(request, guid):
     return render(request, 'patient/emergency_contact_detail.html', {
         'contact': contact,
         'serialized_data': serializer.data
+    })
+
+
+@login_required
+def emergency_contact_delete(request, guid):
+    if request.user.user_type != 'patient':
+        messages.error(request, 'Only patients can delete their emergency contacts.')
+        return redirect('home')
+
+    contact = get_object_or_404(EmergencyContact, guid=guid)
+
+    if contact.patient != request.user:
+        messages.error(request, 'You can only delete your own emergency contacts.')
+        return redirect('patient:emergency-contact-list')
+
+    if request.method == 'POST':
+        contact.delete()
+        messages.success(request, 'Emergency contact deleted successfully.')
+        return redirect('patient:emergency-contact-list')
+
+    return render(request, 'patient/emergency_contact_confirm_delete.html', {
+        'contact': contact
     })
