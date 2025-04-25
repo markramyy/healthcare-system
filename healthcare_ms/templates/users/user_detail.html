@@ -4,7 +4,7 @@
 
 {% block actions %}
 <div class="flex space-x-4">
-    {% if not is_me %}
+    {% if user.user_type in 'admin,staff' %}
     <a href="{% url 'users:user-list' %}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
         <i class="fas fa-arrow-left mr-2"></i>Back to Users
     </a>
