@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ insurance.provider_name }} - Insurance Policy{% endblock %}
+{% block title %}{{ insurance.provider }} - Insurance Policy{% endblock %}
 
 {% block content %}
 <div class="bg-white rounded-lg shadow">
@@ -8,7 +8,7 @@
     <div class="p-6 border-b">
         <div class="flex justify-between items-start">
             <div>
-                <h1 class="text-2xl font-bold text-gray-800">{{ insurance.provider_name }}</h1>
+                <h1 class="text-2xl font-bold text-gray-800">{{ insurance.provider }}</h1>
                 <p class="text-gray-500">Policy #: {{ insurance.policy_number }}</p>
             </div>
             <div class="flex space-x-4">
@@ -16,9 +16,20 @@
                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                     <i class="fas fa-edit mr-2"></i>Edit Policy
                 </a>
+                {% if request.user.user_type != 'patient' %}
                 <a href="{% url 'patient:profile-detail' insurance.patient.guid %}"
                    class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
                     <i class="fas fa-user-injured mr-2"></i>View Patient
+                </a>
+                {% else %}
+                <a href="{% url 'patient:insurance-list' %}"
+                   class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to List
+                </a>
+                {% endif %}
+                <a href="{% url 'patient:insurance-delete' insurance.guid %}"
+                   class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                    <i class="fas fa-trash mr-2"></i>Delete Policy
                 </a>
             </div>
         </div>
@@ -38,10 +49,6 @@
                         </span>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-500">Coverage Type</p>
-                        <p class="font-medium">{{ insurance.get_coverage_type_display }}</p>
-                    </div>
-                    <div>
                         <p class="text-sm text-gray-500">Policy Number</p>
                         <p class="font-medium">{{ insurance.policy_number }}</p>
                     </div>
@@ -50,12 +57,12 @@
                         <p class="font-medium">{{ insurance.group_number|default:"Not specified" }}</p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-500">Valid From</p>
-                        <p class="font-medium">{{ insurance.valid_from|date:"F j, Y" }}</p>
+                        <p class="text-sm text-gray-500">Coverage Start Date</p>
+                        <p class="font-medium">{{ insurance.coverage_start_date|date:"F j, Y" }}</p>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-500">Valid Until</p>
-                        <p class="font-medium">{{ insurance.valid_until|date:"F j, Y" }}</p>
+                        <p class="text-sm text-gray-500">Coverage End Date</p>
+                        <p class="font-medium">{{ insurance.coverage_end_date|date:"F j, Y"|default:"Not specified" }}</p>
                     </div>
                 </div>
             </div>

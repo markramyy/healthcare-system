@@ -1,111 +1,142 @@
 {% extends 'base.html' %}
 
-{% block title %}Insurance Policies - Healthcare Management System{% endblock %}
+{% block title %}Insurance Policies{% endblock %}
 
 {% block content %}
-<div class="bg-white rounded-lg shadow">
-    <div class="p-6 border-b">
-        <div class="flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-gray-800">Insurance Policies</h1>
-            <a href="{% url 'patient:insurance-create' %}"
-               class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                Add New Policy
-            </a>
-        </div>
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Insurance Policies</h1>
+        <a href="{% url 'patient:insurance-create' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+            <i class="fas fa-plus mr-2"></i>Add New Policy
+        </a>
     </div>
 
     <!-- Search and Filter -->
-    <div class="p-6 border-b">
-        <form method="get" class="flex flex-col md:flex-row gap-4">
+    <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+        <form method="get" class="flex flex-wrap gap-4" id="searchForm">
             <div class="flex-1">
-                <input type="text" name="search" placeholder="Search by provider or policy number"
-                       value="{{ request.GET.search|default:'' }}"
-                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" name="search"
+                       placeholder="Search by provider, policy number, or group number..."
+                       class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       value="{{ search_query }}"
+                       id="searchInput">
             </div>
-            <div class="flex gap-4">
-                <select name="status" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">All Statuses</option>
-                    <option value="active" {% if request.GET.insurance_status == 'active' %}selected{% endif %}>Active</option>
-                    <option value="inactive" {% if request.GET.insurance_status == 'inactive' %}selected{% endif %}>Inactive</option>
-                </select>
-                <button type="submit" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                    Filter
-                </button>
+            <div class="flex gap-2">
+                {% if search_query %}
+                <a href="{% url 'patient:insurance-list' %}" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-times mr-2"></i>Clear
+                </a>
+                {% endif %}
             </div>
         </form>
     </div>
 
-    <!-- Insurance Cards -->
-    <div class="p-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for insurance in insurance_policies %}
-            <div class="bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <h2 class="text-xl font-semibold text-gray-800">{{ insurance.provider }}</h2>
-                        <span class="px-3 py-1 text-sm rounded-full {% if insurance.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
-                            {{ insurance.is_active|yesno:"Active,Inactive" }}
-                        </span>
+    <!-- Insurance Policies Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="insuranceGrid">
+        {% for policy in insurance_policies %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">
+                            {{ policy.provider }}
+                        </h2>
+                        <p class="text-sm text-gray-600">Policy #{{ policy.policy_number }}</p>
                     </div>
+                    <span class="px-3 py-1 text-sm rounded-full
+                        {% if policy.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                        {{ policy.is_active|yesno:"Active,Inactive" }}
+                    </span>
+                </div>
 
-                    <div class="space-y-3">
-                        <div>
-                            <p class="text-sm text-gray-500">Policy Number</p>
-                            <p class="font-medium">{{ insurance.policy_number }}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Coverage Type</p>
-                            <p class="font-medium">{{ insurance.get_coverage_type_display }}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Patient</p>
-                            <p class="font-medium">{{ insurance.patient.get_full_name }}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Valid Until</p>
-                            <p class="font-medium">{{ insurance.coverage_end_date|date:"F j, Y" }}</p>
-                        </div>
-                    </div>
+                <div class="space-y-2">
+                    {% if policy.group_number %}
+                    <p class="text-sm text-gray-600">
+                        <span class="font-medium">Group Number:</span>
+                        {{ policy.group_number }}
+                    </p>
+                    {% endif %}
+                    <p class="text-sm text-gray-600">
+                        <span class="font-medium">Coverage Start:</span>
+                        {{ policy.coverage_start_date|date:"F d, Y" }}
+                    </p>
+                    {% if policy.coverage_end_date %}
+                    <p class="text-sm text-gray-600">
+                        <span class="font-medium">Coverage End:</span>
+                        {{ policy.coverage_end_date|date:"F d, Y" }}
+                    </p>
+                    {% endif %}
+                </div>
 
-                    <div class="mt-6 flex justify-end space-x-3">
-                        <a href="{% url 'patient:insurance-detail' insurance.guid %}"
-                           class="px-4 py-2 text-blue-600 hover:text-blue-800 transition-colors">
-                            View Details
-                        </a>
-                        <a href="{% url 'patient:insurance-update' insurance.guid %}"
-                           class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
-                            Edit
-                        </a>
-                    </div>
+                <div class="mt-4 flex justify-end space-x-2">
+                    <a href="{% url 'patient:insurance-detail' policy.guid %}"
+                       class="text-blue-600 hover:text-blue-800 transition-colors">
+                        <i class="fas fa-eye mr-1"></i>View Details
+                    </a>
+                    <a href="{% url 'patient:insurance-update' policy.guid %}"
+                       class="text-green-600 hover:text-green-800 transition-colors">
+                        <i class="fas fa-edit mr-1"></i>Edit
+                    </a>
                 </div>
             </div>
-            {% empty %}
-            <div class="col-span-full text-center py-12">
-                <p class="text-gray-500">No insurance policies found.</p>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No insurance policies found</h3>
+            <p class="mt-1 text-sm text-gray-500">Get started by adding a new insurance policy.</p>
+            <div class="mt-6">
+                <a href="{% url 'patient:insurance-create' %}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="fas fa-plus mr-2"></i>Add New Policy
+                </a>
             </div>
-            {% endfor %}
         </div>
-
-        <!-- Pagination -->
-        {% if is_paginated %}
-        <div class="mt-8 flex justify-center">
-            <nav class="flex items-center space-x-2">
-                {% if page_obj.has_previous %}
-                    <a href="?page=1" class="px-3 py-1 border rounded hover:bg-gray-50">&laquo; First</a>
-                    <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-50">Previous</a>
-                {% endif %}
-
-                <span class="px-3 py-1">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                </span>
-
-                {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-50">Next</a>
-                    <a href="?page={{ page_obj.paginator.num_pages }}" class="px-3 py-1 border rounded hover:bg-gray-50">Last &raquo;</a>
-                {% endif %}
-            </nav>
-        </div>
-        {% endif %}
+        {% endfor %}
     </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="mt-8 flex justify-center">
+        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+               class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                <i class="fas fa-chevron-left mr-1"></i>Previous
+            </a>
+            {% endif %}
+
+            <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+               class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                Next<i class="fas fa-chevron-right ml-1"></i>
+            </a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
 </div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const searchForm = document.getElementById('searchForm');
+    let searchTimeout;
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+            searchForm.submit();
+        }, 500); // 500ms delay
+    });
+});
+</script>
+{% endblock %}
 {% endblock %}

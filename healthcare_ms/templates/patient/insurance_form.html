@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}{% if insurance %}Edit{% else %}Create{% endif %} Insurance Policy{% endblock %}
+{% block title %}{% if is_create %}Create New Insurance Policy{% else %}Edit Insurance Policy{% endif %}{% endblock %}
 
 {% block content %}
 <div class="bg-white rounded-lg shadow">
     <div class="p-6 border-b">
         <h1 class="text-2xl font-bold text-gray-800">
-            {% if insurance %}
-                Edit Insurance Policy
-            {% else %}
+            {% if is_create %}
                 Create New Insurance Policy
+            {% else %}
+                Edit Insurance Policy
             {% endif %}
         </h1>
     </div>
@@ -23,7 +23,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Provider Name</label>
-                    <input type="text" name="provider_name" value="{{ form.provider_name.value|default:'' }}"
+                    <input type="text" name="provider" value="{{ form.provider.value|default:'' }}"
                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                            required>
                 </div>
@@ -38,16 +38,6 @@
                     <input type="text" name="group_number" value="{{ form.group_number.value|default:'' }}"
                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Coverage Type</label>
-                    <select name="coverage_type" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        {% for value, label in form.coverage_type.field.choices %}
-                            <option value="{{ value }}" {% if form.coverage_type.value == value %}selected{% endif %}>
-                                {{ label }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
             </div>
         </div>
 
@@ -56,16 +46,15 @@
             <h2 class="text-xl font-semibold text-gray-800 mb-4">Validity Period</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Valid From</label>
-                    <input type="date" name="valid_from" value="{{ form.valid_from.value|date:'Y-m-d'|default:'' }}"
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Coverage Start Date</label>
+                    <input type="date" name="coverage_start_date" value="{{ form.coverage_start_date.value|date:'Y-m-d'|default:'' }}"
                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                            required>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Valid Until</label>
-                    <input type="date" name="valid_until" value="{{ form.valid_until.value|date:'Y-m-d'|default:'' }}"
-                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           required>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Coverage End Date</label>
+                    <input type="date" name="coverage_end_date" value="{{ form.coverage_end_date.value|date:'Y-m-d'|default:'' }}"
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
             </div>
         </div>
@@ -111,28 +100,28 @@
             </div>
         </div>
 
-        <!-- Policy Documents -->
+        <!-- Status -->
         <div class="mb-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Policy Documents</h2>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Upload Documents</label>
-                <input type="file" name="documents" multiple
-                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <p class="mt-1 text-sm text-gray-500">Upload PDF documents related to this insurance policy.</p>
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Status</h2>
+            <div class="flex items-center">
+                <input type="checkbox" name="is_active" id="is_active"
+                       {% if form.is_active.value %}checked{% endif %}
+                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                <label for="is_active" class="ml-2 text-sm font-medium text-gray-700">Active Policy</label>
             </div>
         </div>
 
         <!-- Form Actions -->
         <div class="flex justify-end space-x-4">
-            <a href="{% if insurance %}{% url 'patient:insurance-detail' insurance.guid %}{% else %}{% url 'patient:insurance-list' %}{% endif %}"
+            <a href="{% if is_create %}{% url 'patient:insurance-list' %}{% else %}{% url 'patient:insurance-detail' insurance.guid %}{% endif %}"
                class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
                 Cancel
             </a>
             <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                {% if insurance %}
-                    Update Policy
-                {% else %}
+                {% if is_create %}
                     Create Policy
+                {% else %}
+                    Update Policy
                 {% endif %}
             </button>
         </div>
