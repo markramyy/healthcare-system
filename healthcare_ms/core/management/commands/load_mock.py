@@ -17,6 +17,21 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
+        self.stdout.write("Creating superuser...")
+        if not User.objects.filter(username='admin').exists():
+            User.objects.create_superuser(
+                username='admin',
+                email='admin@clinic.com',
+                password='1',
+                first_name='Admin',
+                last_name='User',
+                user_type='admin',
+                is_verified=True
+            )
+            self.stdout.write(self.style.SUCCESS("Created superuser: admin"))
+        else:
+            self.stdout.write("Superuser 'admin' already exists.")
+
         self.stdout.write("Deleting old patient-related data...")
         ins_del_count, _ = Insurance.objects.filter(patient__user_type='patient').delete()
         ec_del_count, _ = EmergencyContact.objects.filter(patient__user_type='patient').delete()
