@@ -92,14 +92,13 @@ def medical_record_create(request):
 
     patient_guid = request.GET.get('patient')
     initial_data = {
-        'doctor': request.user,
         'patient': patient_guid
     }
 
     if request.method == 'POST':
         serializer = MedicalRecordCreateSerializer(data=request.POST)
         if serializer.is_valid():
-            record = serializer.save()
+            record = serializer.save(doctor=request.user)
             messages.success(request, 'Medical record created successfully.')
             return redirect('patient:profile-detail', guid=record.patient.guid)
         else:
@@ -111,7 +110,8 @@ def medical_record_create(request):
 
     return render(request, 'ehr/medical_record_form.html', {
         'form': form,
-        'serialized_data': serializer.initial if hasattr(serializer, 'initial') else None
+        'serialized_data': serializer.initial if hasattr(serializer, 'initial') else None,
+        'is_create': True
     })
 
 
@@ -122,6 +122,11 @@ def medical_record_update(request, guid):
         return redirect('ehr:medical-record-list')
 
     record = get_object_or_404(MedicalRecord, guid=guid)
+
+    # Check if the authenticated user is the doctor who created the record
+    if request.user.user_type == 'doctor' and record.doctor != request.user:
+        messages.error(request, 'You are not authorized to update this medical record.')
+        return redirect('ehr:medical-record-list')
 
     if request.method == 'POST':
         serializer = MedicalRecordUpdateSerializer(record, data=request.POST)
@@ -138,7 +143,27 @@ def medical_record_update(request, guid):
 
     return render(request, 'ehr/medical_record_form.html', {
         'form': form,
-        'serialized_data': serializer.data
+        'serialized_data': serializer.data,
+        'is_create': False
+    })
+
+
+@login_required
+def medical_record_delete(request, guid):
+    record = get_object_or_404(MedicalRecord, guid=guid)
+
+    # Check if the authenticated user is the doctor who created the record
+    if request.user.user_type == 'doctor' and record.doctor != request.user:
+        messages.error(request, 'You are not authorized to delete this medical record.')
+        return redirect('ehr:medical-record-list')
+
+    if request.method == 'POST':
+        record.delete()
+        messages.success(request, 'Medical record deleted successfully.')
+        return redirect('ehr:medical-record-list')
+
+    return render(request, 'ehr/medical_record_confirm_delete.html', {
+        'record': record
     })
 
 
@@ -199,17 +224,26 @@ def diagnosis_create(request):
             form.errors.update(serializer.errors)
     else:
         form = DiagnosisForm()
+        # Filter medical records by authenticated doctor
+        if request.user.user_type == 'doctor':
+            form.fields['medical_record'].queryset = MedicalRecord.objects.filter(doctor=request.user)
         serializer = DiagnosisCreateSerializer()
 
     return render(request, 'ehr/diagnosis_form.html', {
         'form': form,
-        'serialized_data': serializer.data if hasattr(serializer, 'data') else None
+        'serialized_data': serializer.data if hasattr(serializer, 'data') else None,
+        'is_create': True
     })
 
 
 @login_required
 def diagnosis_update(request, guid):
     diagnosis = get_object_or_404(Diagnosis, guid=guid)
+
+    # Check if the authenticated user is the doctor who created the medical record
+    if request.user.user_type == 'doctor' and diagnosis.medical_record.doctor != request.user:
+        messages.error(request, 'You are not authorized to update this diagnosis.')
+        return redirect('ehr:diagnosis-list')
 
     if request.method == 'POST':
         serializer = DiagnosisUpdateSerializer(diagnosis, data=request.POST)
@@ -222,11 +256,34 @@ def diagnosis_update(request, guid):
             form.errors.update(serializer.errors)
     else:
         form = DiagnosisForm(instance=diagnosis)
+        # Filter medical records by authenticated doctor
+        if request.user.user_type == 'doctor':
+            form.fields['medical_record'].queryset = MedicalRecord.objects.filter(doctor=request.user)
         serializer = DiagnosisUpdateSerializer(diagnosis)
 
     return render(request, 'ehr/diagnosis_form.html', {
         'form': form,
-        'serialized_data': serializer.data
+        'serialized_data': serializer.data,
+        'is_create': False
+    })
+
+
+@login_required
+def diagnosis_delete(request, guid):
+    diagnosis = get_object_or_404(Diagnosis, guid=guid)
+
+    # Check if the authenticated user is the doctor who created the medical record
+    if request.user.user_type == 'doctor' and diagnosis.medical_record.doctor != request.user:
+        messages.error(request, 'You are not authorized to delete this diagnosis.')
+        return redirect('ehr:diagnosis-list')
+
+    if request.method == 'POST':
+        diagnosis.delete()
+        messages.success(request, 'Diagnosis deleted successfully.')
+        return redirect('ehr:diagnosis-list')
+
+    return render(request, 'ehr/diagnosis_confirm_delete.html', {
+        'diagnosis': diagnosis
     })
 
 
@@ -287,17 +344,26 @@ def treatment_create(request):
             form.errors.update(serializer.errors)
     else:
         form = TreatmentForm()
+        # Filter medical records by authenticated doctor
+        if request.user.user_type == 'doctor':
+            form.fields['medical_record'].queryset = MedicalRecord.objects.filter(doctor=request.user)
         serializer = TreatmentCreateSerializer()
 
     return render(request, 'ehr/treatment_form.html', {
         'form': form,
-        'serialized_data': serializer.data if hasattr(serializer, 'data') else None
+        'serialized_data': serializer.data if hasattr(serializer, 'data') else None,
+        'is_create': True
     })
 
 
 @login_required
 def treatment_update(request, guid):
     treatment = get_object_or_404(Treatment, guid=guid)
+
+    # Check if the authenticated user is the doctor who created the medical record
+    if request.user.user_type == 'doctor' and treatment.medical_record.doctor != request.user:
+        messages.error(request, 'You are not authorized to update this treatment.')
+        return redirect('ehr:treatment-list')
 
     if request.method == 'POST':
         serializer = TreatmentUpdateSerializer(treatment, data=request.POST)
@@ -310,11 +376,34 @@ def treatment_update(request, guid):
             form.errors.update(serializer.errors)
     else:
         form = TreatmentForm(instance=treatment)
+        # Filter medical records by authenticated doctor
+        if request.user.user_type == 'doctor':
+            form.fields['medical_record'].queryset = MedicalRecord.objects.filter(doctor=request.user)
         serializer = TreatmentUpdateSerializer(treatment)
 
     return render(request, 'ehr/treatment_form.html', {
         'form': form,
-        'serialized_data': serializer.data
+        'serialized_data': serializer.data,
+        'is_create': False
+    })
+
+
+@login_required
+def treatment_delete(request, guid):
+    treatment = get_object_or_404(Treatment, guid=guid)
+
+    # Check if the authenticated user is the doctor who created the medical record
+    if request.user.user_type == 'doctor' and treatment.medical_record.doctor != request.user:
+        messages.error(request, 'You are not authorized to delete this treatment.')
+        return redirect('ehr:treatment-list')
+
+    if request.method == 'POST':
+        treatment.delete()
+        messages.success(request, 'Treatment deleted successfully.')
+        return redirect('ehr:treatment-list')
+
+    return render(request, 'ehr/treatment_confirm_delete.html', {
+        'treatment': treatment
     })
 
 
@@ -422,4 +511,23 @@ def prescription_update(request, guid):
     return render(request, 'ehr/prescription_form.html', {
         'form': form,
         'serialized_data': serializer.data
+    })
+
+
+@login_required
+def prescription_delete(request, guid):
+    prescription = get_object_or_404(Prescription, guid=guid)
+
+    # Check if the authenticated user is the doctor who created the medical record
+    if request.user.user_type == 'doctor' and prescription.medical_record.doctor != request.user:
+        messages.error(request, 'You are not authorized to delete this prescription.')
+        return redirect('ehr:prescription-list')
+
+    if request.method == 'POST':
+        prescription.delete()
+        messages.success(request, 'Prescription deleted successfully.')
+        return redirect('ehr:prescription-list')
+
+    return render(request, 'ehr/prescription_confirm_delete.html', {
+        'prescription': prescription
     })
