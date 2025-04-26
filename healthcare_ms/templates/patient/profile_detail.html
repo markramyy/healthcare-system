@@ -27,207 +27,163 @@
 
     <!-- Main Content Sections -->
     <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8">
-
-        <!-- Left Column: Personal Info, Medical History, Insurance -->
-        <div class="space-y-8">
-            <!-- Personal Information -->
-            <div>
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Personal Information</h2>
-                <div class="grid grid-cols-2 gap-x-8 gap-y-4">
-                    <div>
-                        <p class="text-xs text-gray-500 uppercase tracking-wider">Date of Birth</p>
-                        <p class="font-medium text-gray-900 mt-1">
-                            {% if profile.user.date_of_birth %}
-                                {{ profile.user.date_of_birth|date:"F d, Y" }}
-                            {% else %}
-                                --
-                            {% endif %}
-                        </p>
+        <div class="flex flex-col md:flex-row md:space-x-8">
+            <div class="flex-1 mb-8 md:mb-0">
+                <!-- Personal Information -->
+                <section class="mb-8">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Personal Information</h2>
+                    <div class="grid grid-cols-2 gap-x-8 gap-y-4">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wider">Date of Birth</p>
+                            <p class="font-medium text-gray-900 mt-1">
+                                {% if profile.user.date_of_birth %}
+                                    {{ profile.user.date_of_birth|date:"F d, Y" }}
+                                {% else %}
+                                    --
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wider">Height</p>
+                            <p class="font-medium text-gray-900 mt-1">
+                                {% if profile.height %}
+                                    {{ profile.height }} cm
+                                {% else %}
+                                    --
+                                {% endif %}
+                            </p>
+                        </div>
+                         <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wider">Gender</p>
+                            <p class="font-medium text-gray-900 mt-1">{{ profile.get_gender_display|default:"--" }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wider">Weight</p>
+                            <p class="font-medium text-gray-900 mt-1">
+                                 {% if profile.weight %}
+                                    {{ profile.weight }} kg
+                                {% else %}
+                                    --
+                                {% endif %}
+                            </p>
+                        </div>
+                         <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wider">Blood Type</p>
+                            <p class="font-medium text-gray-900 mt-1">{{ profile.blood_type|default:"--" }}</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-xs text-gray-500 uppercase tracking-wider">Height</p>
-                        <p class="font-medium text-gray-900 mt-1">
-                            {% if profile.height %}
-                                {{ profile.height }} cm
-                            {% else %}
-                                --
-                            {% endif %}
-                        </p>
+                    <div class="grid grid-cols-2 gap-x-8 mt-4">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wider">Allergies</p>
+                            <p class="text-sm text-gray-800 mt-1">{{ profile.allergies|default:"None specified" }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wider">Chronic Conditions</p>
+                            <p class="text-sm text-gray-800 mt-1">{{ profile.chronic_conditions|default:"None specified" }}</p>
+                        </div>
                     </div>
-                     <div>
-                        <p class="text-xs text-gray-500 uppercase tracking-wider">Gender</p>
-                        <p class="font-medium text-gray-900 mt-1">{{ profile.get_gender_display|default:"--" }}</p>
-                    </div>
-                    <div>
-                        <p class="text-xs text-gray-500 uppercase tracking-wider">Weight</p>
-                        <p class="font-medium text-gray-900 mt-1">
-                             {% if profile.weight %}
-                                {{ profile.weight }} kg
-                            {% else %}
-                                --
-                            {% endif %}
-                        </p>
-                    </div>
-                     <div>
-                        <p class="text-xs text-gray-500 uppercase tracking-wider">Blood Type</p>
-                        <p class="font-medium text-gray-900 mt-1">{{ profile.blood_type|default:"--" }}</p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-x-8 mt-4">
-                    <div>
-                        <p class="text-xs text-gray-500 uppercase tracking-wider">Allergies</p>
-                        <p class="text-sm text-gray-800 mt-1">{{ profile.allergies|default:"None specified" }}</p>
-                    </div>
-                    <div>
-                        <p class="text-xs text-gray-500 uppercase tracking-wider">Chronic Conditions</p>
-                        <p class="text-sm text-gray-800 mt-1">{{ profile.chronic_conditions|default:"None specified" }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Medical History (Moved Here) -->
-            <div>
-                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Medical History (Visits)</h2>
-                 {% with medical_records=profile.user.medical_records.all %} {# Access via user #}
-                     {% if medical_records %}
-                         <div class="space-y-3">
-                             {% for record in medical_records|slice:":5" %} {# Show latest 5 records for brevity #}
-                                 <div class="bg-gray-50/50 p-3 rounded border border-gray-100">
-                                     <div class="flex justify-between items-start">
-                                         <div>
-                                             <p class="font-medium text-gray-900">
-                                                 Visit on {{ record.visit_date|date:"F d, Y, P" }}
-                                             </p>
-                                             <p class="text-sm text-gray-600 mt-1">
-                                                 Doctor: {{ record.doctor.get_full_name|default:"N/A" }}
-                                             </p>
-                                             <p class="text-sm text-gray-500 mt-1 truncate">
-                                                 Symptoms: {{ record.symptoms|truncatewords:15 }}
-                                             </p>
-                                         </div>
-                                         {% url 'ehr:medical-record-detail' record.guid as record_detail_url %}
-                                         {% if record_detail_url %}
-                                             <a href="{{ record_detail_url }}"
-                                                class="text-sm text-blue-600 hover:underline whitespace-nowrap ml-4">
-                                                 View Record
-                                             </a>
-                                         {% endif %}
-                                     </div>
-                                 </div>
-                             {% endfor %}
-                             {% if medical_records|length > 5 %}
-                                 <p class="text-sm text-gray-500">Showing latest 5 records. View all in EHR section.</p>
-                             {% endif %}
-                         </div>
-                     {% else %}
-                         <p class="text-sm text-gray-500">No medical records found for this patient.</p>
-                     {% endif %}
-                 {% endwith %}
-                 {% url 'ehr:medical-record-create' as record_create_url %}
-                 {% if record_create_url %}
-                     <a href="{{ record_create_url }}?patient={{ profile.user.guid }}"
-                        class="mt-3 inline-block text-blue-600 hover:text-blue-800 text-sm font-medium">
-                         <i class="fas fa-plus mr-1"></i>Add Medical Record
-                     </a>
-                 {% endif %}
-             </div>
-
-             <!-- Insurance Information -->
-            <div>
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Insurance Information</h2>
-                {% if profile.user.insurance_policies.all %}
-                    <div class="space-y-3">
-                        {% for insurance in profile.user.insurance_policies.all %}
-                            <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <h3 class="font-semibold text-gray-800">{{ insurance.provider }}</h3>
-                                        <p class="text-sm text-gray-600">Policy #: {{ insurance.policy_number }}</p>
-                                         <p class="text-sm text-gray-600">Group #: {{ insurance.group_number|default:'N/A' }}</p>
-                                         <p class="text-sm text-gray-500 mt-1">
-                                             Coverage: {{ insurance.coverage_start_date|date:"M d, Y" }} -
-                                             {{ insurance.coverage_end_date|date:"M d, Y"|default:'Present' }}
-                                             {% if insurance.is_active %}
-                                                <span class="ml-2 px-2 py-0.5 inline-flex text-xs leading-4 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-                                             {% else %}
-                                                 <span class="ml-2 px-2 py-0.5 inline-flex text-xs leading-4 font-semibold rounded-full bg-red-100 text-red-800">Inactive</span>
-                                             {% endif %}
-                                         </p>
-                                    </div>
-                                    <a href="{% url 'patient:insurance-detail' insurance.guid %}"
-                                       class="text-blue-600 hover:text-blue-800 text-sm">
-                                        View Details
-                                    </a>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <p class="text-sm text-gray-500">No insurance information available.</p>
-                {% endif %}
-                 <a href="{% url 'patient:insurance-create' %}?patient={{ profile.user.guid }}"
-                    class="mt-3 inline-block text-blue-600 hover:text-blue-800 text-sm font-medium">
-                     <i class="fas fa-plus mr-1"></i>Add Insurance
-                 </a>
-            </div>
-
-        </div>
-
-        <!-- Right Column: Contact Info & Primary Doctor -->
-         <div class="space-y-8">
-            <!-- Contact Information -->
-            <div>
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Contact Information</h2>
-                <div class="space-y-4">
-                    <div>
-                        <p class="text-xs text-gray-500 uppercase tracking-wider">Phone Number</p>
-                        <p class="font-medium text-gray-900 mt-1">{{ profile.user.phone_number|default:"--" }}</p>
-                    </div>
-                    <div>
-                        <p class="text-xs text-gray-500 uppercase tracking-wider">Address</p>
-                        <p class="font-medium text-gray-900 mt-1">{{ profile.user.address|default:"--"|linebreaksbr }}</p>
-                    </div>
-                    <div>
-                        <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">Emergency Contacts</p>
-                         {% if profile.user.emergency_contacts.all %}
+                </section>
+                <!-- Medical History (Visits) -->
+                <section class="mb-8">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Medical History (Visits)</h2>
+                    {% with medical_records=profile.user.medical_records.all %} {# Access via user #}
+                        {% if medical_records %}
                             <div class="space-y-3">
-                                {% for contact in profile.user.emergency_contacts.all %}
+                                {% for record in medical_records|slice:":5" %} {# Show latest 5 records for brevity #}
                                     <div class="bg-gray-50/50 p-3 rounded border border-gray-100">
-                                        <p class="font-medium text-gray-900">{{ contact.name }} ({{ contact.relationship }})</p>
-                                        <p class="text-sm text-gray-600 mt-1">{{ contact.phone_number }}</p>
-                                        {% if contact.email %}
-                                            <p class="text-sm text-gray-600">{{ contact.email }}</p>
-                                        {% endif %}
-                                        {% if contact.is_primary %}
-                                             <span class="mt-1 inline-block text-xs font-semibold text-green-700">Primary Contact</span>
-                                        {% endif %}
-                                         <a href="{% url 'patient:emergency-contact-detail' contact.guid %}" class="text-xs text-blue-600 hover:underline ml-2">View/Edit</a>
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <p class="font-medium text-gray-900">
+                                                    Visit on {{ record.visit_date|date:"F d, Y, P" }}
+                                                </p>
+                                                <p class="text-sm text-gray-600 mt-1">
+                                                    Doctor: {{ record.doctor.get_full_name|default:"N/A" }}
+                                                </p>
+                                                <p class="text-sm text-gray-500 mt-1 truncate">
+                                                    Symptoms: {{ record.symptoms|truncatewords:15 }}
+                                                </p>
+                                            </div>
+                                            {% url 'ehr:medical-record-detail' record.guid as record_detail_url %}
+                                            {% if record_detail_url %}
+                                                <a href="{{ record_detail_url }}"
+                                                   class="text-sm text-blue-600 hover:underline whitespace-nowrap ml-4">
+                                                    View Record
+                                                </a>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 {% endfor %}
+                                {% if medical_records|length > 5 %}
+                                    <p class="text-sm text-gray-500">Showing latest 5 records. View all in EHR section.</p>
+                                {% endif %}
                             </div>
                         {% else %}
-                            <p class="text-sm text-gray-500">No emergency contacts added.</p>
+                            <p class="text-sm text-gray-500">No medical records found for this patient.</p>
                         {% endif %}
-                        <a href="{% url 'patient:emergency-contact-create' %}?patient={{ profile.user.guid }}"
+                    {% endwith %}
+                    {% url 'ehr:medical-record-create' as record_create_url %}
+                    {% if record_create_url %}
+                        <a href="{{ record_create_url }}?patient={{ profile.user.guid }}"
                            class="mt-3 inline-block text-blue-600 hover:text-blue-800 text-sm font-medium">
-                            <i class="fas fa-plus mr-1"></i>Add Emergency Contact
+                            <i class="fas fa-plus mr-1"></i>Add Medical Record
                         </a>
+                    {% endif %}
+                </section>
+                <!-- Primary Doctor -->
+                <section class="mb-8">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Primary Doctor</h2>
+                    {% if profile.primary_doctor %}
+                        <p class="font-medium text-gray-900">Dr. {{ profile.primary_doctor.get_full_name }}</p>
+                        <p class="text-sm text-gray-600">{{ profile.primary_doctor.email }}</p>
+                     {% else %}
+                         <p class="text-sm text-gray-500">No primary doctor assigned.</p>
+                    {% endif %}
+                </section>
+            </div>
+            <div class="flex-1">
+                <!-- Contact Information -->
+                <section class="mb-8">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Contact Information</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wider">Phone Number</p>
+                            <p class="font-medium text-gray-900 mt-1">{{ profile.user.phone_number|default:"--" }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wider">Address</p>
+                            <p class="font-medium text-gray-900 mt-1">{{ profile.user.address|default:"--"|linebreaksbr }}</p>
+                        </div>
                     </div>
-                 </div>
-             </div>
-
-             <!-- Primary Doctor -->
-             <div>
-                  <h2 class="text-lg font-semibold text-gray-800 mb-4">Primary Doctor</h2>
-                  {% if profile.primary_doctor %}
-                      <p class="font-medium text-gray-900">Dr. {{ profile.primary_doctor.get_full_name }}</p>
-                      <p class="text-sm text-gray-600">{{ profile.primary_doctor.email }}</p>
-                   {% else %}
-                       <p class="text-sm text-gray-500">No primary doctor assigned.</p>
-                  {% endif %}
-             </div>
-         </div>
-
-     </div>
+                </section>
+                <!-- Emergency Contacts -->
+                <section class="mb-8">
+                    <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">Emergency Contacts</p>
+                     {% if profile.user.emergency_contacts.all %}
+                        <div class="space-y-3">
+                            {% for contact in profile.user.emergency_contacts.all %}
+                                <div class="bg-gray-50/50 p-3 rounded border border-gray-100">
+                                    <p class="font-medium text-gray-900">{{ contact.name }} ({{ contact.relationship }})</p>
+                                    <p class="text-sm text-gray-600 mt-1">{{ contact.phone_number }}</p>
+                                    {% if contact.email %}
+                                        <p class="text-sm text-gray-600">{{ contact.email }}</p>
+                                    {% endif %}
+                                    {% if contact.is_primary %}
+                                         <span class="mt-1 inline-block text-xs font-semibold text-green-700">Primary Contact</span>
+                                    {% endif %}
+                                     <a href="{% url 'patient:emergency-contact-detail' contact.guid %}" class="text-xs text-blue-600 hover:underline ml-2">View/Edit</a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-sm text-gray-500">No emergency contacts added.</p>
+                    {% endif %}
+                    <a href="{% url 'patient:emergency-contact-create' %}?patient={{ profile.user.guid }}"
+                       class="mt-3 inline-block text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        <i class="fas fa-plus mr-1"></i>Add Emergency Contact
+                    </a>
+                </section>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
