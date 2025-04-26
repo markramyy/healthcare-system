@@ -11,10 +11,16 @@
             <p class="text-gray-600">Code: {{ diagnosis.diagnosis_code }}</p>
         </div>
         <div class="flex space-x-2">
+            {% if user.user_type == 'doctor' and diagnosis.medical_record.doctor == user %}
             <a href="{% url 'ehr:diagnosis-update' diagnosis.guid %}"
                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                 Edit Diagnosis
             </a>
+            <a href="{% url 'ehr:diagnosis-delete' diagnosis.guid %}"
+               class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                Delete Diagnosis
+            </a>
+            {% endif %}
             <a href="{% url 'ehr:diagnosis-list' %}"
                class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
                 Back to List

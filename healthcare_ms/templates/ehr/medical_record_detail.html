@@ -1,148 +1,200 @@
 {% extends 'base.html' %}
 
-{% block title %}Medical Record - {{ record.patient.get_full_name }}{% endblock %}
+{% block title %}Medical Record Details - Healthcare Management System{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <!-- Header -->
+<div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
     <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-800">Medical Record</h1>
-            <p class="text-gray-600">Patient: {{ record.patient.get_full_name }}</p>
-        </div>
-        <div class="flex space-x-2">
-            {% if request.user.user_type != 'patient' %}
-            <a href="{% url 'ehr:medical-record-update' record.guid %}"
-               class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                Edit Record
+        <h1 class="text-2xl font-bold text-gray-800">Medical Record Details</h1>
+        <div class="flex space-x-4">
+            {% if user.user_type == 'doctor' and record.doctor == user %}
+            <a href="{% url 'ehr:medical-record-update' guid=record.guid %}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <i class="fas fa-edit mr-2"></i>
+                Edit
+            </a>
+            <a href="{% url 'ehr:medical-record-delete' guid=record.guid %}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                <i class="fas fa-trash-alt mr-2"></i>
+                Delete
             </a>
             {% endif %}
-            <a href="{% url 'ehr:medical-record-list' %}"
-               class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
-                Back to List
-            </a>
         </div>
     </div>
 
-    <!-- Record Information -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="p-6">
-            <!-- Basic Information -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div>
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Patient Information</h2>
-                    <div class="space-y-2">
-                        <p class="text-sm text-gray-600">
-                            <span class="font-medium">Name:</span>
-                            {{ record.patient.get_full_name }}
-                        </p>
-                        <p class="text-sm text-gray-600">
-                            <span class="font-medium">Email:</span>
-                            {{ record.patient.email }}
-                        </p>
-                        <p class="text-sm text-gray-600">
-                            <span class="font-medium">Phone:</span>
-                            {{ record.patient.phone_number }}
-                        </p>
-                    </div>
-                </div>
-                <div>
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Visit Information</h2>
-                    <div class="space-y-2">
-                        <p class="text-sm text-gray-600">
-                            <span class="font-medium">Doctor:</span>
-                            {{ record.doctor.get_full_name }}
-                        </p>
-                        <p class="text-sm text-gray-600">
-                            <span class="font-medium">Visit Date:</span>
-                            {{ record.visit_date|date:"F d, Y H:i" }}
-                        </p>
-                        {% if record.follow_up_date %}
-                        <p class="text-sm text-gray-600">
-                            <span class="font-medium">Follow-up Date:</span>
-                            {{ record.follow_up_date|date:"F d, Y H:i" }}
-                        </p>
-                        {% endif %}
-                    </div>
-                </div>
+    <div class="bg-gray-50 p-4 rounded-lg mb-6">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Patient Information</h2>
+        <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <dt class="text-sm font-medium text-gray-500">Patient Name</dt>
+                <dd class="mt-1 text-sm text-gray-900">{{ record.patient.get_full_name }}</dd>
             </div>
-
-            <!-- Symptoms and Notes -->
-            <div class="space-y-6">
-                <div>
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Symptoms</h2>
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <p class="text-gray-700">{{ record.symptoms }}</p>
-                    </div>
-                </div>
-
-                {% if record.notes %}
-                <div>
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Notes</h2>
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <p class="text-gray-700">{{ record.notes }}</p>
-                    </div>
-                </div>
-                {% endif %}
+            <div>
+                <dt class="text-sm font-medium text-gray-500">Doctor</dt>
+                <dd class="mt-1 text-sm text-gray-900">{{ record.doctor.get_full_name }}</dd>
             </div>
-
-            <!-- Related Records -->
-            <div class="mt-8">
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Related Records</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Diagnoses -->
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <h3 class="font-medium text-gray-800 mb-2">Diagnoses</h3>
-                        {% if record.diagnoses.exists %}
-                        <ul class="space-y-2">
-                            {% for diagnosis in record.diagnoses.all %}
-                            <li class="text-sm text-gray-600">
-                                <span class="font-medium">{{ diagnosis.diagnosis_code }}</span> -
-                                {{ diagnosis.description }}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                        {% else %}
-                        <p class="text-sm text-gray-500">No diagnoses recorded</p>
-                        {% endif %}
-                    </div>
-
-                    <!-- Treatments -->
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <h3 class="font-medium text-gray-800 mb-2">Treatments</h3>
-                        {% if record.treatments.exists %}
-                        <ul class="space-y-2">
-                            {% for treatment in record.treatments.all %}
-                            <li class="text-sm text-gray-600">
-                                <span class="font-medium">{{ treatment.name }}</span> -
-                                {{ treatment.treatment_status }}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                        {% else %}
-                        <p class="text-sm text-gray-500">No treatments recorded</p>
-                        {% endif %}
-                    </div>
-
-                    <!-- Prescriptions -->
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <h3 class="font-medium text-gray-800 mb-2">Prescriptions</h3>
-                        {% if record.prescriptions.exists %}
-                        <ul class="space-y-2">
-                            {% for prescription in record.prescriptions.all %}
-                            <li class="text-sm text-gray-600">
-                                <span class="font-medium">{{ prescription.medication_name }}</span> -
-                                {{ prescription.dosage }}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                        {% else %}
-                        <p class="text-sm text-gray-500">No prescriptions recorded</p>
-                        {% endif %}
-                    </div>
-                </div>
+            <div>
+                <dt class="text-sm font-medium text-gray-500">Visit Date</dt>
+                <dd class="mt-1 text-sm text-gray-900">{{ record.visit_date|date:"F d, Y H:i" }}</dd>
             </div>
+            <div>
+                <dt class="text-sm font-medium text-gray-500">Follow Up Date</dt>
+                <dd class="mt-1 text-sm text-gray-900">
+                    {% if record.follow_up_date %}
+                        {{ record.follow_up_date|date:"F d, Y H:i" }}
+                    {% else %}
+                        Not scheduled
+                    {% endif %}
+                </dd>
+            </div>
+        </dl>
+    </div>
+
+    <div class="bg-gray-50 p-4 rounded-lg mb-6">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Symptoms</h2>
+        <p class="text-sm text-gray-900">{{ record.symptoms }}</p>
+    </div>
+
+    {% if record.notes %}
+    <div class="bg-gray-50 p-4 rounded-lg mb-6">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Notes</h2>
+        <p class="text-sm text-gray-900">{{ record.notes }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Diagnoses Section -->
+    <div class="bg-gray-50 p-4 rounded-lg mb-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800">Diagnoses</h2>
+            {% if user.user_type == 'doctor' and record.doctor == user %}
+            <a href="{% url 'ehr:diagnosis-create' %}?medical_record={{ record.guid }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <i class="fas fa-plus mr-1"></i>
+                Add Diagnosis
+            </a>
+            {% endif %}
         </div>
+        {% if record.diagnoses.exists %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Severity</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for diagnosis in record.diagnoses.all %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ diagnosis.diagnosis_code }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">{{ diagnosis.description }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ diagnosis.get_severity_display }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <a href="{% url 'ehr:diagnosis-detail' guid=diagnosis.guid %}" class="text-blue-600 hover:text-blue-900 mr-3">View</a>
+                            {% if user.user_type == 'doctor' and record.doctor == user %}
+                            <a href="{% url 'ehr:diagnosis-update' guid=diagnosis.guid %}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                            <a href="{% url 'ehr:diagnosis-delete' guid=diagnosis.guid %}" class="text-red-600 hover:text-red-900">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-sm text-gray-500">No diagnoses recorded.</p>
+        {% endif %}
+    </div>
+
+    <!-- Treatments Section -->
+    <div class="bg-gray-50 p-4 rounded-lg mb-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800">Treatments</h2>
+            {% if user.user_type == 'doctor' and record.doctor == user %}
+            <a href="{% url 'ehr:treatment-create' %}?medical_record={{ record.guid }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <i class="fas fa-plus mr-1"></i>
+                Add Treatment
+            </a>
+            {% endif %}
+        </div>
+        {% if record.treatments.exists %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for treatment in record.treatments.all %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ treatment.name }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">{{ treatment.description }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ treatment.get_treatment_status_display }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <a href="{% url 'ehr:treatment-detail' guid=treatment.guid %}" class="text-blue-600 hover:text-blue-900 mr-3">View</a>
+                            {% if user.user_type == 'doctor' and record.doctor == user %}
+                            <a href="{% url 'ehr:treatment-update' guid=treatment.guid %}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                            <a href="{% url 'ehr:treatment-delete' guid=treatment.guid %}" class="text-red-600 hover:text-red-900">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-sm text-gray-500">No treatments recorded.</p>
+        {% endif %}
+    </div>
+
+    <!-- Prescriptions Section -->
+    <div class="bg-gray-50 p-4 rounded-lg">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800">Prescriptions</h2>
+            {% if user.user_type == 'doctor' and record.doctor == user %}
+            <a href="{% url 'ehr:prescription-create' %}?medical_record={{ record.guid }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <i class="fas fa-plus mr-1"></i>
+                Add Prescription
+            </a>
+            {% endif %}
+        </div>
+        {% if record.prescriptions.exists %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Medication</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dosage</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Frequency</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for prescription in record.prescriptions.all %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ prescription.medication_name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ prescription.dosage }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ prescription.frequency }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ prescription.duration }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <a href="{% url 'ehr:prescription-detail' guid=prescription.guid %}" class="text-blue-600 hover:text-blue-900 mr-3">View</a>
+                            {% if user.user_type == 'doctor' and record.doctor == user %}
+                            <a href="{% url 'ehr:prescription-update' guid=prescription.guid %}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                            <a href="{% url 'ehr:prescription-delete' guid=prescription.guid %}" class="text-red-600 hover:text-red-900">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-sm text-gray-500">No prescriptions recorded.</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
