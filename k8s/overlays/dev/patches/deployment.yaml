@@ -13,6 +13,31 @@ spec:
           value: "1"
         - name: ENVIRONMENT
           value: "development"
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: DB_ENGINE
+          value: "django.db.backends.postgresql"
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: database-name
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: database-user
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: database-password
+        - name: DB_HOST
+          value: "db"
+        - name: DB_PORT
+          value: "5432"
         resources:
           requests:
             memory: "128Mi"
