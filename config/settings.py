@@ -233,15 +233,15 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 
 # Security Settings
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = False  # Changed to False for testing
+    SESSION_COOKIE_SECURE = False  # Changed to False for testing
+    CSRF_COOKIE_SECURE = False  # Changed to False for testing
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
-    SECURE_HSTS_SECONDS = 31536000  # 1 year
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_SECONDS = 0  # Disabled HSTS
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False  # Disabled HSTS subdomains
+    SECURE_HSTS_PRELOAD = False  # Disabled HSTS preload
 
 # Prometheus Metrics
 PROMETHEUS_METRICS = env.bool('PROMETHEUS_METRICS', default=True)
