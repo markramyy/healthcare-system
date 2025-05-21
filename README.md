@@ -100,19 +100,14 @@ docker-compose -f docker-compose.dev.yml up --build
 
 ### Development Environment
 
-1. Build and push the Docker image:
+1. Deploy to development environment:
 ```bash
-docker build -t your-registry/healthcare-system:latest .
-docker push your-registry/healthcare-system:latest
-```
-
-2. Deploy to development environment:
-```bash
-kubectl apply -k k8s/overlays/dev
+chmod +x k8s/run-dev-k8s.sh
+./k8s/run-dev-k8s.sh
 ```
 
 3. Access the application:
-   - Web: http://localhost:30080
+   - Web: {minikube service web -n healthcare-dev --url}
    - Grafana: http://localhost:3000 (admin/admin)
    - Prometheus: http://localhost:9090
 
