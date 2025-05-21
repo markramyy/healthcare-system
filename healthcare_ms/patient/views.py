@@ -112,12 +112,13 @@ def profile_update(request, guid):
 
 @login_required
 def insurance_list(request):
-    # Only allow patients to access their own insurance policies
-    if request.user.user_type != 'patient':
-        messages.error(request, 'Only patients can access their insurance policies.')
-        return redirect('home')
-
-    insurance_policies = Insurance.objects.filter(patient=request.user)
+    # Allow all users to list insurance policies
+    if request.user.user_type == 'patient':
+        # Patients can only see their own insurance
+        insurance_policies = Insurance.objects.filter(patient=request.user)
+    else:
+        # Other users can see all insurance policies
+        insurance_policies = Insurance.objects.all()
 
     # Search functionality
     search_query = request.GET.get('search')
@@ -141,20 +142,33 @@ def insurance_list(request):
         'is_paginated': True,
         'page_obj': page_obj,
         'serialized_data': serializer.data,
-        'search_query': search_query
+        'search_query': search_query,
+        'can_edit': request.user.user_type in ['patient', 'admin']  # Add this for template control
     })
 
 
 @login_required
 def insurance_create(request):
-    # Only allow patients to create insurance policies
-    if request.user.user_type != 'patient':
-        messages.error(request, 'Only patients can create insurance policies.')
-        return redirect('home')
+    # Only allow patients and admins to create insurance policies
+    if request.user.user_type not in ['patient', 'admin']:
+        messages.error(request, 'Only patients and administrators can create insurance policies.')
+        return redirect('dashboard:home')
 
     if request.method == 'POST':
         data = request.POST.copy()
-        data['patient'] = request.user.id
+        # If admin is creating, they must specify a patient
+        if request.user.user_type == 'admin':
+            if 'patient' not in data or not data['patient']:
+                messages.error(request, 'Please select a patient for this insurance policy.')
+                form = InsuranceForm(request.POST)
+                return render(request, 'patient/insurance_form.html', {
+                    'form': form,
+                    'serialized_data': None,
+                    'is_create': True
+                })
+        else:
+            # If patient is creating, set them as the patient
+            data['patient'] = request.user.id
 
         # Handle decimal fields
         for field in ['deductible', 'copayment', 'coinsurance', 'out_of_pocket_max']:
@@ -186,21 +200,25 @@ def insurance_create(request):
 
 @login_required
 def insurance_update(request, guid):
-    # Only allow patients to update their own insurance policies
-    if request.user.user_type != 'patient':
-        messages.error(request, 'Only patients can update their insurance policies.')
-        return redirect('home')
+    # Only allow patients and admins to update insurance policies
+    if request.user.user_type not in ['patient', 'admin']:
+        messages.error(request, 'Only patients and administrators can update insurance policies.')
+        return redirect('dashboard:home')
 
     insurance = get_object_or_404(Insurance, guid=guid)
 
-    # Check if the insurance belongs to the current user
-    if insurance.patient != request.user:
+    # Check if the user has permission to update this insurance
+    if request.user.user_type == 'patient' and insurance.patient != request.user:
         messages.error(request, 'You can only update your own insurance policies.')
         return redirect('patient:insurance-list')
 
     if request.method == 'POST':
         data = request.POST.copy()
-        data['patient'] = request.user.id
+        # Keep the original patient if admin is updating
+        if request.user.user_type == 'admin':
+            data['patient'] = insurance.patient.id
+        else:
+            data['patient'] = request.user.id
 
         # Handle decimal fields
         for field in ['deductible', 'copayment', 'coinsurance', 'out_of_pocket_max']:
@@ -234,15 +252,15 @@ def insurance_update(request, guid):
 
 @login_required
 def insurance_delete(request, guid):
-    # Only allow patients to delete their own insurance policies
-    if request.user.user_type != 'patient':
-        messages.error(request, 'Only patients can delete their insurance policies.')
-        return redirect('home')
+    # Only allow patients and admins to delete insurance policies
+    if request.user.user_type not in ['patient', 'admin']:
+        messages.error(request, 'Only patients and administrators can delete insurance policies.')
+        return redirect('dashboard:home')
 
     insurance = get_object_or_404(Insurance, guid=guid)
 
-    # Check if the insurance belongs to the current user
-    if insurance.patient != request.user:
+    # Check if the user has permission to delete this insurance
+    if request.user.user_type == 'patient' and insurance.patient != request.user:
         messages.error(request, 'You can only delete your own insurance policies.')
         return redirect('patient:insurance-list')
 
@@ -268,12 +286,13 @@ def insurance_detail(request, guid):
 
 @login_required
 def emergency_contact_list(request):
-    # Only allow patients to access their own emergency contacts
-    if request.user.user_type != 'patient':
-        messages.error(request, 'Only patients can access their emergency contacts.')
-        return redirect('home')
-
-    contacts = EmergencyContact.objects.filter(patient=request.user)
+    # Allow all users to list emergency contacts
+    if request.user.user_type == 'patient':
+        # Patients can only see their own emergency contacts
+        contacts = EmergencyContact.objects.filter(patient=request.user)
+    else:
+        # Other users can see all emergency contacts
+        contacts = EmergencyContact.objects.all()
 
     # Search functionality
     search_query = request.GET.get('search')
@@ -298,19 +317,33 @@ def emergency_contact_list(request):
         'is_paginated': True,
         'page_obj': page_obj,
         'serialized_data': serializer.data,
-        'search_query': search_query
+        'search_query': search_query,
+        'can_edit': request.user.user_type in ['patient', 'admin']  # Add this for template control
     })
 
 
 @login_required
 def emergency_contact_create(request):
-    if request.user.user_type != 'patient':
-        messages.error(request, 'Only patients can create emergency contacts.')
-        return redirect('home')
+    # Only allow patients and admins to create emergency contacts
+    if request.user.user_type not in ['patient', 'admin']:
+        messages.error(request, 'Only patients and administrators can create emergency contacts.')
+        return redirect('dashboard:home')
 
     if request.method == 'POST':
         data = request.POST.copy()
-        data['patient'] = request.user.id
+        # If admin is creating, they must specify a patient
+        if request.user.user_type == 'admin':
+            if 'patient' not in data or not data['patient']:
+                messages.error(request, 'Please select a patient for this emergency contact.')
+                form = EmergencyContactForm(request.POST)
+                return render(request, 'patient/emergency_contact_form.html', {
+                    'form': form,
+                    'serialized_data': None,
+                    'is_create': True
+                })
+        else:
+            # If patient is creating, set them as the patient
+            data['patient'] = request.user.id
 
         serializer = EmergencyContactCreateSerializer(data=data)
         if serializer.is_valid():
@@ -334,19 +367,26 @@ def emergency_contact_create(request):
 
 @login_required
 def emergency_contact_update(request, guid):
-    if request.user.user_type != 'patient':
-        messages.error(request, 'Only patients can update their emergency contacts.')
-        return redirect('home')
+    # Only allow patients and admins to update emergency contacts
+    if request.user.user_type not in ['patient', 'admin']:
+        messages.error(request, 'Only patients and administrators can update emergency contacts.')
+        return redirect('dashboard:home')
 
     contact = get_object_or_404(EmergencyContact, guid=guid)
 
-    if contact.patient != request.user:
+    # Check if the user has permission to update this contact
+    if request.user.user_type == 'patient' and contact.patient != request.user:
         messages.error(request, 'You can only update your own emergency contacts.')
         return redirect('patient:emergency-contact-list')
 
     if request.method == 'POST':
         data = request.POST.copy()
-        data['patient'] = request.user.id
+        # Keep the original patient if admin is updating
+        if request.user.user_type == 'admin':
+            data['patient'] = contact.patient.id
+        else:
+            data['patient'] = request.user.id
+
         serializer = EmergencyContactUpdateSerializer(contact, data=data)
 
         if serializer.is_valid():
@@ -381,13 +421,15 @@ def emergency_contact_detail(request, guid):
 
 @login_required
 def emergency_contact_delete(request, guid):
-    if request.user.user_type != 'patient':
-        messages.error(request, 'Only patients can delete their emergency contacts.')
-        return redirect('home')
+    # Only allow patients and admins to delete emergency contacts
+    if request.user.user_type not in ['patient', 'admin']:
+        messages.error(request, 'Only patients and administrators can delete emergency contacts.')
+        return redirect('dashboard:home')
 
     contact = get_object_or_404(EmergencyContact, guid=guid)
 
-    if contact.patient != request.user:
+    # Check if the user has permission to delete this contact
+    if request.user.user_type == 'patient' and contact.patient != request.user:
         messages.error(request, 'You can only delete your own emergency contacts.')
         return redirect('patient:emergency-contact-list')
 

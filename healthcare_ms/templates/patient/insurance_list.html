@@ -7,9 +7,11 @@
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Insurance Policies</h1>
-        <a href="{% url 'patient:insurance-create' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-            <i class="fas fa-plus mr-2"></i>Add New Policy
+        {% if can_edit %}
+        <a href="{% url 'patient:insurance-create' %}" class="btn-hover bg-blue-600 text-white px-4 py-2 rounded-lg">
+            <i class="fas fa-plus mr-2"></i>Add Insurance
         </a>
+        {% endif %}
     </div>
 
     <!-- Search and Filter -->
@@ -34,65 +36,49 @@
 
     <!-- Insurance Policies Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="insuranceGrid">
-        {% for policy in insurance_policies %}
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        {% for insurance in insurance_policies %}
+        <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
             <div class="p-6">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h2 class="text-xl font-semibold text-gray-800">
-                            {{ policy.provider }}
-                        </h2>
-                        <p class="text-sm text-gray-600">Policy #{{ policy.policy_number }}</p>
+                <div class="flex items-center mb-4">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-file-invoice-dollar text-2xl text-blue-600"></i>
                     </div>
-                    <span class="px-3 py-1 text-sm rounded-full
-                        {% if policy.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
-                        {{ policy.is_active|yesno:"Active,Inactive" }}
-                    </span>
+                    <div class="ml-4">
+                        <h3 class="text-xl font-semibold text-gray-800">{{ insurance.provider }}</h3>
+                        <p class="text-gray-500">Policy #: {{ insurance.policy_number }}</p>
+                    </div>
                 </div>
-
-                <div class="space-y-2">
-                    {% if policy.group_number %}
-                    <p class="text-sm text-gray-600">
-                        <span class="font-medium">Group Number:</span>
-                        {{ policy.group_number }}
-                    </p>
-                    {% endif %}
-                    <p class="text-sm text-gray-600">
-                        <span class="font-medium">Coverage Start:</span>
-                        {{ policy.coverage_start_date|date:"F d, Y" }}
-                    </p>
-                    {% if policy.coverage_end_date %}
-                    <p class="text-sm text-gray-600">
-                        <span class="font-medium">Coverage End:</span>
-                        {{ policy.coverage_end_date|date:"F d, Y" }}
-                    </p>
-                    {% endif %}
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <p class="text-sm text-gray-500">Group Number</p>
+                        <p class="font-medium">{{ insurance.group_number }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Patient</p>
+                        <p class="font-medium">{{ insurance.patient.get_full_name }}</p>
+                    </div>
                 </div>
-
-                <div class="mt-4 flex justify-end space-x-2">
-                    <a href="{% url 'patient:insurance-detail' policy.guid %}"
-                       class="text-blue-600 hover:text-blue-800 transition-colors">
-                        <i class="fas fa-eye mr-1"></i>View Details
+                <div class="flex justify-between">
+                    <a href="{% url 'patient:insurance-detail' insurance.guid %}" class="text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-eye mr-2"></i>View Details
                     </a>
-                    <a href="{% url 'patient:insurance-update' policy.guid %}"
-                       class="text-green-600 hover:text-green-800 transition-colors">
-                        <i class="fas fa-edit mr-1"></i>Edit
-                    </a>
+                    {% if can_edit %}
+                    <div class="flex space-x-2">
+                        <a href="{% url 'patient:insurance-update' insurance.guid %}" class="text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-edit mr-2"></i>Edit
+                        </a>
+                        <a href="{% url 'patient:insurance-delete' insurance.guid %}" class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash mr-2"></i>Delete
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
         {% empty %}
-        <div class="col-span-full text-center py-12">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">No insurance policies found</h3>
-            <p class="mt-1 text-sm text-gray-500">Get started by adding a new insurance policy.</p>
-            <div class="mt-6">
-                <a href="{% url 'patient:insurance-create' %}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    <i class="fas fa-plus mr-2"></i>Add New Policy
-                </a>
-            </div>
+        <div class="col-span-full text-center py-8">
+            <i class="fas fa-file-invoice-dollar text-4xl text-gray-400 mb-4"></i>
+            <p class="text-gray-500">No insurance policies found.</p>
         </div>
         {% endfor %}
     </div>

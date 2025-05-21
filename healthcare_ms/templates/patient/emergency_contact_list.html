@@ -7,87 +7,74 @@
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Emergency Contacts</h1>
+        {% if can_edit %}
         <a href="{% url 'patient:emergency-contact-create' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-            Add New Contact
+            <i class="fas fa-plus mr-2"></i>Add Contact
         </a>
+        {% endif %}
     </div>
 
     <!-- Search and Filter -->
-    <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-        <form method="get" class="flex flex-wrap gap-4" id="searchForm">
+    <div class="bg-white rounded-lg shadow p-4 mb-6">
+        <form method="get" class="flex flex-col md:flex-row gap-4">
             <div class="flex-1">
                 <input type="text" name="search"
                        placeholder="Search by name, relationship, phone, or email..."
-                       class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                        value="{{ search_query }}"
                        id="searchInput">
             </div>
-            <div class="flex gap-2">
-                {% if search_query %}
-                <a href="{% url 'patient:emergency-contact-list' %}" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
-                    Clear
-                </a>
-                {% endif %}
-            </div>
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                <i class="fas fa-search mr-2"></i>Search
+            </button>
         </form>
     </div>
 
     <!-- Contacts Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="contactsGrid">
         {% for contact in contacts %}
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
             <div class="p-6">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h2 class="text-xl font-semibold text-gray-800">
-                            {{ contact.name }}
-                        </h2>
-                        <p class="text-sm text-gray-600">Relationship: {{ contact.relationship }}</p>
+                <div class="flex items-center mb-4">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-friends text-2xl text-blue-600"></i>
                     </div>
-                    <span class="px-3 py-1 text-sm rounded-full
-                        {% if contact.is_primary %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-800{% endif %}">
-                        {{ contact.is_primary|yesno:"Primary,Secondary" }}
-                    </span>
+                    <div class="ml-4">
+                        <h3 class="text-xl font-semibold text-gray-800">{{ contact.name }}</h3>
+                        <p class="text-gray-500">Relationship: {{ contact.relationship }}</p>
+                    </div>
                 </div>
-
-                <div class="space-y-2">
-                    <p class="text-sm text-gray-600">
-                        <span class="font-medium">Phone:</span>
-                        {{ contact.phone_number }}
-                    </p>
-                    {% if contact.email %}
-                    <p class="text-sm text-gray-600">
-                        <span class="font-medium">Email:</span>
-                        {{ contact.email }}
-                    </p>
-                    {% endif %}
-                    {% if contact.address %}
-                    <p class="text-sm text-gray-600">
-                        <span class="font-medium">Address:</span>
-                        {{ contact.address|truncatechars:100 }}
-                    </p>
-                    {% endif %}
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <p class="text-sm text-gray-500">Phone</p>
+                        <p class="font-medium">{{ contact.phone_number }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Email</p>
+                        <p class="font-medium">{{ contact.email }}</p>
+                    </div>
                 </div>
-
-                <div class="mt-4 flex justify-end space-x-2">
-                    <a href="{% url 'patient:emergency-contact-detail' contact.guid %}"
-                       class="text-blue-600 hover:text-blue-800 transition-colors">
-                        View Details
+                <div class="flex justify-between">
+                    <a href="{% url 'patient:emergency-contact-detail' contact.guid %}" class="text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-eye mr-2"></i>View Details
                     </a>
-                    <a href="{% url 'patient:emergency-contact-update' contact.guid %}"
-                       class="text-green-600 hover:text-green-800 transition-colors">
-                        Edit
-                    </a>
+                    {% if can_edit %}
+                    <div class="flex space-x-2">
+                        <a href="{% url 'patient:emergency-contact-update' contact.guid %}" class="text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-edit mr-2"></i>Edit
+                        </a>
+                        <a href="{% url 'patient:emergency-contact-delete' contact.guid %}" class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash mr-2"></i>Delete
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
         {% empty %}
-        <div class="col-span-full text-center py-12">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">No emergency contacts found</h3>
-            <p class="mt-1 text-sm text-gray-500">Get started by adding a new emergency contact.</p>
+        <div class="col-span-full text-center py-8">
+            <i class="fas fa-user-friends text-4xl text-gray-400 mb-4"></i>
+            <p class="text-gray-500">No emergency contacts found.</p>
         </div>
         {% endfor %}
     </div>
