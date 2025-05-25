@@ -5,7 +5,7 @@ The Healthcare Management System is a comprehensive platform designed to streaml
 
 ## Table of Contents
 
-1. [System Architecture](architecture.md)
+1. [System Architecture](Architecture.md)
    - Overview of the system's architecture
    - Component interactions
    - Data flow
