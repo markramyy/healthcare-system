@@ -31,6 +31,8 @@ The Electronic Health Records (EHR) service is a comprehensive digital system fo
   - Allergies
   - Drug interactions
 
+<div style="page-break-after: always;"></div>
+
 ### 3. Lab and Imaging
 - **Lab Results**
   - Test results
@@ -57,6 +59,8 @@ The Electronic Health Records (EHR) service is a comprehensive digital system fo
   - Dosage changes
   - Medication reviews
 
+<div style="page-break-after: always;"></div>
+
 ## User Roles and Permissions
 
 ### 1. Doctors
@@ -82,6 +86,8 @@ The Electronic Health Records (EHR) service is a comprehensive digital system fo
 - Access test results
 - Track medications
 - View treatment plans
+
+<div style="page-break-after: always;"></div>
 
 ## Security Features
 
@@ -117,6 +123,8 @@ The Electronic Health Records (EHR) service is a comprehensive digital system fo
 - Process payments
 - Generate reports
 
+<div style="page-break-after: always;"></div>
+
 ## Best Practices
 
 ### 1. Documentation
@@ -145,6 +153,8 @@ The Electronic Health Records (EHR) service is a comprehensive digital system fo
 - Test connections
 - Monitor system
 
+<div style="page-break-after: always;"></div>
+
 ## Maintenance
 
 ### 1. Regular Tasks
@@ -172,6 +182,8 @@ The Electronic Health Records (EHR) service is a comprehensive digital system fo
 - Better performance
 - Improved interface
 - Additional features
+
+<div style="page-break-after: always;"></div>
 
 ## Compliance and Standards
 

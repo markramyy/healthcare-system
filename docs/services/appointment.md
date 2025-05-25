@@ -31,6 +31,8 @@ The Appointment Scheduling service is a comprehensive solution for managing pati
   - Medication reminders
   - Check-up scheduling
 
+<div style="page-break-after: always;"></div>
+
 ### 3. Doctor Schedule Management
 - **Availability Management**
   - Set working hours
@@ -57,6 +59,8 @@ The Appointment Scheduling service is a comprehensive solution for managing pati
   - Location information
   - Contact details
 
+<div style="page-break-after: always;"></div>
+
 ## User Roles and Permissions
 
 ### 1. Administrators
@@ -82,6 +86,8 @@ The Appointment Scheduling service is a comprehensive solution for managing pati
 - View own schedule
 - Cancel appointments
 - Receive reminders
+
+<div style="page-break-after: always;"></div>
 
 ## Security Features
 
@@ -116,6 +122,8 @@ The Appointment Scheduling service is a comprehensive solution for managing pati
 - Process payments
 - Manage insurance
 - Generate invoices
+
+<div style="page-break-after: always;"></div>
 
 ## Best Practices
 
@@ -159,6 +167,8 @@ The Appointment Scheduling service is a comprehensive solution for managing pati
 - Error tracking
 - Performance metrics
 
+<div style="page-break-after: always;"></div>
+
 ## Future Enhancements
 
 ### 1. Planned Features
@@ -186,6 +196,8 @@ The Appointment Scheduling service is a comprehensive solution for managing pati
 - User satisfaction
 - Performance metrics
 - Service quality
+
+<div style="page-break-after: always;"></div>
 
 ## Training and Support
 

@@ -3,6 +3,8 @@
 ## Overview
 The Healthcare Management System implements robust authentication and authorization mechanisms to ensure secure access to sensitive healthcare data. This document outlines our security measures and best practices.
 
+<div style="page-break-after: always;"></div>
+
 ## Authentication
 
 ### 1. Multi-Factor Authentication (MFA)
@@ -43,6 +45,8 @@ The Healthcare Management System implements robust authentication and authorizat
   - Device management
   - Location tracking
   - Time-based access
+
+<div style="page-break-after: always;"></div>
 
 ## Authorization
 
@@ -86,6 +90,8 @@ The Healthcare Management System implements robust authentication and authorizat
   - Device-based access
   - User-based access
 
+<div style="page-break-after: always;"></div>
+
 ## Security Measures
 
 ### 1. Access Logging
@@ -114,6 +120,8 @@ The Healthcare Management System implements robust authentication and authorizat
   - System errors
   - Performance issues
 
+<div style="page-break-after: always;"></div>
+
 ## Implementation
 
 ### 1. Authentication Flow
@@ -130,6 +138,8 @@ The Healthcare Management System implements robust authentication and authorizat
 4. Resource access
 5. Action execution
 
+<div style="page-break-after: always;"></div>
+
 ## Best Practices
 
 ### 1. User Management
@@ -143,6 +153,8 @@ The Healthcare Management System implements robust authentication and authorizat
 - Security updates
 - System hardening
 - Configuration management
+
+<div style="page-break-after: always;"></div>
 
 ## Compliance
 
@@ -158,6 +170,8 @@ The Healthcare Management System implements robust authentication and authorizat
 - Privacy rights
 - Security measures
 
+<div style="page-break-after: always;"></div>
+
 ## Troubleshooting
 
 ### 1. Common Issues
@@ -172,6 +186,8 @@ The Healthcare Management System implements robust authentication and authorizat
 - Review logs
 - Contact support
 
+<div style="page-break-after: always;"></div>
+
 ## Maintenance
 
 ### 1. Regular Tasks
@@ -185,6 +201,8 @@ The Healthcare Management System implements robust authentication and authorizat
 - Security events
 - System performance
 - User activity
+
+<div style="page-break-after: always;"></div>
 
 ## Future Enhancements
 

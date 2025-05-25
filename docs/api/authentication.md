@@ -3,6 +3,8 @@
 ## Overview
 The Healthcare Management System API uses OAuth 2.0 with JWT (JSON Web Tokens) for authentication. This provides a secure and standardized way to authenticate API requests.
 
+<div style="page-break-after: always;"></div>
+
 ## Authentication Methods
 
 ### 1. OAuth 2.0
@@ -13,6 +15,8 @@ The API supports the following OAuth 2.0 flows:
 
 ### 2. JWT Authentication
 For direct API access, JWT tokens are used. These tokens are obtained through the OAuth 2.0 process.
+
+<div style="page-break-after: always;"></div>
 
 ## Getting Started
 
@@ -58,6 +62,8 @@ grant_type=password
 &client_secret=CLIENT_SECRET
 ```
 
+<div style="page-break-after: always;"></div>
+
 ## Using Access Tokens
 
 ### Including Tokens in Requests
@@ -82,6 +88,8 @@ grant_type=refresh_token
 &client_secret=CLIENT_SECRET
 ```
 
+<div style="page-break-after: always;"></div>
+
 ## Security Best Practices
 
 1. **Token Storage**
@@ -104,6 +112,8 @@ grant_type=refresh_token
    - Implement proper logging
    - Monitor for suspicious activity
 
+<div style="page-break-after: always;"></div>
+
 ## Common Authentication Errors
 
 | Error Code | Description | Resolution |
@@ -111,6 +121,8 @@ grant_type=refresh_token
 | 401 | Unauthorized | Check token validity and expiration |
 | 403 | Forbidden | Verify permissions and scope |
 | 429 | Too Many Requests | Implement rate limiting |
+
+<div style="page-break-after: always;"></div>
 
 ## Support
 For authentication-related issues or questions, please contact:

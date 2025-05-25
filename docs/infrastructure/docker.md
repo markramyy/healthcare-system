@@ -3,6 +3,8 @@
 ## Overview
 Docker is like a standardized shipping container for our healthcare system. Just as shipping containers revolutionized global trade by standardizing how goods are transported, Docker standardizes how we package and run our application.
 
+<div style="page-break-after: always;"></div>
+
 ## What is Docker?
 
 ### 1. Basic Concept
@@ -17,6 +19,8 @@ Think of Docker as a standardized box that contains everything our application n
 - **Isolation**: Each part runs independently
 - **Portability**: Can run on any compatible system
 - **Efficiency**: Uses resources effectively
+
+<div style="page-break-after: always;"></div>
 
 ## How Docker Works in Our System
 
@@ -33,6 +37,8 @@ Our healthcare system is divided into several containers:
 - **Security**: Isolated from other containers
 - **Scaling**: Can be easily scaled up or down
 
+<div style="page-break-after: always;"></div>
+
 ## Development Environment
 
 ### 1. Local Setup
@@ -46,6 +52,8 @@ Our healthcare system is divided into several containers:
 - **Environment Consistency**: Same environment for all tests
 - **Quick Feedback**: Fast test results
 - **Isolated Testing**: No interference between tests
+
+<div style="page-break-after: always;"></div>
 
 ## Production Environment
 
@@ -61,6 +69,8 @@ Our healthcare system is divided into several containers:
 - **Resource Management**: Efficient resource usage
 - **Security Updates**: Quick security patches
 
+<div style="page-break-after: always;"></div>
+
 ## Security Features
 
 ### 1. Container Security
@@ -74,6 +84,8 @@ Our healthcare system is divided into several containers:
 - **Access Control**: Limited data access
 - **Backup System**: Regular backups
 - **Audit Trails**: Track all changes
+
+<div style="page-break-after: always;"></div>
 
 ## Best Practices
 
@@ -89,6 +101,8 @@ Our healthcare system is divided into several containers:
 - **Documentation**: Keep documentation updated
 - **Code Review**: Review container changes
 
+<div style="page-break-after: always;"></div>
+
 ## Troubleshooting
 
 ### 1. Common Issues
@@ -102,6 +116,8 @@ Our healthcare system is divided into several containers:
 - **Resource Check**: Verify resource allocation
 - **Network Check**: Test network connectivity
 - **Update Process**: Review update process
+
+<div style="page-break-after: always;"></div>
 
 ## Maintenance Schedule
 

@@ -45,6 +45,8 @@ The Healthcare Management System is built using a microservices architecture to 
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+<div style="page-break-after: always;"></div>
+
 ## Core Components
 
 ### 1. Client Applications
@@ -84,6 +86,8 @@ The Healthcare Management System is built using a microservices architecture to 
 - Payment processing
 - Insurance claims
 - Financial reporting
+
+<div style="page-break-after: always;"></div>
 
 ### 4. Infrastructure Services
 
@@ -131,6 +135,8 @@ The Healthcare Management System is built using a microservices architecture to 
 - System snapshots
 - Archive data
 
+<div style="page-break-after: always;"></div>
+
 ## Communication Patterns
 
 ### 1. Synchronous Communication
@@ -162,6 +168,8 @@ The Healthcare Management System is built using a microservices architecture to 
 - GDPR compliance
 - Data privacy
 - Audit logging
+
+<div style="page-break-after: always;"></div>
 
 ## Deployment Architecture
 
@@ -202,6 +210,8 @@ The Healthcare Management System is built using a microservices architecture to 
 - Performance metrics
 - Resource utilization
 - Alert management
+
+<div style="page-break-after: always;"></div>
 
 ## Development Guidelines
 

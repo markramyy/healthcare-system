@@ -31,6 +31,8 @@ The Patient Management service is a comprehensive solution for managing patient 
   - Manage imaging reports
   - Track prescriptions
 
+<div style="page-break-after: always;"></div>
+
 ### 3. Insurance Management
 - **Insurance Information**
   - Policy details
@@ -57,6 +59,8 @@ The Patient Management service is a comprehensive solution for managing patient 
   - Medical directives
   - Special instructions
 
+<div style="page-break-after: always;"></div>
+
 ## User Roles and Permissions
 
 ### 1. Administrators
@@ -82,6 +86,8 @@ The Patient Management service is a comprehensive solution for managing patient 
 - Update personal information
 - Manage appointments
 - Access medical history
+
+<div style="page-break-after: always;"></div>
 
 ## Security Features
 
@@ -117,6 +123,8 @@ The Patient Management service is a comprehensive solution for managing patient 
 - Track payments
 - Manage claims
 
+<div style="page-break-after: always;"></div>
+
 ## Best Practices
 
 ### 1. Data Management
@@ -144,6 +152,8 @@ The Patient Management service is a comprehensive solution for managing patient 
 - Verify data integrity
 - Test integrations
 - Monitor performance
+
+<div style="page-break-after: always;"></div>
 
 ## Maintenance
 

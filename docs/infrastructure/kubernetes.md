@@ -3,6 +3,8 @@
 ## Overview
 Kubernetes is like an intelligent traffic controller for our healthcare system. It manages how different parts of our application work together, ensures they're always available, and handles increased load by adding more resources when needed.
 
+<div style="page-break-after: always;"></div>
+
 ## What is Kubernetes?
 
 ### 1. Basic Concept
@@ -17,6 +19,8 @@ Think of Kubernetes as a smart manager that:
 - **Automatic Scaling**: Handles increased load
 - **Easy Updates**: Updates without downtime
 - **Resource Efficiency**: Uses resources wisely
+
+<div style="page-break-after: always;"></div>
 
 ## How Kubernetes Works in Our System
 
@@ -33,6 +37,8 @@ Our healthcare system is managed by Kubernetes:
 - **Rolling Updates**: Updates without downtime
 - **Resource Management**: Optimizes resource use
 
+<div style="page-break-after: always;"></div>
+
 ## Development Environment
 
 ### 1. Local Setup
@@ -46,6 +52,8 @@ Our healthcare system is managed by Kubernetes:
 - **Environment Consistency**: Same environment
 - **Quick Feedback**: Fast test results
 - **Isolated Testing**: No interference
+
+<div style="page-break-after: always;"></div>
 
 ## Production Environment
 
@@ -61,6 +69,8 @@ Our healthcare system is managed by Kubernetes:
 - **Resource Management**: Efficient resource use
 - **Security Updates**: Quick security patches
 
+<div style="page-break-after: always;"></div>
+
 ## Security Features
 
 ### 1. System Security
@@ -74,6 +84,8 @@ Our healthcare system is managed by Kubernetes:
 - **Access Control**: Limited data access
 - **Backup System**: Regular backups
 - **Audit Trails**: Track all changes
+
+<div style="page-break-after: always;"></div>
 
 ## Best Practices
 
@@ -89,6 +101,8 @@ Our healthcare system is managed by Kubernetes:
 - **Documentation**: Keep docs updated
 - **Code Review**: Review changes
 
+<div style="page-break-after: always;"></div>
+
 ## Troubleshooting
 
 ### 1. Common Issues
@@ -102,6 +116,8 @@ Our healthcare system is managed by Kubernetes:
 - **Resource Check**: Verify resources
 - **Network Check**: Test connections
 - **Update Process**: Review updates
+
+<div style="page-break-after: always;"></div>
 
 ## Maintenance Schedule
 
@@ -123,6 +139,8 @@ Our healthcare system is managed by Kubernetes:
 - **Performance Optimization**: Optimize performance
 - **Documentation Update**: Update documentation
 
+<div style="page-break-after: always;"></div>
+
 ## Scaling and Performance
 
 ### 1. Automatic Scaling
@@ -136,6 +154,8 @@ Our healthcare system is managed by Kubernetes:
 - **Load Distribution**: Balances load
 - **Response Time**: Monitors response times
 - **Efficiency**: Improves efficiency
+
+<div style="page-break-after: always;"></div>
 
 ## Disaster Recovery
 

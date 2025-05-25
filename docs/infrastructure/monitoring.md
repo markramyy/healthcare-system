@@ -3,6 +3,8 @@
 ## Overview
 The monitoring and logging system is like a comprehensive health check system for our healthcare management platform. It helps us ensure everything is running smoothly and helps us quickly identify and fix any issues that arise.
 
+<div style="page-break-after: always;"></div>
+
 ## What We Monitor
 
 ### 1. System Health
@@ -22,6 +24,8 @@ The monitoring and logging system is like a comprehensive health check system fo
 - **Security Events**: Tracking potential security issues
 - **Authentication Attempts**: Monitoring login attempts
 - **Data Access**: Tracking who views or modifies sensitive information
+
+<div style="page-break-after: always;"></div>
 
 ## How We Monitor
 
@@ -64,6 +68,8 @@ Our logging system is like a detailed diary that:
 - Error Logs
 - Audit Logs
 
+<div style="page-break-after: always;"></div>
+
 ## Alerting System
 
 ### 1. Critical Alerts
@@ -83,6 +89,8 @@ Our logging system is like a detailed diary that:
 - Maintenance schedules
 - Usage statistics
 - Feature deployments
+
+<div style="page-break-after: always;"></div>
 
 ## How to Use the Monitoring System
 
@@ -104,6 +112,8 @@ Our logging system is like a detailed diary that:
 - Track performance
 - Review system logs
 
+<div style="page-break-after: always;"></div>
+
 ## Best Practices
 
 ### 1. Regular Monitoring
@@ -124,6 +134,8 @@ Our logging system is like a detailed diary that:
 - Log retention policies
 - Log analysis for trends
 
+<div style="page-break-after: always;"></div>
+
 ## Troubleshooting Guide
 
 ### 1. Common Issues
@@ -143,6 +155,8 @@ Our logging system is like a detailed diary that:
 - Technical team
 - System administrators
 - Emergency response team
+
+<div style="page-break-after: always;"></div>
 
 ## Maintenance Schedule
 

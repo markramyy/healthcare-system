@@ -3,6 +3,8 @@
 ## Overview
 The Healthcare Management System implements comprehensive data protection measures to ensure the security and privacy of sensitive healthcare information. This document outlines our data protection strategies and procedures.
 
+<div style="page-break-after: always;"></div>
+
 ## Data Classification
 
 ### 1. Data Categories
@@ -43,6 +45,8 @@ The Healthcare Management System implements comprehensive data protection measur
   - Quality assurance
   - Error handling
 
+<div style="page-break-after: always;"></div>
+
 ## Data Security
 
 ### 1. Encryption
@@ -70,6 +74,8 @@ The Healthcare Management System implements comprehensive data protection measur
   - Action permissions
   - Resource control
   - Audit trails
+
+<div style="page-break-after: always;"></div>
 
 ## Data Storage
 
@@ -99,6 +105,8 @@ The Healthcare Management System implements comprehensive data protection measur
   - Access control
   - Recovery testing
 
+<div style="page-break-after: always;"></div>
+
 ## Data Transmission
 
 ### 1. Secure Communication
@@ -126,6 +134,8 @@ The Healthcare Management System implements comprehensive data protection measur
   - Data validation
   - Error handling
   - Logging
+
+<div style="page-break-after: always;"></div>
 
 ## Data Retention
 
@@ -155,6 +165,8 @@ The Healthcare Management System implements comprehensive data protection measur
   - Certification
   - Reporting
 
+<div style="page-break-after: always;"></div>
+
 ## Compliance
 
 ### 1. HIPAA Compliance
@@ -182,6 +194,8 @@ The Healthcare Management System implements comprehensive data protection measur
   - Data access
   - Data portability
   - Right to be forgotten
+
+<div style="page-break-after: always;"></div>
 
 ## Monitoring and Auditing
 
@@ -211,6 +225,8 @@ The Healthcare Management System implements comprehensive data protection measur
   - Findings
   - Recommendations
 
+<div style="page-break-after: always;"></div>
+
 ## Incident Response
 
 ### 1. Data Breach Response
@@ -238,6 +254,8 @@ The Healthcare Management System implements comprehensive data protection measur
   - Documentation
   - Improvements
   - Training
+
+<div style="page-break-after: always;"></div>
 
 ## Best Practices
 

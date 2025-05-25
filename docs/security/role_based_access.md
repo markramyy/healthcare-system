@@ -3,6 +3,8 @@
 ## Overview
 The healthcare system implements a role-based access control (RBAC) system to manage user permissions and access to different features based on their user type. This document outlines the available roles and their corresponding permissions.
 
+<div style="page-break-after: always;"></div>
+
 ## Available Roles
 1. **Admin** (`admin`)
    - Full system access
@@ -30,6 +32,8 @@ The healthcare system implements a role-based access control (RBAC) system to ma
    - Can view their own prescriptions and treatments
    - Can manage their own insurance and emergency contacts
    - Can view and manage their own billing information
+
+<div style="page-break-after: always;"></div>
 
 ## Detailed Access Control Matrix
 
@@ -96,6 +100,8 @@ The healthcare system implements a role-based access control (RBAC) system to ma
 | Update Claim | ✓ | ✓ | ✗ | Own only |
 | Delete Claim | ✓ | ✓ | ✗ | Own only |
 
+<div style="page-break-after: always;"></div>
+
 ## Implementation Details
 
 ### Permission Classes
@@ -123,6 +129,8 @@ The system uses custom permission classes for each viewset:
 3. **User Type Filtering**: Querysets are filtered based on user type
 4. **Automatic Field Setting**: Certain fields are automatically set based on the user type
 
+<div style="page-break-after: always;"></div>
+
 ## Security Considerations
 
 1. All permissions are enforced at both the view and object level
@@ -131,6 +139,8 @@ The system uses custom permission classes for each viewset:
 4. Delete operations have additional restrictions for certain user types
 5. All endpoints require authentication
 6. Permissions are checked before any data access or modification
+
+<div style="page-break-after: always;"></div>
 
 ## Testing Guidelines
 

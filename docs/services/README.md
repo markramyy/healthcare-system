@@ -41,6 +41,8 @@ The Billing Management service handles all financial aspects of healthcare servi
 
 [Learn more about Billing Management](billing.md)
 
+<div style="page-break-after: always;"></div>
+
 ## Service Integration
 
 ### How Services Work Together
@@ -86,6 +88,8 @@ The Billing Management service handles all financial aspects of healthcare servi
 - Technical support
 - User assistance
 - Issue tracking
+
+<div style="page-break-after: always;"></div>
 
 ## Future Enhancements
 

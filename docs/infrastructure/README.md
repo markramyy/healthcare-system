@@ -3,6 +3,8 @@
 ## Overview
 The Healthcare Management System is built using modern technology that ensures reliability, security, and scalability. This document explains the technical components in simple terms.
 
+<div style="page-break-after: always;"></div>
+
 ## Key Components
 
 ### 1. Docker Containerization
@@ -51,6 +53,8 @@ Our database system is like a highly organized filing system that stores all pat
 - Efficient data organization
 - Regular backups for data safety
 
+<div style="page-break-after: always;"></div>
+
 ## How It All Works Together
 
 1. **User Access**
@@ -68,6 +72,8 @@ Our database system is like a highly organized filing system that stores all pat
    - Issues are automatically detected and reported
    - Regular maintenance ensures optimal operation
 
+<div style="page-break-after: always;"></div>
+
 ## Security Measures
 
 1. **Data Protection**
@@ -80,6 +86,8 @@ Our database system is like a highly organized filing system that stores all pat
    - Intrusion detection
    - Firewall protection
 
+<div style="page-break-after: always;"></div>
+
 ## Maintenance and Support
 
 1. **Regular Updates**
@@ -91,6 +99,8 @@ Our database system is like a highly organized filing system that stores all pat
    - 24/7 monitoring
    - Automated alerts for issues
    - Technical support team available
+
+<div style="page-break-after: always;"></div>
 
 ## Future Improvements
 

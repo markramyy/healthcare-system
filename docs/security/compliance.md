@@ -3,6 +3,8 @@
 ## Overview
 The Healthcare Management System adheres to various healthcare and data protection regulations to ensure the security and privacy of patient information. This document outlines our compliance requirements and implementation strategies.
 
+<div style="page-break-after: always;"></div>
+
 ## HIPAA Compliance
 
 ### 1. Privacy Rule
@@ -44,6 +46,8 @@ The Healthcare Management System adheres to various healthcare and data protecti
   - Notification
   - Documentation
 
+<div style="page-break-after: always;"></div>
+
 ## GDPR Compliance
 
 ### 1. Data Protection
@@ -71,6 +75,8 @@ The Healthcare Management System adheres to various healthcare and data protecti
   - Access control
   - Monitoring
   - Documentation
+
+<div style="page-break-after: always;"></div>
 
 ## Industry Standards
 
@@ -101,6 +107,8 @@ The Healthcare Management System adheres to various healthcare and data protecti
   - Image exchange
   - Documentation
 
+<div style="page-break-after: always;"></div>
+
 ## Compliance Implementation
 
 ### 1. Policies and Procedures
@@ -128,6 +136,8 @@ The Healthcare Management System adheres to various healthcare and data protecti
   - Privacy training
   - Incident reporting
   - Best practices
+
+<div style="page-break-after: always;"></div>
 
 ## Regular Audits
 
@@ -157,6 +167,8 @@ The Healthcare Management System adheres to various healthcare and data protecti
   - GDPR compliance
   - Industry standards
 
+<div style="page-break-after: always;"></div>
+
 ## Documentation
 
 ### 1. Compliance Documentation
@@ -184,6 +196,8 @@ The Healthcare Management System adheres to various healthcare and data protecti
   - Business needs
   - Compliance rules
   - Industry standards
+
+<div style="page-break-after: always;"></div>
 
 ## Incident Management
 
@@ -213,6 +227,8 @@ The Healthcare Management System adheres to various healthcare and data protecti
   - Implementation
   - Follow-up
 
+<div style="page-break-after: always;"></div>
+
 ## Best Practices
 
 ### 1. Compliance Management
@@ -226,6 +242,8 @@ The Healthcare Management System adheres to various healthcare and data protecti
 - Data protection
 - Monitoring
 - Auditing
+
+<div style="page-break-after: always;"></div>
 
 ## Future Enhancements
 

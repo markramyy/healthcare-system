@@ -3,6 +3,8 @@
 ## Overview
 The Healthcare Management System implements comprehensive security measures to protect sensitive patient data and ensure compliance with healthcare regulations. This documentation outlines our security architecture, policies, and procedures.
 
+<div style="page-break-after: always;"></div>
+
 ## Key Security Components
 
 ### 1. Authentication and Authorization
@@ -36,6 +38,8 @@ The Healthcare Management System implements comprehensive security measures to p
 
 [Learn more about Role-Based Access Control](role_based_access.md)
 
+<div style="page-break-after: always;"></div>
+
 ## Security Architecture
 
 ### 1. Application Security
@@ -55,6 +59,8 @@ The Healthcare Management System implements comprehensive security measures to p
 - Incident response
 - Vulnerability management
 - Security updates
+
+<div style="page-break-after: always;"></div>
 
 ## Security Policies
 
@@ -76,6 +82,8 @@ The Healthcare Management System implements comprehensive security measures to p
 - Audit procedures
 - Documentation
 
+<div style="page-break-after: always;"></div>
+
 ## Security Procedures
 
 ### 1. Incident Response
@@ -96,6 +104,8 @@ The Healthcare Management System implements comprehensive security measures to p
 - System hardening
 - Configuration management
 
+<div style="page-break-after: always;"></div>
+
 ## Security Training
 
 ### 1. User Training
@@ -109,6 +119,8 @@ The Healthcare Management System implements comprehensive security measures to p
 - Monitoring systems
 - Incident response
 - System administration
+
+<div style="page-break-after: always;"></div>
 
 ## Security Tools
 
@@ -124,6 +136,8 @@ The Healthcare Management System implements comprehensive security measures to p
 - Antivirus software
 - Encryption tools
 
+<div style="page-break-after: always;"></div>
+
 ## Compliance Requirements
 
 ### 1. HIPAA Compliance
@@ -137,6 +151,8 @@ The Healthcare Management System implements comprehensive security measures to p
 - User rights
 - Data processing
 - International transfers
+
+<div style="page-break-after: always;"></div>
 
 ## Security Best Practices
 
@@ -152,6 +168,8 @@ The Healthcare Management System implements comprehensive security measures to p
 - Access control
 - Data validation
 
+<div style="page-break-after: always;"></div>
+
 ## Incident Management
 
 ### 1. Incident Response
@@ -166,6 +184,8 @@ The Healthcare Management System implements comprehensive security measures to p
 - Lessons learned
 - Improvement plans
 
+<div style="page-break-after: always;"></div>
+
 ## Regular Audits
 
 ### 1. Security Audits
@@ -179,6 +199,8 @@ The Healthcare Management System implements comprehensive security measures to p
 - Industry standards
 - Policy compliance
 - Documentation
+
+<div style="page-break-after: always;"></div>
 
 ## Future Security Enhancements
 

@@ -12,6 +12,8 @@ All endpoints are relative to: `https://api.healthcare-system.com/v1`
 - `sort`: Field to sort by (default: created_at)
 - `order`: Sort order (asc/desc, default: desc)
 
+<div style="page-break-after: always;"></div>
+
 ## Patient Management
 
 ### List Patients
@@ -76,6 +78,8 @@ GET /patients/{patient_id}
 }
 ```
 
+<div style="page-break-after: always;"></div>
+
 ## Electronic Health Records (EHR)
 
 ### Create Medical Record
@@ -131,6 +135,8 @@ GET /ehr/patients/{patient_id}/history
     }
 }
 ```
+
+<div style="page-break-after: always;"></div>
 
 ## Appointment Scheduling
 
@@ -199,6 +205,8 @@ GET /appointments
     }
 }
 ```
+
+<div style="page-break-after: always;"></div>
 
 ## Billing Management
 

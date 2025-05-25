@@ -44,6 +44,8 @@ The Healthcare Management System is a comprehensive platform designed to streaml
    - [Production Deployment](deployment/production.md)
    - [Environment Configuration](deployment/environment.md)
 
+<div style="page-break-after: always;"></div>
+
 ## Role-Based Access Control
 
 The system implements a comprehensive role-based access control (RBAC) system to manage user permissions and access to different features. The following roles are available:
@@ -76,6 +78,8 @@ The system implements a comprehensive role-based access control (RBAC) system to
    - Can view their own prescriptions and treatments
    - Can manage their own insurance and emergency contacts
    - Can view and manage their own billing information
+
+<div style="page-break-after: always;"></div>
 
 ### Access Control Matrix
 
